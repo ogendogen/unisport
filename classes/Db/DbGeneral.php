@@ -51,47 +51,6 @@ namespace Db
             try
             {
                 return $this->isRowExists("user_login", "users", $login);
-                //$ret = $this->db->exec("SELECT user_login FROM users WHERE user_login = ?", $login);
-                //if (!$ret) return false;
-                //return true;
-            }
-            catch (\PDOException $e)
-            {
-                throw $e;
-            }
-        }
-
-        public function registerUser(string $login, string $pass, string $email, string $name, string $surname)
-        {
-            try
-            {
-                $salt = \Utils\General::getRandomString();
-                $salted_pass = md5(md5($pass).md5($salt));
-                $activate_code = \Utils\General::getRandomString();
-                $ip = \Utils\General::getIP();
-                $registered = time();
-
-                $this->exec("INSERT INTO users SET user_login = ?,
-                                              user_pass = ?,
-                                              user_salt = ?,
-                                              user_email = ?,
-                                              user_activate_code = ?,
-                                              user_registered = ?,
-                                              user_lastlogin = ?,
-                                              user_ip = ?,
-                                              user_name = ?,
-                                              user_surname = ?",
-                    [
-                        $login,
-                        $salted_pass,
-                        $email,
-                        $activate_code,
-                        $registered,
-                        0,
-                        $ip,
-                        $name,
-                        $surname
-                ]);
             }
             catch (\PDOException $e)
             {

@@ -40,10 +40,16 @@ namespace Utils
             }
         }
 
-        /*function error($reason) {
-            modal("Błąd krytyczny", $reason, "danger");
-            include_once("inc/footer.php");
+        public static function stopWarning($reason)
+        {
+            \Utils\Front::modal("Wystąpił problem", $reason, "warning");
             die();
-        }*/
+        }
+
+        public static function error($reason)
+        {
+            \Utils\Front::modal("Błąd krytyczny", $reason, "danger");
+            die();
+        }
     }
 }

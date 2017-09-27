@@ -1,17 +1,28 @@
 <?php
 \Utils\Front::modal("Uwaga!", "Już masz utworzone konto!", "warning");
-if (isset($_SESSION["userid"])) // user zalogowany
+if (isset($_SESSION["userid"]) && is_numeric($_SESSION["userid"])) // user zalogowany
 {
     \Utils\Front::modal("Uwaga!", "Już masz utworzone konto!", "warning");
 }
 else if (isset($_POST["nick"])) // formularz wysłany
 {
-    $user = htmlspecialchars(trim($_POST["nick"]));
-    $pass = htmlspecialchars(trim($_POST["pass"]));
-    $pass2 = htmlspecialchars(trim($_POST["pass2"]));
-    if ($pass != $pass2) die(\Utils\Front::modal("Błąd!", "Hasła nie różnią się!", "error"));
-    $email = htmlspecialchars(trim($_POST["email"]));
-    if (!\Utils\Validations::isEmail($email)) die(\Utils\Front::modal("Błąd!", "Email nie jest poprawny!", "error"));
+    try
+    {
+        $user = new \User\UserGeneral();
+        \Utils\General::validatePostArray($_POST);
+        $login = htmlspecialchars(trim($_POST["login"]));
+        $pass = htmlspecialchars(trim($_POST["pass"]));
+        $pass2 = htmlspecialchars(trim($_POST["pass2"]));
+        $email = htmlspecialchars(trim($_POST["email"]));
+        $name = htmlspecialchars(trim($_POST["name"]));
+        $surname = $user->normalizeSurname(htmlspecialchars(trim($_POST["surname"])));
+        $user->validateNewUser($login, $pass, $pass2, $email, $name, $surname);
+        $user->registerUser($login, $pass, $email, $name, $surname); // todo: ustalić w jakiej klasie będzie ta metoda + ustalenie abstrakcyjności
+    }
+    catch (\Exception $e)
+    {
+        \Utils\Front::stopWarning($e->getMessage());
+    }
 }
 
 ?>

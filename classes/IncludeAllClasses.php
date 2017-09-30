@@ -1,5 +1,7 @@
 <?php
 
+require_once(__DIR__."/../configs/config.php");
+global $CONF;
 $dirs = scandir($CONF["root_path"]."classes/");
 foreach ($dirs as $dir)
 {

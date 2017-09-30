@@ -1,10 +1,9 @@
 <?php
-\Utils\Front::modal("Uwaga!", "Już masz utworzone konto!", "warning");
 if (isset($_SESSION["userid"]) && is_numeric($_SESSION["userid"])) // user zalogowany
 {
     \Utils\Front::modal("Uwaga!", "Już masz utworzone konto!", "warning");
 }
-else if (isset($_POST["nick"])) // formularz wysłany
+else if (isset($_POST["login"])) // formularz wysłany
 {
     try
     {
@@ -18,10 +17,12 @@ else if (isset($_POST["nick"])) // formularz wysłany
         $surname = $user->normalizeSurname(htmlspecialchars(trim($_POST["surname"])));
         $user->validateNewUser($login, $pass, $pass2, $email, $name, $surname);
         $user->registerUser($login, $pass, $email, $name, $surname); // todo: ustalić w jakiej klasie będzie ta metoda + ustalenie abstrakcyjności
+        //$user->sendEmail()
+        \Utils\Front::success("Użytkownik zarejestrowany poprawnie! Potwierdź swój adres email.");
     }
     catch (\Exception $e)
     {
-        \Utils\Front::stopWarning($e->getMessage());
+        \Utils\Front::warning($e->getMessage());
     }
 }
 
@@ -39,7 +40,7 @@ else if (isset($_POST["nick"])) // formularz wysłany
 
 					<div class="form-group col-xs-12 col-md-6 col-md-offset-3">
 						<label for="first_name">Login</label>
-						<input type="text" class="form-control" name="nick" id="first_name" placeholder="Twój login">
+						<input type="text" class="form-control" name="login" id="first_name" placeholder="Twój login">
 					</div>
 
 					<div class="form-group col-xs-12 col-md-6 col-md-offset-3">
@@ -54,7 +55,7 @@ else if (isset($_POST["nick"])) // formularz wysłany
 
 					<div class="form-group col-xs-12 col-md-6 col-md-offset-3">
 						<label for="password">Email</label>
-						<input type="text" class="form-control" name="mail" id="email" placeholder="Twój email" onblur="validateEmail()">
+						<input type="text" class="form-control" name="email" id="email" placeholder="Twój email" onblur="validateEmail()">
 					</div>
 
                     <div class="form-group col-xs-12 col-md-6 col-md-offset-3">

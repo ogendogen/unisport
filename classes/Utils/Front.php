@@ -40,16 +40,19 @@ namespace Utils
             }
         }
 
-        public static function stopWarning($reason)
+        public static function warning($reason)
         {
-            \Utils\Front::modal("Wystąpił problem", $reason, "warning");
-            die();
+            \Utils\Front::modal("Uwaga", $reason, "warning");
         }
 
         public static function error($reason)
         {
             \Utils\Front::modal("Błąd krytyczny", $reason, "danger");
-            die();
+        }
+
+        public static function success($reason)
+        {
+            \Utils\Front::modal("Powodzenie", $reason, "success");
         }
     }
 }

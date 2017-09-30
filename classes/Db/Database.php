@@ -10,28 +10,23 @@ namespace Db
         {
             try
             {
-                global $host;
-                global $user;
-                global $pass;
-                global $database;
                 $this->conn = new PDO("mysql:host=" . $host . ";dbname=" . $database, $user, $pass);
                 $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             }
             catch (\PDOException $e)
             {
                 throw $e;
-                //error("Połączenie z bazą nie powiodło się: " . $e->getMessage());
             }
         }
 
-        protected function exec($query, $params = null) : array
+        protected function exec($query, $params = null)
         {
             try
             {
                 $retval = null;
                 $q = $this->conn->prepare($query);
                 if ($q->execute($params)) {
-                    if (substr($query, 0, 6) === "SELECT")
+                    if (substr($query,0,6) === "SELECT")
                         $retval = $q->fetchAll(PDO::FETCH_ASSOC);
                     $q->closeCursor();
                 }
@@ -40,7 +35,6 @@ namespace Db
             catch (\PDOException $e)
             {
                 throw $e;
-                //error("Błąd bazy: " . $e->getMessage());
             }
         }
 
@@ -48,8 +42,8 @@ namespace Db
         {
             try
             {
-                $ret = $this->exec("SELECT ".$column." FROM ".$table." WHERE ".$column."= ?", $value);
-                if (!$ret) return false;
+                $ret = $this->exec("SELECT ".$column." FROM ".$table." WHERE ".$column."= ?", [$value]);
+                if (is_null($ret) || empty($ret) || !$ret) return false;
                 return true;
             }
             catch (\PDOException $e)

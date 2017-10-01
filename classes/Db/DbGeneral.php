@@ -142,5 +142,57 @@ namespace Db
                 throw $e;
             }
         }
+
+        public function getHashAndPassword(string $login, bool $by_email = false) : array
+        {
+            try
+            {
+                $arr = $this->db->exec("SELECT user_pass, user_salt FROM users WHERE ".($by_email ? "user_email" : "user_login")." = ?", [$login]);
+                $ret_arr = array();
+                $ret_arr["pass"] = $arr[0]["user_pass"];
+                $ret_arr["salt"] = $arr[0]["user_salt"];
+                return $ret_arr;
+            }
+            catch (\PDOException $e)
+            {
+                throw $e;
+            }
+        }
+
+        public function getUserIdByLogin(string $login, bool $by_email = false) : int
+        {
+            try
+            {
+                return intval($this->db->exec("SELECT user_id FROM users WHERE ".($by_email ? "user_email" : "user_login")." = ?", [$login])[0]["user_id"]);
+            }
+            catch (\PDOException $e)
+            {
+                throw $e;
+            }
+        }
+
+        public function isActivationCodeEqualsZero(string $login, bool $by_email = false) : bool
+        {
+            try
+            {
+                return $this->db->exec("SELECT user_activate_code FROM users WHERE ".($by_email ? "user_email" : "user_login")." = ?", [$login])[0]["user_activate_code"] == "0";
+            }
+            catch (\PDOException $e)
+            {
+                throw $e;
+            }
+        }
+
+        public function getLoginByEmail(string $email) : string
+        {
+            try
+            {
+                return $this->db->exec("SELECT user_login FROM users WHERE user_email = ?", [$email])[0]["user_login"];
+            }
+            catch (\PDOException $e)
+            {
+                throw $e;
+            }
+        }
     }
 }

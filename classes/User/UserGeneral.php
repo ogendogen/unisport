@@ -25,7 +25,7 @@ namespace User
             if ($this->isUserExists($login)) throw new \Exception("Taki użytkownik już istnieje!");
             if ($pass != $pass2) throw new \Exception("Hasła różnią się!");
             if (!\Utils\Validations::isEmail($email)) throw new \Exception("Email nie jest poprawny!");
-            //if (!\User\UserGeneral::checkName($name)) throw new \Exception("Takie imię nie istnieje!"); // todo
+            if (!\User\UserGeneral::checkName($name)) throw new \Exception("Takie imię nie istnieje!");
             if (!\Utils\General::isStartsWithUpper($surname[0])) throw new \Exception("Nazwisko powinno zaczynać się od dużej litery!");
         }
 
@@ -40,13 +40,37 @@ namespace User
             return $surname;
         }
 
-        public function registerUser(string $login, string $pass, string $email, string $name, string $surname)
+        public function registerUser(string $login, string $pass, string $email, string $name, string $surname) : array
         {
             try
             {
-                $this->db->dbRegisterUser($login, $pass, $email, $name, $surname);
+                return $this->db->dbRegisterUser($login, $pass, $email, $name, $surname);
             }
             catch(\Exception $e)
+            {
+                throw $e;
+            }
+        }
+
+        public function checkConfiguration(int $id, string $code) : bool
+        {
+            try
+            {
+                return $this->db->isConfigurationCorrect($id, $code);
+            }
+            catch(\PDOException $e)
+            {
+                throw $e;
+            }
+        }
+
+        public function confirmUser(int $id)
+        {
+            try
+            {
+                $this->db->resetCode($id);
+            }
+            catch (\PDOException $e)
             {
                 throw $e;
             }
@@ -66,13 +90,12 @@ namespace User
 
         private function checkName(string $name) : bool
         {
-            throw new \Exception("Method checkName not yet implemented!");
             $file = fopen(__DIR__."/../../other/names.txt", "r");
-            if (!$file) throw new \Exception("No names.txt file or cannot open!");
+            if (!$file) throw new \Exception("Problem z bazą imion");
             while (!feof($file))
             {
                 $line = fgets($file);
-                if ($line == $name) return true;
+                if (strcmp($line, $name)) return true;
             }
             return false;
         }

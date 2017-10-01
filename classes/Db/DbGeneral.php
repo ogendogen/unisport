@@ -1,7 +1,6 @@
 <?php
 namespace {
     require_once("Database.php");
-    //require_once("../Utils/General.php");
 }
 
 
@@ -58,7 +57,19 @@ namespace Db
             }
         }
 
-        public function dbRegisterUser(string $login, string $pass, string $email, string $name, string $surname)
+        public function dbIsUserExistsById(int $id) : bool
+        {
+            try
+            {
+                return $this->db->isRowExists("user_id", "users", $id);
+            }
+            catch (\PDOException $e)
+            {
+                throw $e;
+            }
+        }
+
+        public function dbRegisterUser(string $login, string $pass, string $email, string $name, string $surname) : array
         {
             try
             {
@@ -90,8 +101,43 @@ namespace Db
                         $name,
                         $surname
                     ]);
+
+                $ret_array = array();
+                $ret_array["id"] = $this->db->exec("SELECT user_id FROM users WHERE user_login = ?", [$login])[0]["user_id"];
+                $ret_array["code"] = $activate_code;
+
+                return $ret_array;
             }
             catch (\PDOException $e)
+            {
+                throw $e;
+            }
+        }
+
+        public function isConfigurationCorrect(int $id, string $code) : bool
+        {
+            try
+            {
+                $ret = $this->db->exec("SELECT user_activate_code FROM users WHERE user_id = ?", [$id])[0]["user_activate_code"];
+                if ($code == $ret) return true;
+                return false;
+            }
+            catch (\PDOException $e)
+            {
+                throw $e;
+            }
+        }
+
+        public function resetCode(int $id)
+        {
+            try
+            {
+                if ($this->dbIsUserExistsById($id))
+                {
+                    $this->db->exec("UPDATE users SET user_activate_code = '0' WHERE user_id = ?", [$id]);
+                }
+            }
+            catch (\Exception $e)
             {
                 throw $e;
             }

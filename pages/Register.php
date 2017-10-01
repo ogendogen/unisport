@@ -16,8 +16,8 @@ else if (isset($_POST["login"])) // formularz wysłany
         $name = htmlspecialchars(trim($_POST["name"]));
         $surname = $user->normalizeSurname(htmlspecialchars(trim($_POST["surname"])));
         $user->validateNewUser($login, $pass, $pass2, $email, $name, $surname);
-        $user->registerUser($login, $pass, $email, $name, $surname); // todo: ustalić w jakiej klasie będzie ta metoda + ustalenie abstrakcyjności
-        //$user->sendEmail()
+        $arr = $user->registerUser($login, $pass, $email, $name, $surname); // todo: ustalić w jakiej klasie będzie ta metoda + ustalenie abstrakcyjności
+        \Utils\General::sendConfirmationMail($email, $arr["id"], $arr["code"]);
         \Utils\Front::success("Użytkownik zarejestrowany poprawnie! Potwierdź swój adres email.");
     }
     catch (\Exception $e)

@@ -1,8 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
-
 <head>
-
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
@@ -23,16 +20,46 @@
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
-    <!-- Custom styles for this template -->
     <style>
-body {
-    padding-top: 54px;
-        }
-        @media (min-width: 992px) {
-    body {
-        padding-top: 56px;
-            }
+        body
+        {
+            background-color: #a1a1a1;
         }
 
+        .row
+        {
+            width: 350px;
+            height: 75px;
+            border: 2px solid #000;
+            background-color: #000000;
+            border-radius: 10px;
+            color: lime;
+            font-family: Tahoma;
+            margin-top: 150px;
+            margin-left: auto;
+            margin-right: auto;
+        }
     </style>
 </head>
+<body>
+
+<div class="container">
+    <div class="row text-center">
+        <p></p>
+        Potwierdzenie powiodło się! <div class="glyphicon glyphicon-ok"></div>
+        <p>Zostaniesz za chwilę przekierowany do strony logowania</p>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function(){
+       setTimeout(redirect, 2000);
+    });
+
+    function redirect()
+    {
+        window.location.href = "http://" + document.domain + "?tab=login";
+    }
+</script>
+</body>
+</html>

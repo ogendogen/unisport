@@ -4,7 +4,7 @@ require("../configs/config.php");
 require("../classes/User/UserGeneral.php");
 
 global $CONF;
-if (!isset($_GET["id"]) || !isset($_GET["code"])) header("Location: ". $CONF["site"]);
+if (!isset($_GET["id"]) || !isset($_GET["code"]) || ($_GET["code"] == "0")) header("Location: ". $CONF["site"]);
 
 try
 {

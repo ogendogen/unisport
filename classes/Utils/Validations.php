@@ -2,6 +2,7 @@
 
 namespace {
     require_once(__DIR__."/../../configs/config.php");
+    require_once(__DIR__."/General.php");
 }
 
 namespace Utils
@@ -19,7 +20,7 @@ namespace Utils
         {
             if (!$captcha) throw new \Exception("Captcha niepoprawna. Spróbuj ponownie");
             global $CONF;
-            $ip = $_SERVER["REMOTE_ADDR"];
+            $ip = \Utils\General::getIP();
             $response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=".$CONF["privatekey"]."&response=".$captcha."&remoteip=".$ip);
             $responseKeys = json_decode($response, true);
             if (intval($responseKeys["success"]) !== 1) throw new \Exception("Captcha niepoprawna. Spróbuj ponownie");

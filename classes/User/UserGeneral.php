@@ -99,5 +99,54 @@ namespace User
             }
             return false;
         }
+
+        public function isPasswordCorrect(string $login, string $plain_pass, bool $by_email)
+        {
+            try
+            {
+                $data = $this->db->getHashAndPassword($login, $by_email);
+                if (md5(md5($plain_pass).md5($data["salt"])) != $data["pass"]) throw new \Exception("Hasło jest niepoprawne!");
+            }
+            catch (\Exception $e)
+            {
+                throw $e;
+            }
+        }
+
+        public function getUserId(string $login) : int
+        {
+            try
+            {
+                return $this->db->getUserIdByLogin($login, (\Utils\Validations::isEmail($login) ? true : false));
+            }
+            catch (\Exception $e)
+            {
+                throw $e;
+            }
+        }
+
+        public function isUserActive(string $login)
+        {
+            try
+            {
+                $this->db->isActivationCodeEqualsZero($login, (\Utils\Validations::isEmail($login) ? true : false));
+            }
+            catch (\PDOException $e)
+            {
+                throw $e;
+            }
+        }
+
+        public function emailToLogin(string $email) : string
+        {
+            try
+            {
+                return $this->db->getLoginByEmail($email);
+            }
+            catch (\PDOException $e)
+            {
+                throw $e;
+            }
+        }
     }
 }

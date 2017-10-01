@@ -25,3 +25,8 @@ body
 {
     display: inline-block;
 }
+
+#login_row
+{
+    margin-top: 25px;
+}

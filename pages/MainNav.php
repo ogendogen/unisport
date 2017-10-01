@@ -13,8 +13,18 @@
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
                 <li id=page0><a href="<?php echo $CONF["site"]; ?>">Strona główna</a></li>
-                <?php // if logged in than "Zalogowany" else "Zaloguj" ?>
-                <li id=page1><a href="<?php echo $CONF["site"]; ?>?tab=login">Logowanie</a></li>
+                <?php
+                // todo: if logged in than "Zalogowany" else "Zaloguj"
+                if (isset($_SESSION["userid"]))
+                {
+                    echo "<li id=page1><a href=\"".$CONF["site"]."?tab=login&logout=1\">Zalogowany jako: ".$_SESSION["login"]."</a></li>";
+                }
+                else
+                {
+                    echo "<li id=page1><a href=\"".$CONF["site"]."?tab=login\">Logowanie</a></li>";
+                }
+                ?>
+
                 <li id=page2><a href="<?php echo $CONF["site"]; ?>?tab=register">Rejestracja</a></li>
             </ul>
         </div>

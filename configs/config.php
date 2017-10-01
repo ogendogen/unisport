@@ -9,6 +9,8 @@ $CONF["db"]["user"] = "cskatowi_sport";
 $CONF["db"]["pass"] = "0OOn1NkP";
 $CONF["db"]["db"] = "cskatowi_sport";
 $CONF["root_path"] = "/home/cskatowi/domains/unisport.cskatowice.com/public_html/";
+$CONF["sitekey"] = "6LeXwTIUAAAAAJ2ONKwfEMu8OdRBjnq69_Of5LXZ";
+$CONF["privatekey"] = "6LeXwTIUAAAAAN0rhsEphrAC6b8TDpEysCyXQysQ";
 
 if ($CONF["debug"])
 {

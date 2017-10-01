@@ -1,0 +1,27 @@
+body
+{
+    padding-top: 54px;
+}
+
+@media (min-width: 992px)
+{
+    body
+    {
+        padding-top: 56px;
+    }
+}
+
+#register > .form-group > .form-control
+{
+    min-width: 304px;
+}
+
+#register_row
+{
+    margin-top: 25px;
+}
+
+.g-recaptcha
+{
+    display: inline-block;
+}

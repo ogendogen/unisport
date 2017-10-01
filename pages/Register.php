@@ -9,14 +9,16 @@ else if (isset($_POST["login"])) // formularz wysłany
     {
         $user = new \User\UserGeneral();
         \Utils\General::validatePostArray($_POST);
-        $login = htmlspecialchars(trim($_POST["login"]));
-        $pass = htmlspecialchars(trim($_POST["pass"]));
-        $pass2 = htmlspecialchars(trim($_POST["pass2"]));
-        $email = htmlspecialchars(trim($_POST["email"]));
-        $name = htmlspecialchars(trim($_POST["name"]));
+        $login = htmlspecialchars(trim(stripslashes($_POST["login"])));
+        $pass = htmlspecialchars(trim(stripslashes($_POST["pass"])));
+        $pass2 = htmlspecialchars(trim(stripslashes($_POST["pass2"])));
+        $email = htmlspecialchars(trim(stripslashes($_POST["email"])));
+        $name = htmlspecialchars(trim(stripslashes($_POST["name"])));
+        $captcha = $_POST["g-recaptcha-response"];
         $surname = $user->normalizeSurname(htmlspecialchars(trim($_POST["surname"])));
         $user->validateNewUser($login, $pass, $pass2, $email, $name, $surname);
-        $arr = $user->registerUser($login, $pass, $email, $name, $surname); // todo: ustalić w jakiej klasie będzie ta metoda + ustalenie abstrakcyjności
+        \Utils\Validations::verifyResponse($captcha);
+        $arr = $user->registerUser($login, $pass, $email, $name, $surname);
         \Utils\General::sendConfirmationMail($email, $arr["id"], $arr["code"]);
         \Utils\Front::success("Użytkownik zarejestrowany poprawnie! Potwierdź swój adres email.");
     }
@@ -29,14 +31,14 @@ else if (isset($_POST["login"])) // formularz wysłany
 ?>
 
 <div class="container">
-	<div class="row" style="margin-top: 50px;">
+	<div id="register_row" class="row">
 
 		<div class="col-md-12">
 			<form role="form" method="post" action="?tab=register">
 
 				<legend class="text-center">Rejestracja</legend>
 
-				<fieldset class="text-center">
+				<fieldset id="register" class="text-center">
 
 					<div class="form-group col-xs-12 col-md-6 col-md-offset-3">
 						<label for="first_name">Login</label>
@@ -66,6 +68,10 @@ else if (isset($_POST["login"])) // formularz wysłany
                     <div class="form-group col-xs-12 col-md-6 col-md-offset-3">
                         <label for="password">Nazwisko</label>
                         <input type="text" class="form-control" name="surname" id="surname" placeholder="Twoje nazwisko">
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-6 col-md-offset-3">
+                        <div class="g-recaptcha" data-sitekey="6LeXwTIUAAAAAJ2ONKwfEMu8OdRBjnq69_Of5LXZ"></div>
                     </div>
 
 				</fieldset>

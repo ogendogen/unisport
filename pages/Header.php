@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 
 <head>
 
@@ -23,16 +23,10 @@
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
-    <!-- Custom styles for this template -->
-    <style>
-body {
-    padding-top: 54px;
-        }
-        @media (min-width: 992px) {
-    body {
-        padding-top: 56px;
-            }
-        }
+    <!-- Recaptcha script -->
+    <script src='https://www.google.com/recaptcha/api.js'></script>
 
-    </style>
+    <!-- General CSS -->
+    <?php global $CONF; $css_path = $CONF["site"]."/css/general.css"; ?>
+    <link rel="stylesheet" href="<?php echo $css_path; ?>">
 </head>

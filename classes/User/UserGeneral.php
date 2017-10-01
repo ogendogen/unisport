@@ -88,14 +88,14 @@ namespace User
             }
         }
 
-        private function checkName(string $name) : bool
+        public function checkName(string $name) : bool
         {
             $file = fopen(__DIR__."/../../other/names.txt", "r");
             if (!$file) throw new \Exception("Problem z bazą imion");
             while (!feof($file))
             {
-                $line = fgets($file);
-                if (strcmp($line, $name)) return true;
+                $line = trim(fgets($file));
+                if ($line === $name) return true;
             }
             return false;
         }

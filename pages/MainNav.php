@@ -17,7 +17,7 @@
                 // todo: if logged in than "Zalogowany" else "Zaloguj"
                 if (isset($_SESSION["userid"]))
                 {
-                    echo "<li id=page1><a href=\"".$CONF["site"]."?tab=login&logout=1\">Zalogowany jako: ".$_SESSION["login"]."</a></li>";
+                    echo "<li id=page1><a href=\"#\">Zalogowany jako: ".$_SESSION["login"]."</a></li>";
                 }
                 else
                 {
@@ -26,6 +26,15 @@
                 ?>
 
                 <li id=page2><a href="<?php echo $CONF["site"]; ?>?tab=register">Rejestracja</a></li>
+
+                <?php
+
+                if (isset($_SESSION["userid"]))
+                {
+                    echo "<li id=page3><a href=\"".$CONF["site"]."?tab=login&logout=1\">Wyloguj się</a></li>";
+                }
+
+                ?>
             </ul>
         </div>
     </div>

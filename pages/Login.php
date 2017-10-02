@@ -6,7 +6,7 @@ if (isset($_SESSION["userid"]) && isset($_GET["logout"]) && $_GET["logout"] == 1
     unset($_SESSION["userid"]);
     session_destroy();
 
-    \Utils\General::redirectWithMessageAndDelay($CONF["site"], "Wylogowanie", "Zostałeś wylogowany poprawnie", "success", 3);
+    \Utils\General::redirectWithMessageAndDelay($CONF["site"], "Wylogowanie", "Zostałeś wylogowany poprawnie", "success", 2);
     die;
 }
 else if (isset($_POST["login"])) // formularz wysłany
@@ -25,7 +25,7 @@ else if (isset($_POST["login"])) // formularz wysłany
         $user->isUserActive($login);
         $_SESSION["userid"] = $user->getUserId($login); // todo: być może zbudować jakąś funkcję do tego zamiast wprost wpisywać dane do sesji
         $_SESSION["login"] = (\Utils\Validations::isEmail($login) ? $user->emailToLogin($login) : $login);
-        \Utils\General::redirectWithMessageAndDelay($CONF["site"]."/panel", "Powodzenie", "Zalogowałeś się poprawnie! Za chwilę zostajesz przekierowany...", "success", 3);
+        \Utils\General::redirectWithMessageAndDelay($CONF["site"]."/panel", "Powodzenie", "Zalogowałeś się poprawnie! Za chwilę zostajesz przekierowany...", "success", 2);
     }
     catch (\Exception $e)
     {

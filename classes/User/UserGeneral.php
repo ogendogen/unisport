@@ -9,11 +9,7 @@ namespace User
 {
     class UserGeneral
     {
-        private $db;
-        private $id;
-        private $login;
-        private $email;
-
+        protected $db;
         public function __construct()
         {
             global $CONF;

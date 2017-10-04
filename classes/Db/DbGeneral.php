@@ -194,5 +194,17 @@ namespace Db
                 throw $e;
             }
         }
+
+        public function getUserDataById(int $id) : array
+        {
+            try
+            {
+                return $this->db->exec("SELECT * FROM users WHERE user_id = ?", [$id])[0];
+            }
+            catch (\PDOException $e)
+            {
+                throw $e;
+            }
+        }
     }
 }

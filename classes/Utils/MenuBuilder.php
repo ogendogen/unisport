@@ -21,15 +21,15 @@ namespace Utils
                 <li class="header">Główna nawigacja</li>';
         }
 
-        public function addSingleTab(string $name, string $tab, string $fa_icon="fa-link")
+        public function addSingleTab(string $name, string $tab, string $icon="fa fa-link")
         {
-            echo '<li id="'.$tab.'"><a href="?tab='.$tab.'"><i class="fa '.$fa_icon.'"></i> <span>'.$name.'</span></a></li>';
+            echo '<li id="'.$tab.'"><a href="?tab='.$tab.'"><i class="'.$icon.'"></i> <span>'.$name.'</span></a></li>';
         }
 
-        public function addMultiTab(string $name, string $tab, array $subpages, string $fa_icon="fa-link") // subpages array map: "name" => "nazwa", "tab" => "strona"
+        public function addMultiTab(string $name, string $tab, array $subpages, string $icon="fa fa-link") // subpages array map: "name" => "nazwa", "tab" => "strona"
         {
             echo '<li class="treeview">
-                    <a href="#"><i class="fa fa-link"></i>
+                    <a href="#"><i class="'.$icon.'"></i>
                         <span>'.$name.'</span>
                         <span class="pull-right-container">
                             <i class="fa fa-angle-left pull-right"></i>

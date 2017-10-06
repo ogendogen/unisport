@@ -288,8 +288,9 @@ desired effect
             <?php
 
             $sidemenu = new \Utils\MenuBuilder();
-            $sidemenu->addSingleTab("Pulpit", "home", "fa-home");
-            $sidemenu->addSingleTab("Moje drużyny", "teams", "fa-users");
+            $sidemenu->addSingleTab("Pulpit", "home", "fa fa-home");
+            $sidemenu->addSingleTab("Moje drużyny", "teams", "fa fa-users");
+            $sidemenu->addSingleTab("Moje mecze", "matches", "glyphicon glyphicon-list-alt");
 
             $multisub = array();
 

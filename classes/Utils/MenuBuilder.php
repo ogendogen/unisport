@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Marcin
- * Date: 2017-10-06
- * Time: 12:03
- */
 
 namespace Utils
 {
@@ -16,7 +10,7 @@ namespace Utils
             $this->createEmptyMenu();
         }
 
-        public function finishBuilding()
+        public function __destruct()
         {
             echo "</ul>";
         }
@@ -27,12 +21,12 @@ namespace Utils
                 <li class="header">Główna nawigacja</li>';
         }
 
-        public function addSingleTab(string $name, string $tab, string $fa_icon="fa-link", bool $active=false)
+        public function addSingleTab(string $name, string $tab, string $fa_icon="fa-link")
         {
-            echo '<li id="'.$tab.'" '.($active ? 'class="active"' : '').'><a href="?tab='.$tab.'"><i class="fa '.$fa_icon.'"></i> <span>'.$name.'</span></a></li>';
+            echo '<li id="'.$tab.'"><a href="?tab='.$tab.'"><i class="fa '.$fa_icon.'"></i> <span>'.$name.'</span></a></li>';
         }
 
-        public function addMultiTab(string $name, string $tab, array $subpages, string $fa_icon="fa-link", bool $active=false) // subpages array map: "name" => "nazwa", "tab" => "strona"
+        public function addMultiTab(string $name, string $tab, array $subpages, string $fa_icon="fa-link") // subpages array map: "name" => "nazwa", "tab" => "strona"
         {
             echo '<li class="treeview">
                     <a href="#"><i class="fa fa-link"></i>
@@ -51,16 +45,5 @@ namespace Utils
                     echo '</ul>
                 </li>';
         }
-
-        /*public function setActiveTab(string $tab, string $parent=null)
-        {
-            echo '<script>$("#'.$tab.'").addClass("active");</script>';
-            if (!is_null($parent))
-            {
-                ?>
-
-                <?php
-            }
-        }*/
     }
 }

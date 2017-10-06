@@ -300,7 +300,6 @@ desired effect
             $multisub[1]["tab"] = "tab2";
 
             $sidemenu->addMultiTab("Multitab", "multi", $multisub);
-            $sidemenu->finishBuilding();
             unset($sidemenu);
 
             ?>

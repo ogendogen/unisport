@@ -20,6 +20,10 @@ if (isset($_GET["tab"]))
         case "register":
             include("pages/Register.php");
             break;
+
+        default:
+            include("pages/Home.php");
+            break;
     }
 }
 else

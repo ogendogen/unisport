@@ -17,7 +17,7 @@
                 // todo: if logged in than "Zalogowany" else "Zaloguj"
                 if (isset($_SESSION["userid"]))
                 {
-                    echo "<li id=page1><a href=\"#\">Zalogowany jako: ".$_SESSION["login"]."</a></li>";
+                    echo "<li id=page1><a href=\"".$CONF["site"]."/panel\">Przejdź dalej jako: ".$_SESSION["login"]."</a></li>";
                 }
                 else
                 {

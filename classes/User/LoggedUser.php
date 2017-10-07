@@ -54,5 +54,18 @@ namespace User
                 throw $e;
             }
         }
+
+        public function getUserCredentials() : string
+        {
+            try
+            {
+                $data = $this->db->getUserDataById($this->id);
+                return $data["user_name"]." ".$data["user_surname"];
+            }
+            catch (\Exception $e)
+            {
+                throw $e;
+            }
+        }
     }
 }

@@ -9,11 +9,11 @@ namespace Db
     class DbGeneral extends Database
     {
         private $db;
-        public function __construct($host, $user, $pass, $db)
+        public function __construct()
         {
             try
             {
-                $this->db = new parent($host, $user, $pass, $db);
+                $this->db = new parent();
             }
             catch (\PDOException $e)
             {
@@ -200,6 +200,18 @@ namespace Db
             try
             {
                 return $this->db->exec("SELECT * FROM users WHERE user_id = ?", [$id])[0];
+            }
+            catch (\PDOException $e)
+            {
+                throw $e;
+            }
+        }
+
+        public function getSportByName(string $name) : array
+        {
+            try
+            {
+                return $this->db->exec("SELECT * FROM sports WHERE sport_name = ?", [$name])[0];
             }
             catch (\PDOException $e)
             {

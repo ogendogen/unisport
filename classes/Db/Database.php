@@ -1,15 +1,24 @@
 <?php
 
+namespace {
+    require_once(__DIR__."/../../configs/config.php");
+}
+
 namespace Db
 {
     use \PDO;
     class Database
     {
         private $conn;
-        protected function __construct(string $host, string $user, string $pass, string $database)
+        protected function __construct()
         {
             try
             {
+                global $CONF;
+                $host = $CONF["db"]["host"];
+                $user = $CONF["db"]["user"];
+                $pass = $CONF["db"]["pass"];
+                $database = $CONF["db"]["db"];
                 $this->conn = new PDO("mysql:host=" . $host . ";dbname=" . $database, $user, $pass);
                 $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             }

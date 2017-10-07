@@ -6,7 +6,6 @@ namespace Utils
     {
         public function __construct()
         {
-            if (!isset($_SESSION["active"])) throw new \Exception("User niezalogowany"); // potrzebne aby zdefiniowac aktywną kartę użytkownika
             $this->createEmptyMenu();
         }
 

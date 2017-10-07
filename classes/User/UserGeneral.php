@@ -12,8 +12,7 @@ namespace User
         protected $db;
         public function __construct()
         {
-            global $CONF;
-            $this->db = new \Db\DbGeneral($CONF["db"]["host"], $CONF["db"]["user"], $CONF["db"]["pass"], $CONF["db"]["db"]);
+            $this->db = new \Db\DbGeneral();
         }
 
         public function validateNewUser(string $login, string $pass, string $pass2, string $email, string $name, string $surname)
@@ -144,5 +143,7 @@ namespace User
                 throw $e;
             }
         }
+
+        // todo: isUserLeader(), isUserExists()
     }
 }

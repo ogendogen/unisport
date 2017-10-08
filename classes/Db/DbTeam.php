@@ -163,5 +163,17 @@ namespace Db
                 throw $e;
             }
         }
+
+        public function getAllUserTeams(int $leaderid) : array
+        {
+            try
+            {
+                return $this->exec("SELECT teams.*, COUNT(teams_members.member_teamid) AS 'totalmembers' FROM `teams` LEFT JOIN `teams_members` ON teams.team_id = teams_members.member_teamid WHERE teams.team_leader = ?", [$leaderid]);
+            }
+            catch (\Exception $e)
+            {
+                throw $e;
+            }
+        }
     }
 }

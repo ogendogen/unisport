@@ -21,6 +21,7 @@ namespace Db
                 $database = $CONF["db"]["db"];
                 $this->conn = new PDO("mysql:host=" . $host . ";dbname=" . $database, $user, $pass);
                 $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $this->conn->exec("SET names utf8");
             }
             catch (\PDOException $e)
             {

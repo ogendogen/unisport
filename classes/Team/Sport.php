@@ -8,12 +8,36 @@ namespace Team
 {
     class Sport
     {
-        public static function isSportExists(string $name) : bool
+        private $db;
+        public function __construct()
         {
             try
             {
-                $db = new \Db\DbGeneral();
-                $sport = $db->getSportByName($name);
+                $this->db = new \Db\DbGeneral();
+            }
+            catch (\Exception $e)
+            {
+                throw $e;
+            }
+        }
+
+        public function getAllSports() : array
+        {
+            try
+            {
+                return $this->db->dbGetAllSports();
+            }
+            catch(\Exception $e)
+            {
+                throw $e;
+            }
+        }
+
+        public function isSportExists(string $name) : bool
+        {
+            try
+            {
+                $sport = $this->db->getSportByName($name);
                 if (trim($name) == trim($sport["sport_name"])) return true;
                 return false;
             }

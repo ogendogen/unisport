@@ -21,6 +21,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
           page. However, you can choose any other skin. Make sure you
           apply the skin class to the body tag so the changes take effect. -->
     <link rel="stylesheet" href="dist/css/skins/skin-blue.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/panel.css">
 
     <!-- jQuery 3 -->
     <script src="bower_components/jquery/dist/jquery.min.js"></script>

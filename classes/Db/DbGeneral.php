@@ -218,5 +218,17 @@ namespace Db
                 throw $e;
             }
         }
+
+        public function dbGetAllSports() : array
+        {
+            try
+            {
+                return $this->exec("SELECT * FROM sports");
+            }
+            catch (\PDOException $e)
+            {
+                throw $e;
+            }
+        }
     }
 }

@@ -155,5 +155,17 @@ namespace Team
                 throw $e;
             }
         }
+
+        public function getAllUserTeams(int $userid) : array
+        {
+            try
+            {
+                return $this->db->getAllUserTeams($userid);
+            }
+            catch (\Exception $e)
+            {
+                throw $e;
+            }
+        }
     }
 }

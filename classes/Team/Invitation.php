@@ -10,15 +10,13 @@ namespace Team
     {
         private $db;
         private $userid;
-        private $teamid;
 
-        public function __construct(int $userid, int $teamid)
+        public function __construct(int $userid)
         {
             try
             {
                 $this->db = new \Db\DbInvitation();
                 $this->userid = $userid;
-                $this->teamid = $teamid;
             }
             catch (\Exception $e)
             {
@@ -38,11 +36,11 @@ namespace Team
             }
         }
 
-        public function verifyInvitation() : bool
+        public function verifyInvitation(int $teamid) : bool
         {
             try
             {
-                return $this->db->dbVerifyInvitation($this->userid, $this->teamid);
+                return $this->db->dbVerifyInvitation($this->userid, $teamid);
             }
             catch (\Exception $e)
             {

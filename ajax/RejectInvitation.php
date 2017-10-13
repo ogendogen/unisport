@@ -38,8 +38,8 @@ else
     {
         try
         {
-            $invitation->acceptInvitation($teamid);
-            $response["msg"] = "Pomyślnie dołączyłeś do drużyny!";
+            $invitation->rejectInvitation($teamid);
+            $response["msg"] = "Zaproszenie do drużyny zostało odrzucone";
             $response["code"] = 1;
             die(json_encode($response, JSON_UNESCAPED_UNICODE));
         }

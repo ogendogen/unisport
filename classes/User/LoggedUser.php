@@ -1,13 +1,13 @@
 <?php
 
 namespace {
-    require_once(__DIR__."/../../configs/config.php");
-    require_once("UserGeneral.php");
+    //require_once(__DIR__."/../../configs/config.php");
+    require_once("User.php");
 }
 
 namespace User
 {
-    class LoggedUser extends UserGeneral
+    class LoggedUser extends User
     {
         private $id;
         private $login;
@@ -32,7 +32,7 @@ namespace User
         {
             try
             {
-                $data = $this->db->getUserDataById($this->id);
+                $data = $this->getUserDataById($this->id);
                 $this->login = $data["user_login"];
                 $this->name = $data["user_name"];
                 $this->surname = $data["user_surname"];
@@ -43,11 +43,11 @@ namespace User
             }
         }
 
-        public function isUserActivated()
+        public function isUserActivated() : bool
         {
             try
             {
-                return $this->db->isActivationCodeEqualsZero($this->login);
+                return !$this->isActivationCodeEqualsZero($this->id);
             }
             catch (\Exception $e)
             {
@@ -59,7 +59,7 @@ namespace User
         {
             try
             {
-                $data = $this->db->getUserDataById($this->id);
+                $data = $this->getUserDataById($this->id);
                 return $data["user_name"]." ".$data["user_surname"];
             }
             catch (\Exception $e)

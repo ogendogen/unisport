@@ -10,7 +10,8 @@ namespace Db
     class Database
     {
         private $conn;
-        protected function __construct()
+        private static $instance;
+        private function __construct()
         {
             try
             {
@@ -29,7 +30,13 @@ namespace Db
             }
         }
 
-        protected function exec($query, $params = null)
+        public static function getInstance()
+        {
+            if (self::$instance == null) self::$instance = new Database();
+            return self::$instance;
+        }
+
+        public function exec($query, $params = null)
         {
             try
             {
@@ -48,7 +55,7 @@ namespace Db
             }
         }
 
-        protected function isRowExists(string $column, string $table, string $value) : bool
+        public function isRowExists(string $column, string $table, string $value) : bool
         {
             try
             {

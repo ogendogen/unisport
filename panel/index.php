@@ -11,7 +11,7 @@ $logged_user = null;
 try
 {
     $logged_user = new \User\LoggedUser($_SESSION["userid"]);
-    if ($logged_user->isUserActivated()) die("Musisz najpierw potwierdzić adres email!");
+    if (!$logged_user->isUserActivated()) die("Musisz najpierw potwierdzić adres email!");
 }
 catch (\Exception $e)
 {

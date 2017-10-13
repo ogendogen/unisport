@@ -63,21 +63,24 @@
                 <i class="fa fa-bars"> Zaproszenia</i>
             </div>
 
-            <div class="box-body">
+            <div class="box-body" id="invbox">
 
                 <?php
 
                 try
                 {
-                    $invitation = new \Team\Invitation();
-                    $inv_list = $invitation->getAllUserInvitations($_SESSION["userid"]);
+                    $invitation = new \Team\Invitation($_SESSION["userid"]);
+                    $inv_list = $invitation->getAllUserInvitations();
                     if (isset($inv_list[0]))
                     {
                         foreach ($inv_list as $inv)
                         {
+                            echo "<div id='inv".$inv["team_id"]."'>";
                             echo "<p>Jesteś zaproszony do drużyny <span style='font-weight: bold;'>".$inv["team_name"]."</span></p>";
-                            echo "<button class='btn btn-block btn-success' type='button'>Akceptuj</button> <button class='btn btn-block btn-danger' type='button'>Odrzuć</button>";
+                            echo "<button class='btn btn-block btn-success' type='button' onclick='acceptInvitation(".$inv["team_id"].");'>Akceptuj</button>";
+                            echo "<button class='btn btn-block btn-danger' type='button' onclick='rejectInvitation(".$inv["team_id"].");'>Odrzuć</button>";
                             echo "<div class='pusher'></div>";
+                            echo "</div>";
                         }
                     }
                     else
@@ -107,7 +110,8 @@
             <div class="box-body">
                 <?php
 
-                $team = new \Team\TeamGeneral();
+                //$team = new \Team\TeamGeneral();
+                $team = new \Team\Team();
                 $userteams = $team->getAllUserTeams($_SESSION["userid"]);
                 if (!is_null($userteams[0]["team_name"]))
                 {

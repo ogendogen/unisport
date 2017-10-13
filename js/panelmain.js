@@ -19,3 +19,80 @@ function setActiveClass()
     $("#"+tab).addClass("active");
     if ($("#"+tab).parent().parent().hasClass("treeview")) $("#"+tab).parent().parent().addClass("active");
 }
+
+function acceptInvitation(teamid)
+{
+    $.get("/ajax/InvitationAccepted.php?teamid=" + teamid).done(function(data) {
+        var obj = jQuery.parseJSON(JSON.stringify(data));
+        if (obj.code == "1")
+        {
+            modalSuccess("Powodzenie", obj.msg);
+            $("#inv" + teamid.toString()).remove();
+            if ($.trim($("#invbox").html()).length == 0)
+            {
+                $("#invbox").text("Nie jesteś aktualnie zaproszony do żadnej drużyny");
+            }
+        }
+        else if (obj.code == "0")
+        {
+            modalWarning("Uwaga", obj.msg);
+        }
+        else if (obj.code == "-1")
+        {
+            modalError("Błąd", obj.msg);
+        }
+        else
+        {
+            modalWarning("Uwaga", "Nieznany kod");
+        }
+    });
+}
+
+function rejectInvitation(teamid)
+{
+    $.get("/ajax/RejectInvitation.php?teamid=" + teamid).done(function(data) {
+        var obj = jQuery.parseJSON(JSON.stringify(data));
+        if (obj.code == "1")
+        {
+            modalSuccess("Powodzenie", obj.msg);
+            $("#inv" + teamid.toString()).remove();
+            if ($.trim($("#invbox").html()).length == 0)
+            {
+                $("#invbox").text("Nie jesteś aktualnie zaproszony do żadnej drużyny");
+            }
+        }
+        else if (obj.code == "0")
+        {
+            modalWarning("Uwaga", obj.msg);
+        }
+        else if (obj.code == "-1")
+        {
+            modalError("Błąd", obj.msg);
+        }
+        else
+        {
+            modalWarning("Uwaga", "Nieznany kod");
+        }
+    });
+}
+
+function modalSuccess(title, msg)
+{
+    $("#myModal .modal-dialog .modal-content .modal-title").html("<span style=\"font-weight: bold;\">" + title + "</span>");
+    $("#myModal .modal-dialog .modal-body").html("<div class=\"alert alert-success\"><span style=\"font-weight: bold;\">" + msg + "</span></div>");
+    $("#myModal").modal("show");
+}
+
+function modalWarning(title, msg)
+{
+    $("#myModal .modal-dialog .modal-content .modal-title").html("<span style=\"font-weight: bold;\">" + title + "</span>");
+    $("#myModal .modal-dialog .modal-body").html("<div class=\"alert alert-warning\"><span style=\"font-weight: bold;\">" + msg + "</span></div>");
+    $("#myModal").modal("show");
+}
+
+function modalError(title, msg)
+{
+    $("#myModal .modal-dialog .modal-content .modal-title").html("<span style=\"font-weight: bold;\">" + title + "</span>");
+    $("#myModal .modal-dialog .modal-body").html("<div class=\"alert alert-danger\"><span style=\"font-weight: bold;\">" + msg + "</span></div>");
+    $("#myModal").modal("show");
+}

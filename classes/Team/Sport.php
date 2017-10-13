@@ -1,7 +1,7 @@
 <?php
 
 namespace {
-    require_once(__DIR__."/../Db/DbGeneral.php");
+    require_once(__DIR__."/../Db/Database.php");
 }
 
 namespace Team
@@ -13,7 +13,7 @@ namespace Team
         {
             try
             {
-                $this->db = new \Db\DbGeneral();
+                $this->db = \Db\Database::getInstance();
             }
             catch (\Exception $e)
             {
@@ -25,19 +25,20 @@ namespace Team
         {
             try
             {
-                return $this->db->dbGetAllSports();
+                return $this->db->exec("SELECT * FROM sports");
             }
-            catch(\Exception $e)
+            catch (\PDOException $e)
             {
                 throw $e;
             }
         }
 
-        public function isSportExists(string $name) : bool
+        public static function isSportExists(string $name) : bool
         {
             try
             {
-                $sport = $this->db->getSportByName($name);
+                $static_db = \Db\Database::getInstance();
+                $sport = $static_db->exec("SELECT * FROM sports WHERE sport_name = ?", [$name])[0];
                 if (trim($name) == trim($sport["sport_name"])) return true;
                 return false;
             }

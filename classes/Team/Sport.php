@@ -38,7 +38,8 @@ namespace Team
             try
             {
                 $static_db = \Db\Database::getInstance();
-                $sport = $static_db->exec("SELECT * FROM sports WHERE sport_name = ?", [$name])[0];
+                $sport = $static_db->exec("SELECT * FROM sports WHERE sport_name = ?", [$name]);
+                if (!$sport) return false;
                 if (trim($name) == trim($sport["sport_name"])) return true;
                 return false;
             }

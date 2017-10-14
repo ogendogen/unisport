@@ -47,7 +47,9 @@ namespace User
         {
             try
             {
-                return !$this->isActivationCodeEqualsZero($this->id);
+                $ret = $this->db->exec("SELECT user_activate_code FROM users WHERE user_id = ?", [$this->id])[0]["user_activate_code"];
+                if (trim($ret) == "0") return true;
+                return false;
             }
             catch (\Exception $e)
             {

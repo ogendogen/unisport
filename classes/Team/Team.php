@@ -51,6 +51,7 @@ namespace Team
                                   team_sport = ?,
                                   team_created = ?", [$name, $desc, $leaderid, $sport, time()]);
                 $this->blocked = false;
+                $this->teamid = $this->db->exec("SELECT team_id FROM teams WHERE team_name = ?", [$name])[0];
             }
             catch (\Exception $e)
             {
@@ -246,6 +247,18 @@ namespace Team
                 return true;
             }
             catch (\PDOException $e)
+            {
+                throw $e;
+            }
+        }
+
+        public function getAllUserTeamsAsLeader(int $leaderid) : array
+        {
+            try
+            {
+                return $this->db->exec("SELECT teams.*, COUNT(teams_members.member_teamid) AS 'totalmembers' FROM `teams` LEFT JOIN `teams_members` ON teams.team_id = teams_members.member_teamid WHERE teams.team_leader = ?", [$leaderid]);
+            }
+            catch (\Exception $e)
             {
                 throw $e;
             }

@@ -21,11 +21,11 @@
                         try
                         {
                             $sports = new \Team\Sport();
-                            /*$sports_arr = $sports->getAllSports();
+                            $sports_arr = $sports->getAllSports();
                             foreach ($sports_arr as $sport)
                             {
-                                echo "<option value='".$sport["sport_name"]."'>".$sport["sport_name"]."</option>";
-                            }*/
+                                echo "<option value='".$sport["sport_id"]."'>".$sport["sport_name"]."</option>";
+                            }
                         }
                         catch (\Exception $e)
                         {
@@ -34,12 +34,37 @@
 
                         ?>
                     </select>
+
+                    <div class="box-body">
+                        <input type="submit" class="btn btn-block btn-primary" type="button" value="Stwórz nową drużynę">
+                    </div>
                 </form>
             </div>
 
-            <div class="box-body">
-                <button class="btn btn-block btn-primary" type="button">Stwórz nową drużynę</button>
-            </div>
+            <?php
+
+            if (isset($_POST["teamName"]))
+            {
+                if (!isset($_POST["teamDescription"]) || !isset($_POST["teamSport"]) || empty($_POST["teamDescription"]) || empty($_POST["teamSport"])) \Utils\Front::warning("Uzupełnij wszystkie pola!");
+                else
+                {
+                    try
+                    {
+                        $newteam = new \Team\Team(0);
+                        $teamname = htmlspecialchars(trim(stripslashes($_POST["teamName"])));
+                        $teamdesc = htmlspecialchars(trim(stripslashes($_POST["teamDescription"])));
+                        $teamsport = htmlspecialchars(trim(stripslashes($_POST["teamSport"])));
+                        $newteam->createNewTeam($teamname, $teamdesc, $_SESSION["userid"], $teamsport);
+                    }
+                    catch (\Exception $e)
+                    {
+                        if ($e->getCode() == 1062) \Utils\Front::warning("Taka drużyna już istnieje!");
+                        else \Utils\Front::warning("Wystąpił problem: ". $e->getMessage());
+                    }
+                }
+            }
+
+            ?>
         </div>
     </div>
 
@@ -110,7 +135,6 @@
             <div class="box-body">
                 <?php
 
-                //$team = new \Team\TeamGeneral();
                 $team = new \Team\Team();
                 $userteams = $team->getAllUserTeams($_SESSION["userid"]);
                 if (!is_null($userteams[0]["team_name"]))

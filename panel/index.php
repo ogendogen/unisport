@@ -2,23 +2,36 @@
 
 session_start();
 
-if (!isset($_SESSION["userid"])) die("Musisz być zalogowany !");
-
 require_once("../configs/config.php");
 require_once("../classes/IncludeAllClasses.php");
+
+include("pages/parts/Header.php");
+
+if (!isset($_SESSION["userid"]))
+{
+    global $CONF;
+    include("pages/parts/Modal.html");
+    \Utils\General::redirectWithMessageAndDelay($CONF["site"]."?tab=login", "Uwaga", "Nie jesteś zalogowany", "warning", 3);
+    die;
+}
 
 $logged_user = null;
 try
 {
     $logged_user = new \User\LoggedUser($_SESSION["userid"]);
-    if (!$logged_user->isUserActivated()) die("Musisz najpierw potwierdzić adres email!");
+    if (!$logged_user->isUserActivated())
+    {
+        global $CONF;
+        include("pages/parts/Modal.html");
+        \Utils\General::redirectWithMessageAndDelay($CONF["site"], "Uwaga", "Musisz najpierw potwierdzić adres email!", "warning", 3);
+        die;
+    }
 }
 catch (\Exception $e)
 {
     die("Wystąpił błąd: ". $e->getMessage());
 }
 
-include("pages/parts/Header.php");
 include("pages/parts/Navbar.php");
 include("pages/parts/Modal.html");
 include("pages/parts/LeftNavbar.php");

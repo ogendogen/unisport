@@ -8,7 +8,7 @@ namespace User
 {
     class User
     {
-        private $db;
+        protected $db;
         public function  __construct()
         {
             $this->db = \Db\Database::getInstance();
@@ -206,6 +206,7 @@ namespace User
             if (!\Utils\Validations::isEmail($email)) throw new \Exception("Email nie jest poprawny!");
             if (!$this->checkName($name)) throw new \Exception("Takie imię nie istnieje!");
             if (!\Utils\General::isStartsWithUpper($surname[0])) throw new \Exception("Nazwisko powinno zaczynać się od dużej litery!");
+            if ($this->db->isRowExists("user_email", "users", $email)) throw new \Exception("Podany adres email jest zajęty!");
         }
 
         public function normalizeSurname(string $surname) : string

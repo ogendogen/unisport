@@ -22,11 +22,15 @@ namespace Team
             $this->teamid = $teamid;
             if ($this->teamid > 0)
             {
-                $teaminfo = $this->getTeamInfo($this->teamid);
-                $this->name = $teaminfo["team_name"];
-                $this->desc = $teaminfo["team_description"];
-                $this->leadername = $this->getTeamLeaderName($this->teamid);
-                $this->sport = $teaminfo["team_sport"];
+                if (!$this->isTeamExists()) $this->blocked = true;
+                else
+                {
+                    $teaminfo = $this->getTeamInfo($this->teamid);
+                    $this->name = $teaminfo["team_name"];
+                    $this->desc = $teaminfo["team_description"];
+                    $this->leadername = $this->getTeamLeaderName($this->teamid);
+                    $this->sport = $teaminfo["team_sport"];
+                }
             }
             else
             {
@@ -42,11 +46,10 @@ namespace Team
                 if (strlen($name) > 32) throw new \Exception("Nazwa jest za długa!");
                 if (strlen($desc) > 256) throw new \Exception("Opis jest za długi!");
                 if (!is_numeric($leaderid)) throw new \Exception("Użytkownik-lider nie istnieje!");
-                if (!\Team\Sport::isSportExists($name)) throw new \Exception("Taki sport nie istnieje w naszej bazie!");
-                //$this->addTeamRow($name, $desc, $leaderid, $sport);
+                if (!\Team\Sport::isSportExists($sport)) throw new \Exception("Taki sport nie istnieje w naszej bazie!");
                 $this->db->exec("INSERT INTO teams SET
                                   team_name = ?,
-                                  team_desc = ?,
+                                  team_description = ?,
                                   team_leader = ?,
                                   team_sport = ?,
                                   team_created = ?", [$name, $desc, $leaderid, $sport, time()]);
@@ -284,6 +287,18 @@ namespace Team
                 if (!$ret) return false;
                 if (trim($ret[0]["member_userid"]) == $userid) return true;
                 return false;
+            }
+            catch (\PDOException $e)
+            {
+                throw $e;
+            }
+        }
+
+        public function deleteTeam()
+        {
+            try
+            {
+                $this->db->exec("DELETE FROM teams WHERE team_id = ?", [$this->teamid]);
             }
             catch (\PDOException $e)
             {

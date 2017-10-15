@@ -33,14 +33,28 @@ namespace Team
             }
         }
 
+        public static function sportIdToName(int $id) : string
+        {
+            try
+            {
+                $static_db = \Db\Database::getInstance();
+                $sportname = $static_db->exec("SELECT sport_name FROM sports WHERE sport_id = ?",[$id])[0]["sport_name"];
+                return $sportname;
+            }
+            catch (\Exception $e)
+            {
+                throw $e;
+            }
+        }
+
         public static function isSportExists(string $name) : bool
         {
             try
             {
                 $static_db = \Db\Database::getInstance();
-                $sport = $static_db->exec("SELECT * FROM sports WHERE sport_name = ?", [$name]);
+                $sport = $static_db->exec("SELECT * FROM sports WHERE ".(is_numeric($name) ? "sport_id" : "sport_name")." = ?", [$name]);
                 if (!$sport) return false;
-                if (trim($name) == trim($sport["sport_name"])) return true;
+                if (trim($name) == trim($sport[0][(is_numeric($name) ? "sport_id" : "sport_name")])) return true;
                 return false;
             }
             catch (\Exception $e)

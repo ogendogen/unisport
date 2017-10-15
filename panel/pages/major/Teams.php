@@ -36,7 +36,7 @@
                     </select>
 
                     <div class="box-body">
-                        <input type="submit" class="btn btn-block btn-primary" type="button" value="Stwórz nową drużynę">
+                        <input type="submit" class="btn btn-block btn-primary" value="Stwórz nową drużynę">
                     </div>
                 </form>
             </div>
@@ -133,23 +133,40 @@
             </div>
 
             <div class="box-body">
-                <?php
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <th>#</th>
+                            <th>Nazwa drużyny</th>
+                            <th>Opis drużyny</th>
+                            <th>Dyscyplina sportowa</th>
+                            <th>Zaznacz</th>
+                        </tr>
+                        <?php
 
-                $team = new \Team\Team();
-                $userteams = $team->getAllUserTeams($_SESSION["userid"]);
-                if (!is_null($userteams[0]["team_name"]))
-                {
-                    foreach ($userteams as $userteam)
-                    {
-                        echo "<p>Drużyna ".$userteam["team_name"]."</p>";
-                    }
-                }
-                else
-                {
-                    // brak drużyn, stwórz jakąś lub dołącz
-                    echo "Nie jesteś w żadnej drużynie. Poproś swojego lidera o zaproszenie lub stwórz własną drużynę !";
-                }
-                ?>
+                        $team = new \Team\Team();
+                        $userteams = $team->getAllUserTeams($_SESSION["userid"]);
+                        $counter = 0;
+                        if (!is_null($userteams[0]["team_name"]))
+                        {
+                            foreach ($userteams as $userteam)
+                            {
+                                echo "<td>".++$counter.".</td>";
+                                $counter--;
+                                echo "<td>".$userteam["team_name"]."</td>";
+                                echo "<td>".$userteam["team_description"]."</td>";
+                                echo "<td>".\Team\Sport::sportIdToName($userteam["team_sport"])."</td>";
+                                echo "<td><input type='checkbox' id='".$userteam["team_id"]."'</td>";
+                            }
+                        }
+                        else
+                        {
+                            // brak drużyn, stwórz jakąś lub dołącz
+                            echo "Nie jesteś w żadnej drużynie. Poproś swojego lidera o zaproszenie lub stwórz własną drużynę !";
+                        }
+                        ?>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

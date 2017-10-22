@@ -69,5 +69,10 @@ namespace User
                 throw $e;
             }
         }
+
+        public function getUserId() : int
+        {
+            return $this->id;
+        }
     }
 }

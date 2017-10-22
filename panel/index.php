@@ -55,6 +55,14 @@ if (isset($_GET["tab"]))
             include("pages/major/Matches.php");
             break;
 
+        case "teamedit":
+            include("pages/major/TeamEdit.php");
+            break;
+
+        case "membersedit":
+            include("pages/major/MembersEdit.php");
+            break;
+
         default:
             include("pages/major/Dashboard.php");
             break;

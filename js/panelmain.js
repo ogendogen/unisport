@@ -1,3 +1,7 @@
+// Global variables
+
+var team_selected = -1;
+
 var getUrlParameter = function getUrlParameter(sParam) {
     var sPageURL = decodeURIComponent(window.location.search.substring(1)),
         sURLVariables = sPageURL.split("&"),
@@ -74,6 +78,151 @@ function rejectInvitation(teamid)
             modalWarning("Uwaga", "Nieznany kod");
         }
     });
+}
+
+function chooseMember(memberid)
+{
+    var teamid = getUrlParameter("teamid");
+    var row = $("#" + memberid.toString());
+    if (row.attr("data-selected") == "1")
+    {
+        $("#" + memberid.toString()).css("background-color", "#FFFFFF");
+        $("#" + memberid.toString()).attr("data-selected", "0");
+    }
+    else
+    {
+        $("#" + memberid.toString()).css("background-color", "#FFD700");
+        $("#" + memberid.toString()).attr("data-selected", "1");
+    }
+}
+
+function chooseMemberToDelete(memberid)
+{
+    var teamid = getUrlParameter("teamid");
+    var row = $("[data-deleteid=" + memberid + "]");
+    if (row.attr("data-selected") == "1")
+    {
+        row.css("background-color", "#FFFFFF");
+        row.attr("data-selected", "0");
+    }
+    else
+    {
+        row.css("background-color", "#FFD700");
+        row.attr("data-selected", "1");
+    }
+}
+
+function sendInvitation()
+{
+    var teamid = getUrlParameter("teamid");
+    var receivers = "";
+    var choosen_rows = $("#foundmembers tbody tr[data-selected='1']");
+    for (var i=0; i<choosen_rows.length; i++)
+    {
+        receivers = receivers.concat(choosen_rows.get(i).getAttribute("id"), "|");
+    }
+    if (receivers[receivers.length - 1] == "|") receivers = receivers.substring(0, receivers.length - 1);
+
+    $.get("/ajax/SendInvitation.php?teamid=" + teamid.toString() + "&receivers=" + receivers).done(function(data){
+       var obj = jQuery.parseJSON(JSON.stringify(data));
+       if (obj.code == "-1")
+       {
+           modalError("Błąd", obj.msg);
+       }
+       else if (obj.code == "0")
+       {
+           modalWarning("Uwaga!", obj.msg);
+       }
+       else if (obj.code == "1")
+       {
+           modalSuccess("Powodzenie", obj.msg);
+           choosen_rows.remove();
+           if ($("#foundmembers tbody tr").length == 2) // dwa, ponieważ jakimś cudem generuje się jeszcze jeden pusty tr
+           {
+               $("#sendinv").replaceWith("<div class='alert alert-info text-center'>Wyszukaj zawodników wyżej</div>");
+           }
+       }
+    });
+}
+
+function removeMember()
+{
+    var teamid = getUrlParameter("teamid");
+    var kicked = "";
+    var choosen_rows = $("#members2delete tbody tr[data-selected='1']");
+    for (var i=0; i<choosen_rows.length; i++)
+    {
+        kicked = kicked.concat(choosen_rows.get(i).getAttribute("data-deleteid"), "|");
+    }
+    if (kicked[kicked.length - 1] == "|") kicked = kicked.substring(0, kicked.length - 1);
+
+    $.get("/ajax/DeleteTeamMember.php?teamid=" + teamid.toString() + "&kicked=" + kicked).done(function(data){
+        var obj = jQuery.parseJSON(JSON.stringify(data));
+        if (obj.code == "-1")
+        {
+            modalError("Błąd", obj.msg);
+        }
+        else if (obj.code == "0")
+        {
+            modalWarning("Uwaga!", obj.msg);
+        }
+        else if (obj.code == "1")
+        {
+            modalSuccess("Powodzenie", obj.msg);
+            choosen_rows.remove();
+        }
+    });
+}
+
+function editTeam()
+{
+    window.location.href = "index.php?tab=teamedit&teamid=" + team_selected.toString();
+}
+
+function editMembers()
+{
+    window.location.href = "index.php?tab=membersedit&teamid=" + team_selected.toString();
+}
+
+function checkLeadership(teamid)
+{
+    $.get("/ajax/IsUserLeader.php?teamid=" + teamid.toString()).done(function(data) {
+       var obj = jQuery.parseJSON(JSON.stringify(data));
+       if (obj.code == "-1")
+       {
+           window.localStorage.isLeader = -1;
+           modalError("Błąd", obj.msg);
+       }
+       else if (obj.code == "0")
+       {
+           window.localStorage.isLeader = 0;
+       }
+       else if (obj.code == "1")
+       {
+           window.localStorage.isLeader = 1;
+       }
+    });
+}
+
+function chooseTeam(id)
+{
+    var real_id = "team" + id;
+    var row = $("#" + real_id);
+    var btns = $("#teamLeaderBtns");
+    if (team_selected === id) // kliknięcie w zaznaczone
+    {
+        team_selected = -1;
+        row.css("background-color", "#FFFFFF");
+        btns.children().prop("disabled", true);
+    }
+    else if (team_selected === -1) // zaznaczył nową drużynę
+    {
+        team_selected = id;
+        row.css("background-color", "#FFD700");
+        checkLeadership(team_selected);
+        if (window.localStorage.isLeader == "1") btns.children().prop("disabled", false);
+    }
+    // w innym wypadku ignoruj - prawdopodobnie próbuje zaznaczyć dwie drużyny
 }
 
 function modalSuccess(title, msg)

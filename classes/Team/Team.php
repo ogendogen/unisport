@@ -25,7 +25,7 @@ namespace Team
                 if (!$this->isTeamExists()) $this->blocked = true;
                 else
                 {
-                    $teaminfo = $this->getTeamInfo($this->teamid);
+                    $teaminfo = $this->getTeamInfo(true);
                     $this->name = $teaminfo["team_name"];
                     $this->desc = $teaminfo["team_description"];
                     $this->leadername = $this->getTeamLeaderName($this->teamid);
@@ -55,6 +55,8 @@ namespace Team
                                   team_created = ?", [$name, $desc, $leaderid, $sport, time()]);
                 $this->blocked = false;
                 $this->teamid = $this->db->exec("SELECT team_id FROM teams WHERE team_name = ?", [$name])[0];
+
+                $this->db->exec("INSERT INTO teams_members SET member_teamid = ?, member_userid = ?", [$this->teamid, $_SESSION["userid"]]);
             }
             catch (\Exception $e)
             {
@@ -65,7 +67,6 @@ namespace Team
         public function updateTeamInfo(string $name=null, string $desc=null, string $sport=null)
         {
             if ($this->blocked) throw new \Exception("Drużyna nie zdefiniowana (updateTeamInfo)");
-            if (is_null($name) && is_null($desc) && is_null($sport)) return;
             $query = "UPDATE teams SET ";
             $params = array();
 
@@ -73,19 +74,19 @@ namespace Team
             if (!is_null($name))
             {
                 if (strlen($name) > 32) throw new \Exception("Nazwa jest za długa!");
-                $query .= "team_name = ?";
+                $query .= "team_name = ?, ";
                 array_push($params, $name);
             }
             if (!is_null($desc))
             {
                 if (strlen($desc) > 256) throw new \Exception("Opis jest za długi!");
-                $query .= "team_desc = ?";
+                $query .= "team_description = ?, ";
                 array_push($params, $desc);
             }
             if (!is_null($sport))
             {
                 if (!\Team\Sport::isSportExists($sport)) throw new \Exception("Taki sport nie istnieje w bazie!");
-                $query .= "team_sport = ?";
+                $query .= "team_sport = ? ";
                 array_push($params, $sport);
             }
 
@@ -120,6 +121,7 @@ namespace Team
         {
             if ($this->blocked) throw new \Exception("Drużyna nie zdefiniowana (removeMember)");
             if (!is_numeric($userid)) throw new \Exception("Niepoprawny użytkownik!");
+            if (!$this->isUserInTeam($userid)) throw new \Exception("Użytkownik nie jest w tej drużynie!");
             try
             {
                 $this->deleteFromMembersList($userid, $this->teamid);
@@ -194,8 +196,9 @@ namespace Team
         {
             try
             {
-                $ret = $this->db->exec("SELECT team_leader FROM teams WHERE team_id = ?", [$teamid])[0]["team_leader"];
-                if (trim($ret) == trim($userid)) return true;
+                $ret = $this->db->exec("SELECT team_leader FROM teams WHERE team_id = ?", [$this->teamid]);//[0]["team_leader"];
+                if (empty($ret[0])) return false;
+                if (trim($ret[0]["team_leader"]) == trim($userid)) return true;
                 return false;
             }
             catch (\PDOException $e)
@@ -205,11 +208,11 @@ namespace Team
         }
 
         // DbTeam:
-        public function getTeamPlayers(int $teamid) : array
+        public function getAllTeamPlayers() : array
         {
             try
             {
-                return $this->db->exec("SELECT * FROM `teams` LEFT JOIN teams_members ON teams.team_id = teams_members.member_teamid WHERE teams.team_id = ?", [$teamid]);
+                return $this->db->exec("SELECT users.* FROM `users` LEFT JOIN teams_members ON users.user_id = teams_members.member_userid WHERE teams_members.member_teamid = ?", [$this->teamid]);
             }
             catch (\PDOException $e)
             {
@@ -221,7 +224,9 @@ namespace Team
         {
             try
             {
-                return $this->db->exec("SELECT users.user_name FROM users LEFT JOIN teams ON users.user_id = teams.team_id WHERE teams.team_id = ?", [$teamid])[0]["user_name"];
+                $ret = $this->db->exec("SELECT users.user_name FROM users LEFT JOIN teams ON users.user_id = teams.team_leader WHERE teams.team_id = ?", [$teamid]);
+                if (empty($ret)) throw new \Exception("Drużyna nie istnieje!");
+                return $ret[0]["user_name"];
             }
             catch (\PDOException $e)
             {
@@ -267,11 +272,11 @@ namespace Team
             }
         }
 
-        public function getAllUserTeams(int $leaderid) : array
+        public function getAllUserTeams(int $userid) : array
         {
             try
             {
-                return $this->db->exec("SELECT teams.*, COUNT(teams_members.member_teamid) AS 'totalmembers' FROM `teams` LEFT JOIN `teams_members` ON teams.team_id = teams_members.member_teamid WHERE teams.team_leader = ?", [$leaderid]);
+                return $this->db->exec("SELECT teams.*, COUNT(teams_members.member_teamid) AS 'totalmembers' FROM `teams` LEFT JOIN `teams_members` ON teams.team_id = teams_members.member_teamid WHERE teams_members.member_userid = ?", [$userid]);
             }
             catch (\Exception $e)
             {
@@ -299,6 +304,18 @@ namespace Team
             try
             {
                 $this->db->exec("DELETE FROM teams WHERE team_id = ?", [$this->teamid]);
+            }
+            catch (\PDOException $e)
+            {
+                throw $e;
+            }
+        }
+
+        public function countMembers() : int
+        {
+            try
+            {
+                return intval($this->db->exec("SELECT COUNT(*) AS 'members_sum' FROM teams_members WHERE member_teamid = ?", [$this->teamid])[0]["members_sum"]);
             }
             catch (\PDOException $e)
             {

@@ -58,7 +58,7 @@
                     }
                     catch (\Exception $e)
                     {
-                        if ($e->getCode() == 1062) \Utils\Front::warning("Taka drużyna już istnieje!");
+                        if ($e->getCode() == 23000) \Utils\Front::warning("Taka drużyna już istnieje!");
                         else \Utils\Front::warning("Wystąpił problem: ". $e->getMessage());
                     }
                 }
@@ -71,13 +71,13 @@
     <div class="col-md-4">
         <div class="box box-default">
             <div class="box-header with-border">
-                <i class="fa fa-bars"> Akcje na istniejącej drużynie</i>
+                <i class="fa fa-bars"> Akcje lidera</i>
             </div>
 
-            <div class="box-body">
-                <button class="btn btn-block btn-primary" type="button">Edytuj podstawowe dane o drużynie</button>
-                <button class="btn btn-block btn-primary" type="button">Dodaj członka do drużyny</button>
-                <button class="btn btn-block btn-danger" type="button">Usuń zaznaczoną drużynę</button>
+            <div class="box-body" id="teamLeaderBtns">
+                <button class="btn btn-block btn-primary" id="btnEditTeam" disabled="disabled" type="button" onclick="editTeam();">Edytuj podstawowe dane o drużynie</button>
+                <button class="btn btn-block btn-primary" id="btnAddMember" disabled="disabled" type="button" onclick="editMembers();">Dodaj/Usuń członków drużyny</button>
+                <button class="btn btn-block btn-danger" id="btnDeleteTeam" disabled="disabled" type="button">Usuń zaznaczoną drużynę (w budowie)</button>
             </div>
         </div>
     </div>
@@ -140,7 +140,6 @@
                             <th>Nazwa drużyny</th>
                             <th>Opis drużyny</th>
                             <th>Dyscyplina sportowa</th>
-                            <th>Zaznacz</th>
                         </tr>
                         <?php
 
@@ -151,17 +150,17 @@
                         {
                             foreach ($userteams as $userteam)
                             {
-                                echo "<td>".++$counter.".</td>";
+                                echo "<tr id='team".$userteam["team_id"]."'>";
+                                echo "<td onclick='chooseTeam(".$userteam["team_id"].");'>".++$counter.".</td>";
                                 $counter--;
-                                echo "<td>".$userteam["team_name"]."</td>";
-                                echo "<td>".$userteam["team_description"]."</td>";
-                                echo "<td>".\Team\Sport::sportIdToName($userteam["team_sport"])."</td>";
-                                echo "<td><input type='checkbox' id='".$userteam["team_id"]."'</td>";
+                                echo "<td onclick='chooseTeam(".$userteam["team_id"].");'>".$userteam["team_name"]."</td>";
+                                echo "<td onclick='chooseTeam(".$userteam["team_id"].");'>".$userteam["team_description"]."</td>";
+                                echo "<td onclick='chooseTeam(".$userteam["team_id"].");'>".\Team\Sport::sportIdToName($userteam["team_sport"])."</td>";
+                                echo "</tr>";
                             }
                         }
                         else
                         {
-                            // brak drużyn, stwórz jakąś lub dołącz
                             echo "Nie jesteś w żadnej drużynie. Poproś swojego lidera o zaproszenie lub stwórz własną drużynę !";
                         }
                         ?>

@@ -4,8 +4,15 @@ namespace Utils
 {
     class Front
     {
-        public static function modal($header, $message, $type)
+        public static function modal($header, $message, $type, $dismissable=true)
         {
+            if (!$dismissable)
+            {
+                echo '<script>$("#myModal").on("hide.bs.modal", function(e) {
+                                e.preventDefault();
+                           });</script>';
+            }
+
             if ($type == "normal") {
                 echo '<script>$(document).ready(function(){ 
 			$("#myModal .modal-dialog .modal-content .modal-title").html("<span style=\"font-weight: bold;\">'.$header.'</span>");

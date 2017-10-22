@@ -2,11 +2,10 @@
 <div class="container">
     <div class="row">
         <div class="col-lg-12 text-center">
-            <h1 class="mt-5">A Bootstrap 4 Starter Template</h1>
-            <p class="lead">Complete with pre-defined file paths and responsive navigation!</p>
+            <h1 class="mt-5">Witamy na portalu UniSport</h1>
+            <p class="lead">Zarejestruj się, aby w pełni korzystać z strony.</p>
             <ul class="list-unstyled">
-                <li>Bootstrap 4.0.0-beta</li>
-                <li>jQuery 3.2.1</li>
+                <li>UniSport</li>
             </ul>
         </div>
     </div>

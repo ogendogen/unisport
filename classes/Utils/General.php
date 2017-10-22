@@ -16,8 +16,20 @@ namespace Utils
 
         public static function redirectWithMessageAndDelay(string $url, string $msgheader, string $msg, string $type, int $delay)
         {
-            header("refresh:".$delay."; url=".$url);
-            \Utils\Front::modal($msgheader, $msg, $type);
+            //header("refresh:".$delay."; url=".$url);
+            ?>
+
+            <script>
+                setTimeout(fun, <?php echo $delay * 1000; ?>);
+
+                function fun()
+                {
+                    window.location.href = "<?php echo $url; ?>";
+                }
+            </script>
+
+            <?php
+            \Utils\Front::modal($msgheader, $msg, $type, false);
         }
 
         public static function getIP(): string
@@ -54,6 +66,19 @@ namespace Utils
 
             $ret = mail($to, $title, $msg);
             if (!$ret) throw new \Exception("Problem z wysłaniem wiadomości email");
+        }
+
+        public static function validateInput(string $input) : string
+        {
+            return htmlspecialchars(trim(stripslashes($input)));
+        }
+
+        public static function retJson(int $code, string $msg, int $arg = 256) : string
+        {
+            $ret = array();
+            $ret["msg"] = $msg;
+            $ret["code"] = $code;
+            return json_encode($ret, $arg);
         }
     }
 }

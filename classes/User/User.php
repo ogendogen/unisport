@@ -138,11 +138,11 @@ namespace User
             }
         }
 
-        public function getUserIdByLogin(string $login, bool $by_email = false) : int
+        public function getUserIdByLogin(string $login) : int
         {
             try
             {
-                return intval($this->db->exec("SELECT user_id FROM users WHERE ".($by_email ? "user_email" : "user_login")." = ?", [$login])[0]["user_id"]);
+                return intval($this->db->exec("SELECT user_id FROM users WHERE ".(\Utils\Validations::isEmail($login) ? "user_email" : "user_login")." = ?", [$login])[0]["user_id"]);
             }
             catch (\PDOException $e)
             {
@@ -204,7 +204,6 @@ namespace User
             if ($this->isUserExists($login)) throw new \Exception("Taki użytkownik już istnieje!");
             if ($pass != $pass2) throw new \Exception("Hasła różnią się!");
             if (!\Utils\Validations::isEmail($email)) throw new \Exception("Email nie jest poprawny!");
-            if (!$this->checkName($name)) throw new \Exception("Takie imię nie istnieje!");
             if (!\Utils\General::isStartsWithUpper($surname[0])) throw new \Exception("Nazwisko powinno zaczynać się od dużej litery!");
             if ($this->db->isRowExists("user_email", "users", $email)) throw new \Exception("Podany adres email jest zajęty!");
         }
@@ -285,18 +284,6 @@ namespace User
             }
         }
 
-        public function getUserId(string $login) : int
-        {
-            try
-            {
-                return $this->getUserIdByLogin($login, (\Utils\Validations::isEmail($login) ? true : false));
-            }
-            catch (\Exception $e)
-            {
-                throw $e;
-            }
-        }
-
         public function isUserActive(string $login)
         {
             try
@@ -304,7 +291,8 @@ namespace User
                 try
                 {
                     $by_email = (\Utils\Validations::isEmail($login) ? true : false);
-                    return $this->db->exec("SELECT user_activate_code FROM users WHERE ".($by_email ? "user_email" : "user_login")." = ?", [$login])[0]["user_activate_code"] == "0";
+                    $ret = $this->db->exec("SELECT user_activate_code FROM users WHERE ".($by_email ? "user_email" : "user_login")." = ?", [$login])[0]["user_activate_code"];
+                    if (trim($ret) != "0") throw new \Exception("Adres email nie został potwierdzony!");
                 }
                 catch (\PDOException $e)
                 {
@@ -324,6 +312,50 @@ namespace User
                 return $this->getLoginByEmail($email);
             }
             catch (\PDOException $e)
+            {
+                throw $e;
+            }
+        }
+
+        public function findUsersByCredentials(string $name, string $surname) : array // zwraca tablicę userów
+        {
+            $arr = array();
+            try
+            {
+                if (empty($name) && empty($surname)) throw new \Exception("Dane są puste!");
+                if (empty($name)) // szukaj po nazwisku
+                {
+                    $foundusers = $this->db->exec("SELECT user_id FROM users WHERE user_surname = ?", [$surname]);
+                    foreach ($foundusers as $userid)
+                    {
+                        $user = new \User\LoggedUser(intval($userid["user_id"]));
+                        array_push($arr, $user);
+                    }
+                    return $arr;
+                }
+                else if (empty($surname))
+                {
+                    $foundusers = $this->db->exec("SELECT user_id FROM users WHERE user_name = ?", [$name]);
+                    foreach ($foundusers as $userid)
+                    {
+                        $user = new \User\LoggedUser(intval($userid["user_id"]));
+                        array_push($arr, $user);
+                    }
+                    return $arr;
+                }
+                else if (!empty($name) && !empty($surname))
+                {
+                    $foundusers = $this->db->exec("SELECT user_id FROM users WHERE user_name = ? AND user_surname = ?", [$name, $surname]);
+                    foreach ($foundusers as $userid)
+                    {
+                        $user = new \User\LoggedUser(intval($userid["user_id"]));
+                        array_push($arr, $user);
+                    }
+                    return $arr;
+                }
+                throw new \Exception("Nieznany błąd");
+            }
+            catch (\Exception $e)
             {
                 throw $e;
             }

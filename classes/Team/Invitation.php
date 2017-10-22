@@ -23,6 +23,22 @@ namespace Team
             }
         }
 
+        public function sendInvitation(int $teamid)
+        {
+            try
+            {
+                $team = new \Team\Team($teamid);
+                if ($team->isUserInTeam($this->userid)) throw new \Exception("Jeden z użytkowników już należy do tej drużyny!");
+
+                $this->db->exec("INSERT INTO invitations SET invitation_invited = ?, invitation_team = ?", [$this->userid, $teamid]);
+            }
+            catch (\Exception $e)
+            {
+                if ($e->getCode() == 23000) throw new \Exception("Użytkownik już otrzymał zaproszenie!");
+                throw $e;
+            }
+        }
+
         public function getAllUserInvitations() : array
         {
             try

@@ -24,7 +24,7 @@ else if (isset($_POST["login"])) // formularz wysłany
         $user->isPasswordCorrect($login, $pass, $is_email);
         \Utils\Validations::verifyResponse($captcha);
         $user->isUserActive($login);
-        $_SESSION["userid"] = $user->getUserId($login); // todo: być może zbudować jakąś funkcję do tego zamiast wprost wpisywać dane do sesji
+        $_SESSION["userid"] = $user->getUserIdByLogin($login); // todo: być może zbudować jakąś funkcję do tego zamiast wprost wpisywać dane do sesji
         $_SESSION["login"] = (\Utils\Validations::isEmail($login) ? $user->emailToLogin($login) : $login);
         \Utils\General::redirectWithMessageAndDelay($CONF["site"]."/panel", "Powodzenie", "Zalogowałeś się poprawnie! Za chwilę zostajesz przekierowany...", "success", 2);
     }

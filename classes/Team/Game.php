@@ -1,0 +1,126 @@
+<?php
+
+namespace {
+    require_once("Team.php");
+    require_once(__DIR__."/../Db/Database.php");
+    require_once("Sport.php");
+    require_once(__DIR__."/../User/LoggedUser.php");
+}
+
+namespace Team
+{
+    class Game
+    {
+        private $db;
+        private $game_id;
+        private $team1;
+        private $team2;
+        private $date;
+        private $generaldesc;
+        private $team1_players; // array of userids
+        private $team2_players;
+
+        public function __construct(int $match_id)
+        {
+            $this->game_id = $match_id;
+            $this->db = \Db\Database::getInstance();
+            if ($this->game_id > 0)
+            {
+                $arr = $this->getMatchData();
+                $this->team1 = $arr["game_team1id"];
+                $this->team2 = $arr["game_team2id"];
+                $this->date = $arr["game_date"];
+                $this->generaldesc = $arr["game_generaldesc"];
+                if (!is_array($arr["game_team1players"]) || !is_array($arr["game_team2players"])) throw new \Exception("Niepoprawna lista uczestników meczu!");
+                $this->team1_players = $arr["game_team1players"];
+                $this->team2_players = $arr["game_team2players"];
+            }
+        }
+
+        public static function createNewMatch(int $team1_id, int $team2_id, int $date, string $generaldesc, array $team1_players, array $team2_players) : Game // returns game object if succeded
+        {
+            $db = \Db\Database::getInstance();
+
+            try
+            {
+                $team1 = new \Team\Team($team1_id);
+                $team2 = new \Team\Team($team2_id);
+                if (!$team1->isTeamExists()) throw new \Exception("Pierwsza drużyna nie istnieje!");
+                if (!$team2->isTeamExists()) throw new \Exception("Druga drużyna nie istnieje!");
+                if ($date > time()) throw new \Exception("Data meczu jeszcze nie nastąpiła!");
+
+                $db->exec("INSERT INTO game SET game_team1id = ?,
+                                          game_team2id = ?,
+                                          game_date = ?,
+                                          game_generaldesc = ?", [$team1_id, $team2_id, $date, $generaldesc]);
+
+                $game_id = $db->exec("SELECT MAX(game_id) AS 'game_id' FROM game")[0]["game_id"];
+
+                foreach ($team1_players as $playerid)
+                {
+                    $user = new \User\User();
+                    if (!$user->isUserExistsById($playerid)) throw new \Exception("Jeden z uczestników meczu nie istnieje!");
+                    if (!$team1->isUserInTeam($playerid)) throw new \Exception("Ten gracz nie należy do drużyny!");
+
+                    $db->exec("INSERT INTO games_players SET player_gameid = ?,
+                                                player_team = ?,
+                                                player_playerid = ?", [$game_id, $team1_id, $playerid]);
+                }
+
+                foreach ($team2_players as $playerid)
+                {
+                    $user = new \User\User();
+                    if (!$user->isUserExistsById($playerid)) throw new \Exception("Jeden z uczestników meczu nie istnieje!");
+                    if (!$team1->isUserInTeam($playerid)) throw new \Exception("Ten gracz nie należy do drużyny!");
+
+                    $db->exec("INSERT INTO games_players SET player_gameid = ?,
+                                                player_team = ?,
+                                                player_playerid = ?", [$game_id, $team2_id, $playerid]);
+                }
+
+                return new Game($game_id);
+            }
+            catch (\Exception $e)
+            {
+                throw $e;
+            }
+        }
+
+        public function getMatchData() : array // returns array of basic data about game and a jagged array with players ids
+        {
+            if ($this->game_id == 0 || !isGameExists()) throw new \Exception("Taki mecz nie istnieje!");
+
+            $gamedata = $this->db->exec("SELECT * FROM games WHERE game_id = ?", [$this->game_id])[0];
+            $gamedata["game_team1players"] = $this->db->exec("SELECT * FROM games_players WHERE player_teamid = ?", [$gamedata["game_team1id"]])[0];
+            $gamedata["game_team2players"] = $this->db->exec("SELECT * FROM games_players WHERE player_teamid = ?", [$gamedata["game_team2id"]])[0];
+            return $gamedata;
+            //$gamedata = $this->db->exec("SELECT games.*, games_players.* FROM games LEFT JOIN games_players ON games.id = player.gameid WHERE games.game_id = ?", [$this->match_id])[0];
+        }
+
+        public function isGameExists() : bool
+        {
+            if ($this->game_id == 0) return false;
+            return $this->db->isRowExists("game_id", "games", $this->game_id);
+        }
+
+        public function addPlayerToGame(bool $is_team1, int $player_id)
+        {
+            try
+            {
+                $teamid = ($is_team1 ? $this->team1 : $this->team2);
+                $user = new \User\LoggedUser($player_id); // checks if user exists
+
+                $this->db->exec("INSERT INTO games_players SET player_team = ?,
+                                                 player_playerid = ?,
+                                                 player_gameid = ?", [$teamid, $player_id, $this->game_id]);
+            }
+            catch (\Exception $e)
+            {
+                if ($e->getCode() == 23000) throw new \Exception("Ten użytkownik jest już zapisany w tym meczu!");
+                throw $e;
+            }
+        }
+    }
+}
+
+?>

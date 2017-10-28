@@ -51,8 +51,8 @@ if (isset($_GET["tab"]))
             include("pages/major/Teams.php");
             break;
 
-        case "matches":
-            include("pages/major/Matches.php");
+        case "games":
+            include("pages/major/Games.php");
             break;
 
         case "teamedit":
@@ -74,11 +74,6 @@ else
 }
 
 ?>
-
-</section>
-<!-- /.content -->
-</div>
-<!-- /.content-wrapper -->
 
 <?php
 

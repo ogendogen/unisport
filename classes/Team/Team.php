@@ -54,9 +54,9 @@ namespace Team
                                   team_sport = ?,
                                   team_created = ?", [$name, $desc, $leaderid, $sport, time()]);
                 $this->blocked = false;
-                $this->teamid = $this->db->exec("SELECT team_id FROM teams WHERE team_name = ?", [$name])[0];
+                $this->teamid = $this->db->exec("SELECT team_id FROM teams WHERE team_name = ?", [$name])[0]["team_id"];
 
-                $this->db->exec("INSERT INTO teams_members SET member_teamid = ?, member_userid = ?", [$this->teamid, $_SESSION["userid"]]);
+                $this->db->exec("INSERT INTO teams_members SET member_teamid = ?, member_userid = ?", [$this->teamid, $leaderid]);
             }
             catch (\Exception $e)
             {

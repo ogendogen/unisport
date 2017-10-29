@@ -74,5 +74,17 @@ namespace User
         {
             return $this->id;
         }
+
+        public function getAllUserTeams() : array
+        {
+            try
+            {
+                return $this->db->exec("SELECT teams.*, COUNT(teams_members.member_teamid) AS 'totalmembers' FROM `teams` LEFT JOIN `teams_members` ON teams.team_id = teams_members.member_teamid WHERE teams_members.member_userid = ?", [$this->id]);
+            }
+            catch (\Exception $e)
+            {
+                throw $e;
+            }
+        }
     }
 }

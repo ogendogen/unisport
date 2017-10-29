@@ -143,8 +143,8 @@
                         </tr>
                         <?php
 
-                        $team = new \Team\Team();
-                        $userteams = $team->getAllUserTeams($_SESSION["userid"]);
+                        global $logged_user;
+                        $userteams = $logged_user->getAllUserTeams();
                         $counter = 0;
                         if (!is_null($userteams[0]["team_name"]))
                         {

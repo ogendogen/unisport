@@ -38,6 +38,19 @@ namespace Team
             }
         }
 
+        public static function getNameById(int $team_id) : string
+        {
+            try
+            {
+                $db = \Db\Database::getInstance();
+                return $db->exec("SELECT team_name FROM teams WHERE team_id = ?", [$team_id])[0]["team_name"];
+            }
+            catch (\Exception $e)
+            {
+                throw $e;
+            }
+        }
+
         public function createNewTeam(string $name, string $desc, int $leaderid, string $sport)
         {
             try
@@ -265,18 +278,6 @@ namespace Team
             try
             {
                 return $this->db->exec("SELECT teams.*, COUNT(teams_members.member_teamid) AS 'totalmembers' FROM `teams` LEFT JOIN `teams_members` ON teams.team_id = teams_members.member_teamid WHERE teams.team_leader = ?", [$leaderid]);
-            }
-            catch (\Exception $e)
-            {
-                throw $e;
-            }
-        }
-
-        public function getAllUserTeams(int $userid) : array
-        {
-            try
-            {
-                return $this->db->exec("SELECT teams.*, COUNT(teams_members.member_teamid) AS 'totalmembers' FROM `teams` LEFT JOIN `teams_members` ON teams.team_id = teams_members.member_teamid WHERE teams_members.member_userid = ?", [$userid]);
             }
             catch (\Exception $e)
             {

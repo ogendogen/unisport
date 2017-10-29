@@ -85,7 +85,7 @@ else
     <div class="col-md-6">
         <div class="box box-default">
             <div class="box-header with-border">
-                <i class="fa fa-users"> Wyszukani zawodnicy</i>
+                <i class="fa fa-user-plus"> Wyszukani zawodnicy</i>
                 <div class="box box-body">
                     <table id="foundmembers" class="table table-bordered">
                         <tbody>
@@ -141,7 +141,7 @@ else
     <div class="col-md-6">
         <div class="box box-default">
             <div class="box-header with-border">
-                <i class="fa fa-users"> Twoi zawodnicy</i>
+                <i class="fa fa-user-times"> Twoi zawodnicy</i>
                 <div class="box box-body">
                     <table id="members2delete" class="table table-bordered">
                         <tbody>

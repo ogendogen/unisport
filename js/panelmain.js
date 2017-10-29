@@ -1,6 +1,7 @@
 // Global variables
 
 var team_selected = -1;
+var actions_counter = 1;
 
 var getUrlParameter = function getUrlParameter(sParam) {
     var sPageURL = decodeURIComponent(window.location.search.substring(1)),
@@ -82,7 +83,6 @@ function rejectInvitation(teamid)
 
 function chooseMember(memberid)
 {
-    var teamid = getUrlParameter("teamid");
     var row = $("#" + memberid.toString());
     if (row.attr("data-selected") == "1")
     {
@@ -98,8 +98,7 @@ function chooseMember(memberid)
 
 function chooseMemberToDelete(memberid)
 {
-    var teamid = getUrlParameter("teamid");
-    var row = $("[data-deleteid=" + memberid + "]");
+    var row = $("[data-deleteid=" + memberid.toString() + "]");
     if (row.attr("data-selected") == "1")
     {
         row.css("background-color", "#FFFFFF");
@@ -110,6 +109,53 @@ function chooseMemberToDelete(memberid)
         row.css("background-color", "#FFD700");
         row.attr("data-selected", "1");
     }
+}
+
+function redirectAddGame()
+{
+    window.location.href = "index.php?tab=games&minor=addgame&teamid=" + getUrlParameter("teamid");
+}
+
+function chooseGame(gameid)
+{
+    var row = $("[data-gameid=" + gameid.toString() + "]");
+    var btns = $("#actionbuttons").children();
+    if (row.attr("data-selected") == "1")
+    {
+        row.css("background-color", "#FFFFFF");
+        row.attr("data-selected", "0");
+
+        btns.each(function(){
+            $(this).attr("disabled", "disabled");
+        });
+    }
+    else
+    {
+        checkLeadership(getUrlParameter("teamid"));
+        if (window.localStorage.isLeader == 1)
+        {
+            btns.each(function(){
+               $(this).removeAttr("disabled");
+            });
+        }
+        else if (window.localStorage.isLeader == 0)
+        {
+            btns.eq(2).removeAttr("disabled");
+            btns.eq(3).removeAttr("disabled");
+            btns.eq(4).removeAttr("disabled");
+        }
+        else
+        {
+            modalError("Błąd", "Problem z autoryzacją lidera. Sprawdź połączenie internetowe lub przeloguj się");
+        }
+        row.css("background-color", "#FFD700");
+        row.attr("data-selected", "1");
+    }
+}
+
+function addNewGameAction()
+{
+
 }
 
 function sendInvitation()
@@ -182,6 +228,12 @@ function editTeam()
 function editMembers()
 {
     window.location.href = "index.php?tab=membersedit&teamid=" + team_selected.toString();
+}
+
+function addGame()
+{
+    var teamid = getUrlParameter("teamid");
+    window.location.href = "index.php?tab=games&minor=addgame&teamid=" + teamid.toString();
 }
 
 function checkLeadership(teamid)

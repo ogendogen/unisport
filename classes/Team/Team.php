@@ -51,6 +51,19 @@ namespace Team
             }
         }
 
+        public static function getAllTeamsBySport(int $sport_id) : array
+        {
+            try
+            {
+                $db = \Db\Database::getInstance();
+                return $db->exec("SELECT teams.* FROM teams LEFT JOIN sports ON teams.team_sport = sports.sport_id WHERE teams.team_sport = ?", [$sport_id]);
+            }
+            catch (\Exception $e)
+            {
+                throw $e;
+            }
+        }
+
         public function createNewTeam(string $name, string $desc, int $leaderid, string $sport)
         {
             try

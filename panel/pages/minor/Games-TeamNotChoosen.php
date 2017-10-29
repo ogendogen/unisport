@@ -7,7 +7,7 @@
             </div>
             <div class="box-body">
                 <form method="get" action="?tab=games">
-                    <select class="form-control" name="teamChoosen">
+                    <select class="form-control" name="teamid">
                         <?php
 
                         global $logged_user;

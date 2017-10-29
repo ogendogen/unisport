@@ -1,6 +1,6 @@
 <?php
 
-$teamid = $_GET["teamChoosen"];
+$teamid = $_GET["teamid"];
 if (!is_numeric($teamid)) die(\Utils\General::redirectWithMessageAndDelay("?tab=dashboard", "Błąd!", "Taka drużyna nie istnieje!", "danger", 2));
 
 try
@@ -20,14 +20,14 @@ catch (\Exception $e)
     <div class="col-md-3">
         <div class="box box-default">
             <div class="box-header with-border">
-                <i class="glyphicon glyphicon-th">Akcje</i>
+                <i class="glyphicon glyphicon-th"> Akcje</i>
             </div>
-            <div class="box-body text-center">
-                <button type="button" class="btn btn-block btn-primary">Dodaj mecz</button>
-                <button type="button" class="btn btn-block btn-primary">Wprowadź zmiany</button>
-                <button type="button" class="btn btn-block btn-primary">Zobacz ogólne podsumowanie</button>
-                <button type="button" class="btn btn-block btn-primary">Generuj szczegółowy raport PDF</button>
-                <button type="button" class="btn btn-block btn-primary">Zaproponuj układ na następny mecz</button>
+            <div id="actionbuttons" class="box-body text-center">
+                <button type="button" class="btn btn-block btn-primary" disabled="disabled" onclick="redirectAddGame()">Dodaj mecz</button>
+                <button type="button" class="btn btn-block btn-primary" disabled="disabled">Wprowadź zmiany</button>
+                <button type="button" class="btn btn-block btn-primary" disabled="disabled">Zobacz ogólne podsumowanie</button>
+                <button type="button" class="btn btn-block btn-primary" disabled="disabled">Generuj szczegółowy raport PDF</button>
+                <button type="button" class="btn btn-block btn-primary" disabled="disabled">Zaproponuj układ na następny mecz</button>
             </div>
         </div>
     </div>
@@ -38,7 +38,7 @@ catch (\Exception $e)
             </div>
             <div class="box-body">
                 <table class="table table-bordered">
-                    <tbody>
+                    <thead>
                         <tr>
                             <th>No.</th>
                             <th>Moja drużyna</th>
@@ -46,6 +46,8 @@ catch (\Exception $e)
                             <th>Data meczu</th>
                             <th>Fragment raportu</th>
                         </tr>
+                    </thead>
+                    <tbody>
                         <?php
 
                         $games = null;
@@ -65,11 +67,11 @@ catch (\Exception $e)
                             foreach ($games as $game)
                             {
                                 $counter++;
-                                echo "<tr>";
+                                echo "<tr data-gameid='".$game["game_id"]."' onclick='chooseGame(".$game["game_id"].")'>";
                                 echo "<td>".$counter.".</td>";
                                 echo "<td>".\Team\Team::getNameById($teamid == $game["game_team1id"] ? $game["game_team1id"] : $game["game_team2id"])."</td>";
                                 echo "<td>".\Team\Team::getNameById($teamid == $game["game_team1id"] ? $game["game_team2id"] : $game["game_team1id"])."</td>";
-                                echo "<td>".date("d-m-Y H:m:", $game["game_date"])."</td>";
+                                echo "<td>".date("d-m-Y H:m", $game["game_date"])."</td>";
                                 echo "<td>".(strlen($game["game_generaldesc"]) > 60 ? substr($game["game_generaldesc"], 0, 60)."..." : $game["game_generaldesc"]);
                                 echo "</tr>";
                             }

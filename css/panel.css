@@ -2,3 +2,8 @@
 {
     margin-top: 20px;
 }
+
+#gamereport
+{
+    resize: vertical;
+}

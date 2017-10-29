@@ -15,6 +15,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css">
     <!-- Ionicons -->
     <link rel="stylesheet" href="bower_components/Ionicons/css/ionicons.min.css">
+    <!-- Bootstrap DateTime Picker CSS -->
+    <link rel="stylesheet" href="bower_components/bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="dist/css/AdminLTE.min.css">
     <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
@@ -30,6 +32,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <!-- AdminLTE App -->
     <script src="dist/js/adminlte.min.js"></script>
+    <!-- CKEditor -->
+    <script src="bower_components/ckeditor/ckeditor.js"></script>
+    <!-- Moment -->
+    <script src="bower_components/moment/moment.js"></script>
+    <script src="bower_components/moment/locale/pl.js"></script>
+    <!-- Bootstrap DateTime Picker JS and Locales -->
+    <script src="bower_components/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+    <!--<script src="bower_components/bootstrap-datetimepicker/dist/locales/bootstrap-datetimepicker.pl.min.js"></script>-->
     <!-- Custom JS -->
     <script src="../js/panelmain.js"></script>
 

@@ -166,6 +166,40 @@ function addNewGameAction()
     obj.after(cloned);
 }
 
+function choosePlayer(playerid)
+{
+    var obj = $("[data-playerid=" + playerid.toString() + "]");
+    var players_container = $("#players2sent");
+    var choosen_players = players_container.children().length;
+    if (obj.hasClass("alert-info"))
+    {
+        obj.removeClass("alert-info");
+        obj.addClass("alert-success");
+        choosen_players++;
+        players_container.append("<input type='hidden' name='player" + choosen_players.toString() + "' value='" + playerid.toString() + "'>");
+    }
+    else
+    {
+        obj.removeClass("alert-success");
+        obj.addClass("alert-info");
+        console.log(choosen_players);
+        if (choosen_players > 0) $("#players2sent [value='" + playerid.toString() + "']").remove();
+
+        // reordering
+        choosen_players = players_container.children().length;
+        if (choosen_players == 0) players_container.children().empty();
+        else if (choosen_players == 1) players_container.children().first().attr("name", "player1");
+        else
+        {
+            var counter = 1;
+            players_container.children().forEach(function(item, index){
+                $(this).attr("name", "player" + counter.toString());
+                counter++;
+            });
+        }
+    }
+}
+
 function deleteLastGame()
 {
     var lastgame = $("tr[id^='action']:last");

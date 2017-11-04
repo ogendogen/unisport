@@ -29,8 +29,15 @@ namespace Utils
         public static function validatePostArray(array $array)
         {
             foreach ($array as $key => $value) {
+                if ($value == "0") continue;
                 if (empty($value)) throw new \Exception("Uzupełnij wszystkie pola!");
             }
+        }
+
+        public static function isDateValid(string $date, string $format = 'Y-m-d H:i:s') : bool
+        {
+            $d = \DateTime::createFromFormat($format, $date);
+            return $d && $d->format($format) == $date;
         }
 
         public static function validateInput(string $input) : string

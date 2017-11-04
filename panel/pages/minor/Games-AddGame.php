@@ -14,14 +14,44 @@ try
     {
         \Utils\Validations::validatePostArray($_POST);
         \Utils\Validations::validateWholeArray($_POST);
+        if (isset($_POST["blocker"])) throw new \Exception("Nie masz żadnych zawodników w drużynie!");
 
+        $opponent_team_id = $_POST["opponent_team"];
+        $opponent_team = new \Team\Team($opponent_team_id);
+        if ($opponent_team->getTeamInfo()["team_sport"] != $team->getTeamInfo()["team_sport"]) throw new \Exception("Przeciwnik nie gra w tę samą grę!");
+        if ($opponent_team_id == $teamid) throw new \Exception("Nie możesz zagrać z samym sobą!");
+
+        $date = $_POST["matchdatetime"];
+        if (!\Utils\Validations::isDateValid($date, "d.m.Y H:i")) throw new \Exception("Format daty jest niepoprawny!");
+        $date_timestamp = strtotime($date);
+
+        $players_choosen = array();
+        $team_players = $team->getAllTeamPlayers();
+        $members_quantity = count($team_players);
+        for ($i = 1; $i <= $members_quantity; $i++)
+        {
+            if (!isset($_POST["player" . $i])) break;
+            array_push($players_choosen, $_POST["player" . $i]);
+        }
+
+        $team_players_ids = array();
+        foreach ($team_players as $team_player) array_push($team_players_ids, $team_player["user_id"]);
+        $res = array_intersect($players_choosen, $team_players_ids);
+        sort($res);
+        sort($players_choosen);
+
+        if ($res != $players_choosen) throw new \Exception("Przynajmniej jeden z wybranych graczy nie gra w tej drużynie!");
+        $report = $_POST["report"];
+        // todo: zapis raportu w postaci base64
+
+        $game = \Team\Game::createNewGame($teamid, $opponent_team_id, $date_timestamp, $report, $players_choosen);
+        
         //$game = new \Team\Game()
-        // todo: add team members picking
     }
 }
 catch (\Exception $e)
 {
-    throw $e;
+    \Utils\Front::error($e->getMessage());
 }
 
 ?>
@@ -57,6 +87,43 @@ catch (\Exception $e)
                                 <span class="glyphicon glyphicon-calendar"></span>
                             </span>
                         </div>
+                    </div>
+
+                    <label for="playerspicking">Wskaż zawodników biorących udział</label>
+                    <div class="form-group">
+                        <?php
+
+                        $players = $team->getAllTeamPlayers();
+                        $players_num = count($players);
+                        if ($players_num == 0)
+                        {
+                            echo "<div class='alert alert-danger alert-block'>W drużynie nie ma zawodników!</div>";
+                            echo "<input type='hidden' name='blocker' value=''>"; // zapobiega wysłaniu formularza
+                        }
+                        else
+                        {
+                            $counter = 1;
+                            foreach ($players as $player)
+                            {
+                                if ($counter % 3 == 0)
+                                {
+                                    echo "</div>";
+                                    $counter = 1;
+                                }
+                                if ($counter == 1)
+                                {
+                                    echo "<div class='row'>";
+                                }
+                                echo "<div class='alert alert-info col-md-4' style='margin-left: 5px;' onclick='choosePlayer(".$player["user_id"].")' data-playerid='".$player["user_id"]."'>".$player["user_name"]." ".$player["user_surname"]."</div>";
+                                $counter++;
+                            }
+                            echo "</div>";
+                        }
+
+                        ?>
+                    </div>
+                    <div id="players2sent" style="display: none;">
+
                     </div>
 
                     <label for="gamereport">Wpisz ogólny raport z meczu</label>
@@ -111,13 +178,17 @@ catch (\Exception $e)
                                                 try
                                                 {
                                                     $transalated = \Utils\Dictionary::keyToWord($action);
+                                                    if ($transalated == $action)
+                                                    {
+                                                        \Utils\Front::error("Problem z tłumaczeniem");
+                                                        break;
+                                                    }
+                                                    echo "<option value='".$action."'>".$transalated."</option>";
                                                 }
                                                 catch (\Exception $e)
                                                 {
                                                     \Utils\Front::error($e->getMessage());
                                                 }
-
-                                                echo "<option value='".$action."'>".$transalated."</option>";
                                             }
 
                                             ?>
@@ -152,11 +223,35 @@ catch (\Exception $e)
                    var input_name;
                    var input_value;
                    var splitted;
+
+                   if ($("#players2sent").children().length === 0)
+                   {
+                       modalWarning("Uwaga!", "Nie wybrałeś żadnego zawodnika!");
+                       return false;
+                   }
+
                    for (i = 0, len = inputs.length; i < len; i++)
                    {
                        splitted = inputs[i].split("=");
                        input_name = splitted[0];
                        input_value = splitted[1];
+
+                       if (input_name === "report")
+                       {
+                           input_value = CKEDITOR.instances["gamereport"].getData();
+                           if (input_value.length === 0)
+                           {
+                               modalWarning("Uwaga!", "Uzupełnij raport gry!");
+                               return false;
+                           }
+                       }
+
+                       if (input_name === "blocker")
+                       {
+                           modalWarning("Uwaga!", "W drużynie brakuje zawodników!");
+                           return false;
+                       }
+
                        if (input_value.length === 0)
                        {
                            var message;
@@ -170,8 +265,8 @@ catch (\Exception $e)
                                    message = "Wybierz datę meczu!";
                                    break;
 
-                               case "report":
-                                   message = "Uzupełnij raport gry!";
+                               default:
+                                   message = "Uzupełnij pole " + input_name;
                                    break;
                            }
                            modalWarning("Uwaga!", message);

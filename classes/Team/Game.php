@@ -37,12 +37,11 @@ namespace Team
             }
         }
 
-        public static function createNewGame(int $team1_id, int $team2_id, int $date, string $generaldesc, array $team1_players, array $team2_players) : Game // returns game object if succeded
+        public static function createNewGame(int $team1_id, int $team2_id, int $date, string $generaldesc, array $team1_players) : Game // returns game object if succeded
         {
-            $db = \Db\Database::getInstance();
-
             try
             {
+                $db = \Db\Database::getInstance();
                 $team1 = new \Team\Team($team1_id);
                 $team2 = new \Team\Team($team2_id);
                 if (!$team1->isTeamExists()) throw new \Exception("Pierwsza drużyna nie istnieje!");
@@ -65,17 +64,6 @@ namespace Team
                     $db->exec("INSERT INTO games_players SET player_gameid = ?,
                                                 player_team = ?,
                                                 player_playerid = ?", [$game_id, $team1_id, $playerid]);
-                }
-
-                foreach ($team2_players as $playerid)
-                {
-                    $user = new \User\User();
-                    if (!$user->isUserExistsById($playerid)) throw new \Exception("Jeden z uczestników meczu nie istnieje!");
-                    if (!$team1->isUserInTeam($playerid)) throw new \Exception("Ten gracz nie należy do drużyny!");
-
-                    $db->exec("INSERT INTO games_players SET player_gameid = ?,
-                                                player_team = ?,
-                                                player_playerid = ?", [$game_id, $team2_id, $playerid]);
                 }
 
                 return new Game($game_id);

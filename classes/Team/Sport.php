@@ -9,13 +9,21 @@ namespace Team
     class Sport
     {
         private $db;
-        public function __construct()
+        private $sport_id;
+        private $sport_name;
+        public function __construct(int $sport_id = 0)
         {
             try
             {
                 $this->db = \Db\Database::getInstance();
+                if ($sport_id > 0)
+                {
+                    $ret = $this->db->exec("SELECT * FROM sports WHERE sport_id = ?", [$sport_id]);
+                    $this->sport_id = $sport_id;
+                    $this->sport_name = $ret[0]["sport_name"];
+                }
             }
-            catch (\Exception $e)
+            catch (\PDOException $e)
             {
                 throw $e;
             }
@@ -28,6 +36,22 @@ namespace Team
                 return $this->db->exec("SELECT * FROM sports");
             }
             catch (\PDOException $e)
+            {
+                throw $e;
+            }
+        }
+
+        public function getAllSportActions() : array
+        {
+            try
+            {
+                if ($this->sport_id == 1)
+                {
+                    return $this->db->getEnumPossibleValues("games_players_football_info", "football_action");
+                }
+                return $this->db->getEnumPossibleValues("games_players_general_info", "general_action");
+            }
+            catch (\Exception $e)
             {
                 throw $e;
             }

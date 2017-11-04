@@ -18,7 +18,7 @@ else if (isset($_POST["login"])) // formularz wysłany
 
     try
     {
-        \Utils\General::validatePostArray($_POST);
+        \Utils\Validations::validatePostArray($_POST);
         //$user = new \User\UserGeneral();
         $user = new \User\User();
         $user->isPasswordCorrect($login, $pass, $is_email);

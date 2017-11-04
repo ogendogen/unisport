@@ -13,7 +13,9 @@ namespace Utils
             try
             {
                 $db = \Db\Database::getInstance();
-                return $db->exec("SELECT dictionary_transalation FROM dictionary WHERE dictionary_key = ?", [$key])[0]["dictionary_translation"];
+                $ret = $db->exec("SELECT dictionary_translation FROM dictionary WHERE dictionary_key = ?", [$key]);
+                if (!$ret) return $key;
+                return $ret[0]["dictionary_translation"];
             }
             catch (\Exception $e)
             {
@@ -26,7 +28,9 @@ namespace Utils
             try
             {
                 $db = \Db\Database::getInstance();
-                return $db->exec("SELECT dictionary_key FROM dictionary WHERE dictionary_translation = ?", [$word])[0]["dictionary_key"];
+                $ret = $db->exec("SELECT dictionary_key FROM dictionary WHERE dictionary_translation = ?", [$word]);
+                if (!$ret) return $word;
+                return $ret[0]["dictionary_key"];
             }
             catch (\Exception $e)
             {

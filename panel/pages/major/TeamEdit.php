@@ -35,10 +35,10 @@ else
             $dbsportid = $data["team_sport"];
             $dbsportname = \Team\Sport::sportIdToName($dbsportid);
 
-            \Utils\General::validatePostArray($_POST);
-            $formname = \Utils\General::validateInput($_POST["teamName"]);
-            $formdesc = \Utils\General::validateInput($_POST["teamDescription"]);
-            $formsport = \Utils\General::validateInput($_POST["teamSport"]);
+            \Utils\Validations::validatePostArray($_POST);
+            $formname = \Utils\Validations::validateInput($_POST["teamName"]);
+            $formdesc = \Utils\Validations::validateInput($_POST["teamDescription"]);
+            $formsport = \Utils\Validations::validateInput($_POST["teamSport"]);
 
             $team->updateTeamInfo($formname, $formdesc, $formsport);
             \Utils\General::redirectWithMessageAndDelay($CONF["site"]."/panel/?tab=teams", "Powodzenie", "Dane zostały zaaktualizowane!", "success", 1);

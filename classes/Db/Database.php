@@ -69,5 +69,23 @@ namespace Db
                 throw $e;
             }
         }
+
+        public function getEnumPossibleValues($table, $field) : array
+        {
+            try
+            {
+                $type = $this->conn->query("SHOW COLUMNS FROM `".$table."` LIKE '".$field."'");
+                $type->execute();
+                $ret = $type->fetchAll(PDO::FETCH_ASSOC);
+                $enum_ret = $ret[0]["Type"];
+                preg_match("/^enum\(\'(.*)\'\)$/", $enum_ret, $matches);
+                $enum = explode("','", $matches[1]);
+                return $enum;
+            }
+            catch (\PDOException $e)
+            {
+                throw $e;
+            }
+        }
     }
 }

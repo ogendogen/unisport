@@ -25,5 +25,25 @@ namespace Utils
             $responseKeys = json_decode($response, true);
             if (intval($responseKeys["success"]) !== 1) throw new \Exception("Captcha niepoprawna. Spróbuj ponownie");
         }
+
+        public static function validatePostArray(array $array)
+        {
+            foreach ($array as $key => $value) {
+                if (empty($value)) throw new \Exception("Uzupełnij wszystkie pola!");
+            }
+        }
+
+        public static function validateInput(string $input) : string
+        {
+            return htmlspecialchars(trim(stripslashes($input)));
+        }
+
+        public static function validateWholeArray(array &$arr)
+        {
+            foreach($arr as $key => $value)
+            {
+                $arr[$key] = self::validateInput($value);
+            }
+        }
     }
 }

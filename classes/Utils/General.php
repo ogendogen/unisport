@@ -48,29 +48,17 @@ namespace Utils
             return mb_strtolower($chr, "UTF-8") != $chr;
         }
 
-        public static function validatePostArray($array)
-        {
-            foreach ($array as $key => $value) {
-                if (empty($value)) throw new \Exception("Uzupełnij wszystkie pola!");
-            }
-        }
-
         public static function sendConfirmationMail(string $to, int $id, string $confirmation_code)
         {
             $title = "Potwierdzenie email UniSport";
-            $msg = "Dziękujemy za rejestracje w systemie UniSport\\r\\nAby dokończyć rejestrację kliknij w link ";
+            $msg = "Dziękujemy za rejestracje w systemie UniSport<br>Aby dokończyć rejestrację kliknij w link ";
 
             global $CONF;
-            $msg .= $CONF["site"] . "/other/confirmation.php?id=" . $id . "&code=" . $confirmation_code . " \\r\\n";
+            $msg .= $CONF["site"] . "/other/confirmation.php?id=" . $id . "&code=" . $confirmation_code . " <br>";
             $msg .= "Jeżeli to pomyłka, zignoruj wiadomość";
 
             $ret = mail($to, $title, $msg);
             if (!$ret) throw new \Exception("Problem z wysłaniem wiadomości email");
-        }
-
-        public static function validateInput(string $input) : string
-        {
-            return htmlspecialchars(trim(stripslashes($input)));
         }
 
         public static function retJson(int $code, string $msg, int $arg = 256) : string

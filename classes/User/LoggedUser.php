@@ -21,6 +21,7 @@ namespace User
                 parent::__construct();
                 $this->id = $id;
                 $this->getUserData();
+                if (!$this->isUserExistsById($id)) throw new \Exception("Taki użytkownik nie istnieje!");
             }
             catch (\Exception $e)
             {

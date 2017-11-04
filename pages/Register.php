@@ -9,7 +9,7 @@ else if (isset($_POST["login"])) // formularz wysłany
     {
         //$user = new \User\UserGeneral();
         $user = new \User\User();
-        \Utils\General::validatePostArray($_POST);
+        \Utils\Validations::validatePostArray($_POST);
         $login = htmlspecialchars(trim(stripslashes($_POST["login"])));
         $pass = htmlspecialchars(trim(stripslashes($_POST["pass"])));
         $pass2 = htmlspecialchars(trim(stripslashes($_POST["pass2"])));

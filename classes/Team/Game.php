@@ -20,9 +20,9 @@ namespace Team
         private $team1_players; // array of userids
         private $team2_players;
 
-        public function __construct(int $match_id)
+        public function __construct(int $game_id)
         {
-            $this->game_id = $match_id;
+            $this->game_id = $game_id;
             $this->db = \Db\Database::getInstance();
             if ($this->game_id > 0)
             {
@@ -37,7 +37,7 @@ namespace Team
             }
         }
 
-        public static function createNewMatch(int $team1_id, int $team2_id, int $date, string $generaldesc, array $team1_players, array $team2_players) : Game // returns game object if succeded
+        public static function createNewGame(int $team1_id, int $team2_id, int $date, string $generaldesc, array $team1_players, array $team2_players) : Game // returns game object if succeded
         {
             $db = \Db\Database::getInstance();
 
@@ -145,6 +145,53 @@ namespace Team
             catch (\Exception $e)
             {
                 if ($e->getCode() == 23000) throw new \Exception("Ten użytkownik jest już zapisany w tym meczu!");
+                throw $e;
+            }
+        }
+
+        public function addAction(int $player_id, string $action_name, int $action_minute, int $action_second, bool $is_team1, bool $is_football)
+        {
+            try
+            {
+                // exception with -1 code is a fatal error, exception with 0 code is a warning and continuation is acceptable
+                if (is_null($this->game_id) || $this->game_id == 0) throw new \Exception("Taka gra nie istnieje!", -1);
+                $player = new \User\LoggedUser($player_id);
+
+                $team = new \Team\Team(($is_team1 ? $this->team1 : $this->team2));
+                if (!$team->isUserInTeam($player_id)) throw new \Exception("Gracz nie należy do drużyny!", 0);
+                if (!in_array($player_id, ($is_team1 ? $this->team1_players : $this->team2_players))) throw new \Exception("Gracz nie bierze udziału w tym meczu!");
+
+                if ($action_minute < 0 || $action_minute > 120) throw new \Exception("Minuta akcji jest spoza zakresu!", 0);
+                if ($action_second < 0 || $action_second > 59) throw new \Exception("Sekundy akcji są spoza zakresu!", 0);
+
+                $actions = $this->db->getEnumPossibleValues(($is_football ? "games_players_football_info" : "games_players_general_info"), ($is_football ? "football_action" : "general_action"));
+                if (!in_array($action_name, $actions)) throw new \Exception("Taka akcja nie istnieje!", 0);
+
+                // adding new action (insert)
+                // NEED TO GET proper gameplayerid first !!!!!!!!!!!!
+                $gameplayerid = null;
+                $gameplayerid = $this->db->exec("SELECT player_id FROM games_players WHERE player_gameid = ?, player_team = ?, player_playerid = ?", [$this->game_id, ($is_team1 ? $this->team1 : $this->team2), $player_id])[0]["player_id"];
+
+                if (!$gameplayerid) throw new \Exception("Problem z dopasowaniem gracza do meczu!");
+                if ($is_football)
+                {
+                    $this->db->exec("INSERT INTO games_players_football_info SET
+                                                football_gameplayerid = ?,
+                                                football_action = ?,
+                                                football_minute = ?,
+                                                football_second = ?", [$gameplayerid, $action_name, $action_minute, $action_second]);
+                }
+                else
+                {
+                    $this->db->exec("INSERT INTO games_players_general_info SET
+                                                generalgame_gameplayerid = ?,
+                                                general_action  = ?,
+                                                general_minute = ?,
+                                                general_second = ?", [$gameplayerid, $action_name, $action_minute, $action_second]);
+                }
+            }
+            catch (\Exception $e)
+            {
                 throw $e;
             }
         }

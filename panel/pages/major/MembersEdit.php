@@ -37,8 +37,8 @@ else
             $dbsportid = $data["team_sport"];
             $dbsportname = \Team\Sport::sportIdToName($dbsportid);
 
-            $formname = \Utils\General::validateInput($_GET["memberName"]);
-            $formsurname = \Utils\General::validateInput($_GET["memberSurname"]);
+            $formname = \Utils\Validations::validateInput($_GET["memberName"]);
+            $formsurname = \Utils\Validations::validateInput($_GET["memberSurname"]);
 
             global $logged_user;
             $found_members = array();

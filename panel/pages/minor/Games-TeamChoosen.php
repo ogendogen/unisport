@@ -37,7 +37,7 @@ catch (\Exception $e)
                 <i class="fa fa-crosshairs"> Ostatnie 10 meczy</i>
             </div>
             <div class="box-body">
-                <table class="table table-bordered">
+                <table class="table table-bordered textwrap">
                     <thead>
                         <tr>
                             <th>No.</th>

@@ -10,7 +10,7 @@ try
     if (!$team->isTeamExists()) die(\Utils\General::redirectWithMessageAndDelay("?tab=dashboard", "Błąd!", "Taka drużyna nie istnieje!", "danger", 2));
     if (!$team->isUserInTeam($_SESSION["userid"])) die(\Utils\General::redirectWithMessageAndDelay("?tab=dashboard", "Błąd!", "Nie należysz do tej drużyny!", "danger", 2));
 
-    if (isset($_POST)) // coś zostało wysłane!
+    if (isset($_POST) && !empty($_POST)) // coś zostało wysłane!
     {
         \Utils\Validations::validatePostArray($_POST);
         \Utils\Validations::validateWholeArray($_POST);
@@ -24,6 +24,7 @@ try
         $date = $_POST["matchdatetime"];
         if (!\Utils\Validations::isDateValid($date, "d.m.Y H:i")) throw new \Exception("Format daty jest niepoprawny!");
         $date_timestamp = strtotime($date);
+        if ($date_timestamp > time()) throw new \Exception("Taka data jeszcze nie nastąpiła!");
 
         $players_choosen = array();
         $team_players = $team->getAllTeamPlayers();
@@ -42,11 +43,23 @@ try
 
         if ($res != $players_choosen) throw new \Exception("Przynajmniej jeden z wybranych graczy nie gra w tej drużynie!");
         $report = $_POST["report"];
-        // todo: zapis raportu w postaci base64
+        // todo: zapis raportu w postaci base64 (???)
 
-        $game = \Team\Game::createNewGame($teamid, $opponent_team_id, $date_timestamp, $report, $players_choosen);
-        
-        //$game = new \Team\Game()
+        //$game = \Team\Game::createNewGame($teamid, $opponent_team_id, $date_timestamp, $report, $players_choosen);
+        $postsize = count($_POST);
+        for ($i = 1; $i <= $postsize; $i++)
+        {
+            if (!isset($_POST["playername" . $i])) break;
+
+            $playerid = $_POST["playername" . $i];
+            $actionname = $_POST["actionname" . $i];
+            $actionminute = $_POST["actionminute" . $i];
+            $actionsecond = $_POST["actionsecond" . $i];
+
+            //$game->addAction($playerid, $actionname, $actionminute, $actionsecond, true);
+        }
+
+        \Utils\Front::success("Mecz został dodany prawidłowo");
     }
 }
 catch (\Exception $e)
@@ -153,21 +166,12 @@ catch (\Exception $e)
                             <tbody>
                                 <tr id="action1">
                                     <td>
-                                        <select name="playername1">
-                                            <?php
+                                        <select name="playername1" class="btn-block">
 
-                                            // get list of team members
-                                            $team_members = $team->getAllTeamPlayers();
-                                            foreach ($team_members as $team_member)
-                                            {
-                                                echo "<option value='".$team_member["user_id"]."'>".$team_member["user_name"]." ".$team_member["user_surname"]."</option>";
-                                            }
-
-                                            ?>
                                         </select>
                                     </td>
                                     <td>
-                                        <select name="actionname1">
+                                        <select name="actionname1" class="btn-block">
                                             <?php
 
                                             $sport_id= $team->getTeamInfo()["team_sport"];
@@ -195,10 +199,10 @@ catch (\Exception $e)
                                         </select>
                                     </td>
                                     <td>
-                                        <input type="number" name="actionminute1" pattern="\d*" data-minutesinput="1" value="0" min="0" max="120">
+                                        <input type="number" class="btn-block" name="actionminute1" pattern="\d*" data-minutesinput="1" value="0" min="0" max="120">
                                     </td>
                                     <td>
-                                        <input type="number" name="actionsecond1" pattern="\d*" data-secondsinput="1" value="0" min="0" max="59">
+                                        <input type="number" class="btn-block" name="actionsecond1" pattern="\d*" data-secondsinput="1" value="0" min="0" max="59">
                                     </td>
                                 </tr>
                             </tbody>

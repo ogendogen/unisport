@@ -48,7 +48,7 @@ namespace Team
                 if (!$team2->isTeamExists()) throw new \Exception("Druga drużyna nie istnieje!");
                 if ($date > time()) throw new \Exception("Data meczu jeszcze nie nastąpiła!");
 
-                $db->exec("INSERT INTO game SET game_team1id = ?,
+                $db->exec("INSERT INTO games SET game_team1id = ?,
                                           game_team2id = ?,
                                           game_date = ?,
                                           game_generaldesc = ?", [$team1_id, $team2_id, $date, $generaldesc]);
@@ -137,7 +137,7 @@ namespace Team
             }
         }
 
-        public function addAction(int $player_id, string $action_name, int $action_minute, int $action_second, bool $is_team1, bool $is_football)
+        public function addAction(int $player_id, string $action_name, int $action_minute, int $action_second, bool $is_team1)
         {
             try
             {
@@ -146,6 +146,7 @@ namespace Team
                 $player = new \User\LoggedUser($player_id);
 
                 $team = new \Team\Team(($is_team1 ? $this->team1 : $this->team2));
+                $is_football = ($team->getTeamInfo()["team_sport"] == "1" ? true : false);
                 if (!$team->isUserInTeam($player_id)) throw new \Exception("Gracz nie należy do drużyny!", 0);
                 if (!in_array($player_id, ($is_team1 ? $this->team1_players : $this->team2_players))) throw new \Exception("Gracz nie bierze udziału w tym meczu!");
 

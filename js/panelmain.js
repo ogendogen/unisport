@@ -177,6 +177,11 @@ function choosePlayer(playerid)
         obj.addClass("alert-success");
         choosen_players++;
         players_container.append("<input type='hidden' name='player" + choosen_players.toString() + "' value='" + playerid.toString() + "'>");
+
+        // adding player to additional info section
+        var players_set = $("[name^='playername']");
+        var player_credentials = $("[data-playerid=" + playerid.toString() + "]").text();
+        players_set.append("<option value='" + playerid.toString() + "'>" + player_credentials + "</option>");
     }
     else
     {
@@ -197,6 +202,10 @@ function choosePlayer(playerid)
                 counter++;
             });
         }
+
+        // removing player from info section
+        var players_set = $("[name^='playername']");
+        players_set.children("[value=" + playerid.toString() + "]").remove();
     }
 }
 

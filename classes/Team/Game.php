@@ -82,7 +82,7 @@ namespace Team {
                 if (!$user->isUserExistsById($user_id)) throw new \Exception("Taki użytkownik nie istnieje!");
                 if (!$myteam->isTeamExists()) throw new \Exception("Taka drużyna nie istnieje!");
 
-                $games = $db->exec("SELECT * FROM `games` WHERE game_team1id = ? OR game_team2id = ? ORDER BY game_date DESC LIMIT 15", [$team_id, $team_id]);
+                $games = $db->exec("SELECT * FROM `games` WHERE game_team1id = ? ORDER BY game_date DESC LIMIT 15", [$team_id]);
                 if (!$games) return null; // no games
 
                 return $games;

@@ -1,43 +1,23 @@
 <?php
 
 session_start();
-$message = array();
+if (!isset($_SESSION["userid"])) die(\Utils\General::retJson(-1, "Nie jesteś zalogowany!"));
+if (!isset($_GET["teamid"])) die(\Utils\General::retJson(-1, "Nie wybrano drużyny!"));
 
-if (!isset($_GET["teamid"]))
-{
-    $message["code"] = 0;
-    $message["msg"] = "Wybierz drużynę";
-    die(json_encode($message, JSON_UNESCAPED_UNICODE));
-}
-
-if (!isset($_SESSION["userid"]))
-{
-    $message["code"] = -1;
-    $message["msg"] = "Nie jesteś zalogowany!";
-    die(json_encode($message, JSON_UNESCAPED_UNICODE));
-}
-
-require_once("../classes/Team/Team.php");
-
+$userid = $_SESSION["userid"];
 $teamid = $_GET["teamid"];
-$userid = $_GET["userid"];
 
 try
 {
+    require_once(__DIR__."/../classes/Team/Team.php");
     $team = new \Team\Team($teamid);
-    if (!$team->isUserLeader($userid))
-    {
-        $message["code"] = 0;
-        $message["msg"] = "Nie jesteś liderem!";
-        die(json_encode($message, JSON_UNESCAPED_UNICODE));
-    }
+    if (!$team->isUserLeader($userid)) die(\Utils\General::retJson(0, "Nie jesteś liderem!"));
     $team->deleteTeam();
-    $message["code"] = 1;
-    $message["msg"] = "Pomyślnie usunięto drużynę";
+    die(\Utils\General::retJson(1, "Pomyślnie usunięto drużynę!"));
 }
 catch (\Exception $e)
 {
-    \Utils\Front::error($e->getMessage());
+    \Utils\General::retJson(-1, $e->getMessage());
 }
 
 ?>

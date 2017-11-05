@@ -72,7 +72,8 @@ catch (\Exception $e)
                                 echo "<td>".\Team\Team::getNameById($teamid == $game["game_team1id"] ? $game["game_team1id"] : $game["game_team2id"])."</td>";
                                 echo "<td>".\Team\Team::getNameById($teamid == $game["game_team1id"] ? $game["game_team2id"] : $game["game_team1id"])."</td>";
                                 echo "<td>".date("d-m-Y H:m", $game["game_date"])."</td>";
-                                echo "<td>".(strlen($game["game_generaldesc"]) > 60 ? substr($game["game_generaldesc"], 0, 60)."..." : $game["game_generaldesc"]);
+                                $desc = (strlen($game["game_generaldesc"]) > 60 ? substr($game["game_generaldesc"], 0, 60)."..." : $game["game_generaldesc"]);
+                                echo "<td>". strip_tags(html_entity_decode($desc))."</td>";
                                 echo "</tr>";
                             }
                         }

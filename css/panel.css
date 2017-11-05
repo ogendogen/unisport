@@ -13,3 +13,45 @@
     table-layout: fixed;
     word-wrap: break-word;
 }
+
+/* SpinBox */
+
+.spinbox {
+    /*max-width: 60px;*/
+    position: relative;
+    padding-right: 20px;
+    width: 50%;
+    float: left;
+}
+.spinbox .spinbox-input {
+    min-width: 40px;
+    padding-left: 4px;
+    padding-right: 4px;
+    text-align: center;
+}
+.spinbox .spinbox-buttons {
+    text-align: center;
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 20px;
+}
+.spinbox .spinbox-buttons .spinbox-up {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 50%;
+    width: 100%;
+    border-left: none;
+    line-height: 1;
+}
+.spinbox .spinbox-buttons .spinbox-down {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: 50%;
+    width: 100%;
+    border-left: none;
+    line-height: 1;
+}

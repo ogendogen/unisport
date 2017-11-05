@@ -45,7 +45,10 @@ try
         $report = $_POST["report"];
         // todo: zapis raportu w postaci base64 (???)
 
-        //$game = \Team\Game::createNewGame($teamid, $opponent_team_id, $date_timestamp, $report, $players_choosen);
+        $team1_score = intval($_POST["team1score"]);
+        $team2_score = intval($_POST["team2score"]);
+
+        $game = \Team\Game::createNewGame($teamid, $opponent_team_id, $date_timestamp, $report, $players_choosen, $team1_score, $team2_score);
         $postsize = count($_POST);
         for ($i = 1; $i <= $postsize; $i++)
         {
@@ -56,7 +59,7 @@ try
             $actionminute = $_POST["actionminute" . $i];
             $actionsecond = $_POST["actionsecond" . $i];
 
-            //$game->addAction($playerid, $actionname, $actionminute, $actionsecond, true);
+            $game->addAction($playerid, $actionname, $actionminute, $actionsecond, true);
         }
 
         \Utils\Front::success("Mecz został dodany prawidłowo");
@@ -100,6 +103,26 @@ catch (\Exception $e)
                                 <span class="glyphicon glyphicon-calendar"></span>
                             </span>
                         </div>
+                    </div>
+
+                    <label for="scorepicking">Wynik meczu</label>
+                    <div id="scorepicking" class="form-group">
+                        <div class="spinbox" data-min="0" data-max="999" data-step="1">
+                            <input class="form-control spinbox-input" name="team1score" type="text" pattern="\d*" value="0">
+                            <div class="spinbox-buttons">
+                                <button class="spinbox-up btn btn-default btn-xs alert-success" type="button">+</button>
+                                <button class="spinbox-down btn btn-default btn-xs alert-danger" type="button">-</button>
+                            </div>
+                        </div>
+
+                        <div class="spinbox" data-min="0" data-max="999" data-step="1">
+                            <input class="form-control spinbox-input" name="team2score" type="text" pattern="\d*" value="0">
+                            <div class="spinbox-buttons">
+                                <button class="spinbox-up btn btn-default btn-xs alert-success" type="button">+</button>
+                                <button class="spinbox-down btn btn-default btn-xs alert-danger" type="button">-</button>
+                            </div>
+                        </div>
+                        <br>
                     </div>
 
                     <label for="playerspicking">Wskaż zawodników biorących udział</label>
@@ -218,6 +241,26 @@ catch (\Exception $e)
                         maxDate: new Date()
                     });
                     CKEDITOR.replace("gamereport");
+                });
+
+                $(document).on('click', '.spinbox-up, .spinbox-down', function() {
+                    var $spinbox = $(this).closest('.spinbox');
+                    if ($spinbox.length) {
+                        var $input = $spinbox.find('input.spinbox-input');
+                        if ($input.length) {
+                            var max = parseInt($spinbox.data('max')) || false;
+                            var min = parseInt($spinbox.data('min')) || false;
+                            var val = parseInt($input.val()) || min || 0;
+                            var sign = $(this).hasClass('spinbox-up') ? 1 : -1;
+                            val += sign * (parseInt($spinbox.data('step')) || 1);
+                            if (max && val > max) {
+                                val = max;
+                            } else if (min && val < min) {
+                                val = min;
+                            }
+                            if (val >= 0) $input.val(val).trigger('change');
+                        }
+                    }
                 });
 
                 $("#gameform").submit(function(){

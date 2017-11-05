@@ -177,7 +177,7 @@ desired effect
                                     <a href="#" class="btn btn-default btn-flat">Profile</a>
                                 </div>
                                 <div class="pull-right">
-                                    <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                                    <a href="#" class="btn btn-default btn-flat" onclick="user_logout();">Sign out</a>
                                 </div>
                             </li>
                         </ul>

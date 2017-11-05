@@ -146,7 +146,7 @@
                         global $logged_user;
                         $userteams = $logged_user->getAllUserTeams();
                         $counter = 0;
-                        if (!is_null($userteams[0]["team_name"]))
+                        if (!empty($userteams))
                         {
                             foreach ($userteams as $userteam)
                             {

@@ -253,6 +253,27 @@ function sendInvitation()
     });
 }
 
+function user_logout()
+{
+    $.get("/ajax/Logout.php").done(function(data){
+        var obj = jQuery.parseJSON(JSON.stringify(data));
+        if (obj.code == "1")
+        {
+            modalSuccess("Powodzenie", "Zostałeś poprawnie wylogowany!");
+            setTimeout(logout2, 2000);
+        }
+        else
+        {
+            modalError("Błąd", "Problem z wylogowaniem")
+        }
+    });
+
+    function logout2()
+    {
+        window.location.href = "/";
+    }
+}
+
 function deleteTeam()
 {
     var teamid = team_selected;

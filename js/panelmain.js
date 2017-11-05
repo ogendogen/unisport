@@ -253,6 +253,31 @@ function sendInvitation()
     });
 }
 
+function deleteTeam()
+{
+    var teamid = team_selected;
+    $.get("/ajax/DeleteTeam.php?teamid=" + teamid.toString()).done(function(data){
+        var obj = jQuery.parseJSON(JSON.stringify(data));
+        if (obj.code == "-1")
+        {
+            modalError("Błąd", obj.msg);
+        }
+        else if (obj.code == "0")
+        {
+            modalWarning("Uwaga!", obj.msg);
+        }
+        else if (obj.code == "1")
+        {
+            modalSuccess("Powodzenie", obj.msg);
+            $("#team" + teamid.toString()).remove();
+            if ($("#teams_tbody").children().length === 1)
+            {
+                $("#teams_tbody").children().append("<div class='alert alert-info btn-block'>Nie jesteś w żadnej drużynie. Poproś swojego lidera o zaproszenie lub stwórz własną drużynę !</div>");
+            }
+        }
+    });
+}
+
 function removeMember()
 {
     var teamid = getUrlParameter("teamid");

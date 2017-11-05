@@ -77,7 +77,7 @@
             <div class="box-body" id="teamLeaderBtns">
                 <button class="btn btn-block btn-primary" id="btnEditTeam" disabled="disabled" type="button" onclick="editTeam();">Edytuj podstawowe dane o drużynie</button>
                 <button class="btn btn-block btn-primary" id="btnAddMember" disabled="disabled" type="button" onclick="editMembers();">Dodaj/Usuń członków drużyny</button>
-                <button class="btn btn-block btn-danger" id="btnDeleteTeam" disabled="disabled" type="button">Usuń zaznaczoną drużynę (w budowie)</button>
+                <button class="btn btn-block btn-danger" id="btnDeleteTeam" disabled="disabled" type="button" onclick="deleteTeam();">Usuń zaznaczoną drużynę</button>
             </div>
         </div>
     </div>
@@ -134,7 +134,7 @@
 
             <div class="box-body">
                 <table class="table table-bordered">
-                    <tbody>
+                    <tbody id="teams_tbody">
                         <tr>
                             <th>#</th>
                             <th>Nazwa drużyny</th>
@@ -157,11 +157,12 @@
                                 echo "<td onclick='chooseTeam(".$userteam["team_id"].");'>".$userteam["team_description"]."</td>";
                                 echo "<td onclick='chooseTeam(".$userteam["team_id"].");'>".\Team\Sport::sportIdToName($userteam["team_sport"])."</td>";
                                 echo "</tr>";
+                                $counter++;
                             }
                         }
                         else
                         {
-                            echo "Nie jesteś w żadnej drużynie. Poproś swojego lidera o zaproszenie lub stwórz własną drużynę !";
+                            echo "<div class='alert alert-info btn-block'>Nie jesteś w żadnej drużynie. Poproś swojego lidera o zaproszenie lub stwórz własną drużynę !</div>";
                         }
                         ?>
                     </tbody>

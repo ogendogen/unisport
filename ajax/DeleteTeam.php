@@ -1,6 +1,8 @@
 <?php
 
 session_start();
+header('Content-Type: application/json');
+require_once(__DIR__."/../classes/Utils/General.php");
 if (!isset($_SESSION["userid"])) die(\Utils\General::retJson(-1, "Nie jesteś zalogowany!"));
 if (!isset($_GET["teamid"])) die(\Utils\General::retJson(-1, "Nie wybrano drużyny!"));
 

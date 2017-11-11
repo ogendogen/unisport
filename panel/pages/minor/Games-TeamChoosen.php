@@ -23,11 +23,12 @@ catch (\Exception $e)
                 <i class="glyphicon glyphicon-th"> Akcje</i>
             </div>
             <div id="actionbuttons" class="box-body text-center">
-                <button type="button" class="btn btn-block btn-primary" disabled="disabled" onclick="redirectAddGame()">Dodaj mecz</button>
-                <button type="button" class="btn btn-block btn-primary" disabled="disabled">Wprowadź zmiany</button>
-                <button type="button" class="btn btn-block btn-primary" disabled="disabled">Zobacz ogólne podsumowanie</button>
-                <button type="button" class="btn btn-block btn-primary" disabled="disabled">Generuj szczegółowy raport PDF</button>
-                <button type="button" class="btn btn-block btn-primary" disabled="disabled">Zaproponuj układ na następny mecz</button>
+                <button type="button" data-actionid="0" class="btn btn-block btn-primary" disabled="disabled" onclick="redirectAddGame()">Dodaj mecz</button>
+                <button type="button" data-actionid="1" class="btn btn-block btn-primary" disabled="disabled">Wprowadź zmiany</button>
+                <button type="button" data-actionid="2" class="btn btn-block btn-primary" disabled="disabled">Zobacz ogólne podsumowanie</button>
+                <button type="button" data-actionid="3" class="btn btn-block btn-primary" disabled="disabled">Generuj szczegółowy raport PDF</button>
+                <button type="button" data-actionid="4" class="btn btn-block btn-primary" disabled="disabled">Zaproponuj układ na następny mecz</button>
+                <button type="button" data-actionid="5" class="btn btn-block btn-primary" disabled="disabled" onclick="redirectShowAll()">Wyświetl wszystkie mecze</button>
             </div>
         </div>
     </div>
@@ -67,7 +68,7 @@ catch (\Exception $e)
                             foreach ($games as $game)
                             {
                                 $counter++;
-                                echo "<tr data-gameid='".$game["game_id"]."' onclick='chooseGame(".$game["game_id"].")'>";
+                                echo "<tr data-gameid='".$game["game_id"]."' data-selected='0' onclick='chooseGame(".$game["game_id"].")'>";
                                 echo "<td>".$counter.".</td>";
                                 echo "<td>".\Team\Team::getNameById($teamid == $game["game_team1id"] ? $game["game_team1id"] : $game["game_team2id"])."</td>";
                                 echo "<td>".\Team\Team::getNameById($teamid == $game["game_team1id"] ? $game["game_team2id"] : $game["game_team1id"])."</td>";
@@ -86,3 +87,12 @@ catch (\Exception $e)
         </div>
     </div>
 </div>
+<script>
+    $(document).ready(function(){
+       checkLeadership(getUrlParameter("teamid"));
+       var btns = $("#actionbuttons").children();
+       if (window.localStorage.isLeader == 1) btns.eq(0).removeAttr("disabled");
+       btns.eq(4).removeAttr("disabled");
+       btns.eq(5).removeAttr("disabled");
+    });
+</script>

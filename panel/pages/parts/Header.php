@@ -42,6 +42,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!--<script src="bower_components/bootstrap-datetimepicker/dist/locales/bootstrap-datetimepicker.pl.min.js"></script>-->
     <!-- Custom JS -->
     <script src="../js/panelmain.js"></script>
+    <script src="../js/games.js"></script>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->

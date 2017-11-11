@@ -86,13 +86,27 @@ namespace Team {
                 if (!$games) return null; // no games
 
                 return $games;
-                /*$games["opponents"] = array();
-                array_push($games["opponents"], \Team\Team::getNameById($team_id));
-                foreach ($games as $game)
-                {
-                    if (!in_array($game["game_team1id"], $games["opponents"])) array_push($games["opponents"], \Team\Team::getNameById($game["game_team1id"]));
-                    if (!in_array($game["game_team2id"], $games["opponents"])) array_push($games["opponents"], \Team\Team::getNameById($game["game_team2id"]));
-                }*/
+            }
+            catch (\Exception $e)
+            {
+                throw $e;
+            }
+        }
+
+        public static function getAllUserGames(int $user_id, int $team_id)
+        {
+            try
+            {
+                $db = \Db\Database::getInstance();
+                $user = new \User\LoggedUser($user_id);
+                $myteam = new \Team\Team($team_id);
+                if (!$user->isUserExistsById($user_id)) throw new \Exception("Taki użytkownik nie istnieje!");
+                if (!$myteam->isTeamExists()) throw new \Exception("Taka drużyna nie istnieje!");
+
+                $games = $db->exec("SELECT * FROM `games` WHERE game_team1id = ? ORDER BY game_date DESC", [$team_id]);
+                if (!$games) return null; // no games
+
+                return $games;
             }
             catch (\Exception $e)
             {

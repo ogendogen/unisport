@@ -16,7 +16,6 @@ namespace Utils
 
         public static function redirectWithMessageAndDelay(string $url, string $msgheader, string $msg, string $type, int $delay)
         {
-            //header("refresh:".$delay."; url=".$url);
             ?>
 
             <script>

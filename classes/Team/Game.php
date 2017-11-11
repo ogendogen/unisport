@@ -131,7 +131,6 @@ namespace Team {
             //$gamedata["game_team1players"] = $this->db->exec("SELECT * FROM games_players WHERE player_teamid = ?", [$gamedata["game_team1id"]]);
             //$gamedata["game_team2players"] = $this->db->exec("SELECT * FROM games_players WHERE player_teamid = ?", [$gamedata["game_team2id"]]);
 
-            var_dump($gamedata);
             return $gamedata;
             //$gamedata = $this->db->exec("SELECT games.*, games_players.* FROM games LEFT JOIN games_players ON games.id = player.gameid WHERE games.game_id = ?", [$this->match_id])[0];
         }

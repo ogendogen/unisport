@@ -18,6 +18,10 @@ else
                 include(__DIR__."/../minor/Games-ShowAllGames.php");
                 break;
 
+            case "summary":
+                include(__DIR__."/../minor/Games-Summary.php");
+                break;
+
             default:
                 include(__DIR__."/../minor/Games-TeamChoosen.php");
                 break;

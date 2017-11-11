@@ -1,3 +1,5 @@
+var game_choosen = -1;
+
 function redirectAddGame()
 {
     window.location.href = "index.php?tab=games&minor=addgame&teamid=" + getUrlParameter("teamid");
@@ -6,6 +8,11 @@ function redirectAddGame()
 function redirectShowAll()
 {
     window.location.href = "index.php?tab=games&minor=showall&teamid=" + getUrlParameter("teamid");
+}
+
+function redirectSummary()
+{
+    window.location.href = "index.php?tab=games&minor=summary&gameid=" + game_choosen.toString() + "&teamid=" + getUrlParameter("teamid");
 }
 
 function chooseGame(gameid)
@@ -22,6 +29,8 @@ function chooseGame(gameid)
         btns.eq(1).attr("disabled", "disabled");
         btns.eq(2).attr("disabled", "disabled");
         btns.eq(3).attr("disabled", "disabled");
+
+        game_choosen = -1;
     }
     else if ((is_choosen_already && row.attr("data-selected") == "1") || (!is_choosen_already))
     {
@@ -43,6 +52,7 @@ function chooseGame(gameid)
         }
         row.css("background-color", "#FFD700");
         row.attr("data-selected", "1");
+        game_choosen = gameid;
     }
 }
 

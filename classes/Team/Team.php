@@ -233,6 +233,19 @@ namespace Team
             }
         }
 
+        public function isFootballTeam() : bool
+        {
+            try
+            {
+                if ($this->db->exec("SELECT team_sport FROM teams WHERE team_id = ?", [$this->teamid])[0]["team_sport"] == "1") return true;
+                return false;
+            }
+            catch (\Exception $e)
+            {
+                throw $e;
+            }
+        }
+
         // DbTeam:
         public function getAllTeamPlayers() : array
         {

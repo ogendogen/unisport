@@ -6,6 +6,7 @@ if (!is_numeric($teamid)) die(\Utils\General::redirectWithMessageAndDelay("?tab=
 if (!is_numeric($gameid)) die(\Utils\General::redirectWithMessageAndDelay("?tab=dashboard", "Błąd!", "Taki mecz nie istnieje!", "danger", 2));
 $game = null;
 $gamedata = null;
+$team = null;
 
 try
 {
@@ -68,7 +69,7 @@ catch (\Exception $e)
 
 <div class="row">
     <div class="col-md-1"></div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="box box-default">
             <div class="box-header with-border">
                 <i class="fa fa-pencil-square-o"> Raport</i>
@@ -90,20 +91,85 @@ catch (\Exception $e)
         </div>
     </div>
 
-    <div class="col-md-6">
+    <div class="col-md-2">
+        <div class="box box-default">
+            <div class="box-header with-border">
+                <i class="fa fa-users"> Uczestnicy</i>
+            </div>
+            <div class="box-body">
+                <ul>
+                    <?php
+
+                    // print all players that took part in game
+                    // $gamedata["game_team1players"]
+                    foreach ($gamedata["game_team1players"] as $playerid)
+                    {
+                        $player = new \User\LoggedUser($playerid);
+                        echo "<li>".$player->getUserCredentials()."</li>";
+                    }
+                    ?>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-5">
         <div class="box box-default">
             <div class="box-header with-border">
                 <i class="fa fa-sitemap"> Akcje graczy</i>
             </div>
             <div class="box-body">
-                <?php
+                <ul>
+                    <?php
 
-                // Gracz (id -> name) wykonał (key -> word) w (m) minucie i (s) sekundzie
-                //echo "<p>Gracz ".</p>";
+                    //var_dump($gamedata);
 
-                ?>
+                    //$team = new \Team\Team($gamedata["game_team1id"]);
+                    //$team->getTeamInfo()
+                    // Gracz (id -> name) wykonał (key -> word) w (m) minucie i (s) sekundzie
+                    //echo "<p>Gracz ".</p>";
+
+                    $actions = $game->getAllGameActions();
+                    $res = false;
+                    if ($team->isFootballTeam())
+                    {
+                        foreach ($actions as $action)
+                        {
+                            if (!in_array(null, $action))
+                            {
+                                $res = true;
+                                echo "<li>Gracz <span style='font-weight: bold'>".$action["user_name"]." ".$action["user_surname"]."</span> wykonał akcję <span style='font-weight: bold;'>".strtolower(\Utils\Dictionary::keyToWord($action["football_action"]))."</span> w minucie <span style='font-weight: bold'>".$action["football_minute"].":".$action["football_second"]."</span></li>";
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach ($actions as $action)
+                        {
+                            if (!in_array(null, $action))
+                            {
+                                $res = true;
+                                echo "<li>Gracz ".$action["user_name"]." ".$action["user_surname"]." wykonał akcję ".strtolower(\Utils\Dictionary::keyToWord($action["general_action"]))." w minucie ".$action["general_minute"].":".$action["general_second"]."</li>";
+                            }
+                        }
+                    }
+
+                    if (!$res) echo "<div class='alert alert-warning btn-block'>Brak akcji w tym meczu!</div>";
+
+                    ?>
+                </ul>
             </div>
         </div>
     </div>
     <div class="col-md-1"></div>
+</div>
+
+<div class="row">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+        <div class="alert alert-success btn-block text-center cursorhand" onclick="window.history.back()">
+            Powrót
+        </div>
+    </div>
+    <div class="col-md-4"></div>
 </div>

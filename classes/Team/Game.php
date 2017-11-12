@@ -17,6 +17,7 @@ namespace Team {
         private $date;
         private $generaldesc;
         private $team1_players; // array of userids
+        private $is_football;
 
         public function __construct(int $game_id)
         {
@@ -25,6 +26,10 @@ namespace Team {
             if ($this->game_id > 0) {
                 $arr = $this->getGameData();
                 $this->team1 = $arr["game_team1id"];
+
+                $team1 = new \Team\Team($this->team1);
+                $this->is_football = $team1->isFootballTeam();
+
                 $this->team2 = $arr["game_team2id"];
                 $this->date = $arr["game_date"];
                 $this->generaldesc = $arr["game_generaldesc"];
@@ -107,6 +112,33 @@ namespace Team {
                 if (!$games) return null; // no games
 
                 return $games;
+            }
+            catch (\Exception $e)
+            {
+                throw $e;
+            }
+        }
+
+        public function getAllGameActions()
+        {
+            try
+            {
+                if ($this->is_football)
+                {
+                    return $this->db->exec("SELECT user_name, user_surname, football_action, football_minute, football_second FROM `games_players` 
+                                              LEFT JOIN `games_players_football_info` ON games_players.player_id = games_players_football_info.football_gameplayerid 
+                                              LEFT JOIN `users` ON games_players.player_playerid = users.user_id
+                                              WHERE games_players.player_gameid = ?
+                                              ORDER BY football_minute ASC, football_second ASC", [$this->game_id]);
+                }
+                else
+                {
+                    return $this->db->exec("SELECT user_name, user_surname, general_action, general_minute, general_second FROM `games_players` 
+                                              LEFT JOIN `games_players_general_info` ON games_players.player_id = games_players_general_info.generalgame_gameplayerid
+                                              LEFT JOIN `users` ON games_players.player_playerid = users.user_id
+                                              WHERE games_players.player_gameid = ?
+                                              ORDER BY general_minute ASC, general_second ASC", [$this->game_id]);
+                }
             }
             catch (\Exception $e)
             {

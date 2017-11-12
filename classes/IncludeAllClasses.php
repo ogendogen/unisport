@@ -9,7 +9,7 @@ foreach ($dirs as $dir)
     $subdirs = scandir($CONF["root_path"]."classes/".$dir."/");
     foreach ($subdirs as $subdir)
     {
-        if ($subdir == "." || $subdir == "..") continue;
+        if ($subdir == "." || $subdir == ".." || $subdir == "TCPDF") continue;
         require_once($CONF["root_path"]."classes/".$dir."/".$subdir);
     }
 }

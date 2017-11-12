@@ -132,7 +132,6 @@ function choosePlayer(playerid)
     {
         obj.removeClass("alert-success");
         obj.addClass("alert-info");
-        console.log(choosen_players);
         if (choosen_players > 0) $("#players2sent [value='" + playerid.toString() + "']").remove();
 
         // reordering

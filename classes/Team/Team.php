@@ -237,7 +237,10 @@ namespace Team
         {
             try
             {
-                if ($this->db->exec("SELECT team_sport FROM teams WHERE team_id = ?", [$this->teamid])[0]["team_sport"] == "1") return true;
+                //if ($this->db->exec("SELECT team_sport FROM teams WHERE team_id = ?", [$this->teamid])[0]["team_sport"] == "1") return true;
+                $ret = $this->db->exec("SELECT team_sport FROM teams WHERE team_id = ?", [$this->teamid]);
+                if (!$ret) return false;
+                if ($ret[0]["team_sport"] == "1") return true;
                 return false;
             }
             catch (\Exception $e)

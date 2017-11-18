@@ -233,6 +233,124 @@ namespace Team {
                 throw $e;
             }
         }
+
+        public function editBasicData(int $opponent_id, int $game_time, int $team1_score, int $team2_score, string $game_report)
+        {
+            try
+            {
+                $team2 = new \Team\Team($opponent_id);
+                if (!$team2->isTeamExists()) throw new \Exception("Druga drużyna nie istnieje!");
+                if (!is_integer($team1_score) || $team1_score < 0) throw new \Exception("Wynik twojej drużyny jest niepoprawny!");
+                if (!is_integer($team2_score) || $team2_score < 0) throw new \Exception("Wynik drużyny przeciwnej jest niepoprawny!");
+                if ($game_time > time()) throw new \Exception("Data meczu jeszcze nie nastąpiła!");
+                $this->db->exec("UPDATE games SET game_team2id = ?, game_date = ?, game_team1score = ?, game_team2score = ?, game_generaldesc = ? WHERE game_id = ?", [$opponent_id, $game_time, $team1_score, $team2_score, $game_report]);
+            }
+            catch (\Exception $e)
+            {
+                throw $e;
+            }
+        }
+
+        public function editGamePlayers(array $players)
+        {
+            try
+            {
+                if (empty($players)) return;
+                $not_changed_players = array_intersect($this->team1_players, $players);
+                $players_to_delete = array_diff($this->team1_players, $not_changed_players);
+                $players_to_add = array_diff($players, $not_changed_players);
+
+                // Database changes
+                foreach ($players_to_delete as $player) $this->db->exec("DELETE FROM games_players WHERE player_playerid = ?", [$player]); // delete players
+                foreach ($players_to_add as $player) $this->db->exec("INSERT INTO games_players SET player_gameid = ?, player_teamid = ?, player_playerid = ?", [$this->game_id, $this->team1, $player]); // add new players
+
+                // Field changes
+                $this->team1_players = $this->getGameData()["game_team1players"];
+            }
+            catch (\Exception $e)
+            {
+                throw $e;
+            }
+        }
+
+        public function editGameActions(array $actions)
+        {
+            try
+            {
+                /* array action ->
+                    int player_id,
+                    string action_name,
+                    int action_minute,
+                    int action_second
+                */
+
+                foreach ($actions as $action) $this->validateAction($action["player_id"], $action["action_name"], $action["action_minute"], $action["action_second"]);
+                $this->deleteAllGameActions();
+                foreach ($actions as $action) $this->addAction($action["player_id"], $action["action_name"], $action["action_minute"], $action["action_second"], true);
+            }
+            catch (\Exception $e)
+            {
+                throw $e;
+            }
+        }
+
+        private function validateAction(int $player_id, string $action_name, int $action_minute, int $action_second)
+        {
+            try
+            {
+                // exception with -1 code is a fatal error, exception with 0 code is a warning and continuation is acceptable
+                if (is_null($this->game_id) || $this->game_id == 0) throw new \Exception("Taka mecz nie istnieje!", -1);
+                $player = new \User\LoggedUser($player_id);
+
+                $team = new \Team\Team($this->team1);
+                $is_football = ($team->getTeamInfo()["team_sport"] == "1" ? true : false);
+                if (!$team->isUserInTeam($player_id)) throw new \Exception("Gracz nie należy do drużyny!", 0);
+                if (!in_array($player_id, ($this->team1_players))) throw new \Exception("Gracz nie bierze udziału w tym meczu!");
+
+                if ($action_minute < 0 || $action_minute > 120) throw new \Exception("Minuta akcji jest spoza zakresu!", 0);
+                if ($action_second < 0 || $action_second > 59) throw new \Exception("Sekundy akcji są spoza zakresu!", 0);
+
+                $actions = $this->db->getEnumPossibleValues(($is_football ? "games_players_football_info" : "games_players_general_info"), ($is_football ? "football_action" : "general_action"));
+                if (!in_array($action_name, $actions)) throw new \Exception("Taka akcja nie istnieje!", 0);
+            }
+            catch (\Exception $e)
+            {
+                throw $e;
+            }
+        }
+
+        private function deleteAllGameActions()
+        {
+            try
+            {
+                if ($this->is_football)
+                {
+                    $this->db->exec("DELETE FROM games_players_football_info WHERE football_gameplayerid = ?", [$this->team1]);
+                }
+                else
+                {
+                    $this->db->exec("DELETE FROM games_players_general_info WHERE generalgame_gameplayerid = ?", [$this->team1]);
+                }
+            }
+            catch (\Exception $e)
+            {
+                throw $e;
+            }
+        }
+
+        private function isPlayerInGame(int $player_id) : bool
+        {
+            try
+            {
+                $ret = $this->db->exec("SELECT player_playerid FROM games_players WHERE player_gameid = ? AND player_playerid = ?", [$this->game_id, $player_id]);
+                if (!$ret) return false;
+                return true;
+            }
+            catch (\Exception $e)
+            {
+                throw $e;
+            }
+        }
     }
 }
 

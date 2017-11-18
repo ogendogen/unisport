@@ -14,6 +14,10 @@ else
                 include(__DIR__."/../minor/Games-AddGame.php");
                 break;
 
+            case "editgame":
+                include(__DIR__."/../minor/Games-EditGame.php");
+                break;
+
             case "showall":
                 include(__DIR__."/../minor/Games-ShowAllGames.php");
                 break;

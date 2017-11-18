@@ -15,6 +15,11 @@ function redirectSummary()
     window.location.href = "index.php?tab=games&minor=summary&gameid=" + game_choosen.toString() + "&teamid=" + getUrlParameter("teamid");
 }
 
+function redirectEditGame()
+{
+    window.location.href = "index.php?tab=games&minor=editgame&gameid=" + game_choosen.toString();
+}
+
 function redirectPDF()
 {
     $.ajax({

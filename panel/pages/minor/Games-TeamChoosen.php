@@ -24,7 +24,7 @@ catch (\Exception $e)
             </div>
             <div id="actionbuttons" class="box-body text-center">
                 <button type="button" data-actionid="0" class="btn btn-block btn-primary" disabled="disabled" onclick="redirectAddGame()">Dodaj mecz</button>
-                <button type="button" data-actionid="1" class="btn btn-block btn-primary" disabled="disabled">Wprowadź zmiany</button>
+                <button type="button" data-actionid="1" class="btn btn-block btn-primary" disabled="disabled" onclick="redirectEditGame()">Wprowadź zmiany</button>
                 <button type="button" data-actionid="2" class="btn btn-block btn-primary" disabled="disabled" onclick="redirectSummary()">Zobacz ogólne podsumowanie</button>
                 <button type="button" data-actionid="3" class="btn btn-block btn-primary" disabled="disabled" onclick="redirectPDF()">Generuj szczegółowy raport PDF</button>
                 <button type="button" data-actionid="4" class="btn btn-block btn-primary" disabled="disabled">Zaproponuj układ na następny mecz</button>

@@ -134,7 +134,7 @@ catch (\Exception $e)
                         if ($players_num == 0)
                         {
                             echo "<div class='alert alert-danger alert-block'>W drużynie nie ma zawodników!</div>";
-                            echo "<input type='hidden' name='blocker' value=''>"; // zapobiega wysłaniu formularza
+                            echo "<input type='hidden' name='blocker' value=''>"; // zapobiega wysłaniu formularza, gdy nie wybrany żaden zawodnik
                         }
                         else
                         {
@@ -189,12 +189,12 @@ catch (\Exception $e)
                             <tbody>
                                 <tr id="action1">
                                     <td>
-                                        <select name="playername1" class="btn-block">
+                                        <select title="playername" name="playername1" class="btn-block">
 
                                         </select>
                                     </td>
                                     <td>
-                                        <select name="actionname1" class="btn-block">
+                                        <select title="actionname" name="actionname1" class="btn-block">
                                             <?php
 
                                             $sport_id= $team->getTeamInfo()["team_sport"];

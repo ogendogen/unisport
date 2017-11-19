@@ -22,8 +22,7 @@ namespace Utils
             <script>
                 setTimeout(fun, <?php echo $delay * 1000; ?>);
 
-                function fun()
-                {
+                function fun() {
                     window.location.href = "<?php echo $url; ?>";
                 }
             </script>
@@ -61,12 +60,22 @@ namespace Utils
             if (!$ret) throw new \Exception("Problem z wysłaniem wiadomości email");
         }
 
-        public static function retJson(int $code, string $msg, int $arg = 256) : string
+        public static function retJson(int $code, string $msg, int $arg = 256): string
         {
             $ret = array();
             $ret["msg"] = $msg;
             $ret["code"] = $code;
             return json_encode($ret, $arg);
+        }
+
+        public static function in_array_r($needle, $haystack, $strict = false)
+        {
+            foreach ($haystack as $item) {
+                if (($strict ? $item === $needle : $item == $needle) || (is_array($item) && self::in_array_r($needle, $item, $strict))) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public static function preparePDF(int $game_id = 0) : TCPDF

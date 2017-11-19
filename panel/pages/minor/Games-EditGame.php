@@ -61,7 +61,7 @@ try
         $postsize = count($_POST);
         for ($i = 1; $i <= $postsize; $i++)
         {
-            if (!isset($_POST["playername" . $i])) break;
+            if (!isset($_POST["playername" . $i])) continue; // było break
 
             $action = array();
             $action["player_id"] = $_POST["playername" . $i];
@@ -100,7 +100,7 @@ catch (\Exception $e)
                         foreach ($matched_teams as $matched_team)
                         {
                             if ($matched_team["team_id"] == $teamid) continue;
-                            echo "<option value='".$matched_team["team_id"]."' ". ($matched_team["team_id"] == $gamedata["game_team1id"] ? "selected='selected'" : "") .">".$matched_team["team_name"]."</option>";
+                            echo "<option value='".$matched_team["team_id"]."' ". ($matched_team["team_id"] == $gamedata["game_team2id"] ? "selected='selected'" : "") .">".$matched_team["team_name"]."</option>";
                         }
 
                         ?>
@@ -119,7 +119,7 @@ catch (\Exception $e)
                     <label for="scorepicking">Wynik meczu</label>
                     <div id="scorepicking" class="form-group">
                         <div class="spinbox" data-min="0" data-max="999" data-step="1">
-                            <input class="form-control spinbox-input" name="team1score" type="text" pattern="\d*" value="0">
+                            <input class="form-control spinbox-input" name="team1score" type="text" pattern="\d*" value="<?php echo $gamedata["game_team1score"]; ?>">
                             <div class="spinbox-buttons">
                                 <button class="spinbox-up btn btn-default btn-xs alert-success" type="button">+</button>
                                 <button class="spinbox-down btn btn-default btn-xs alert-danger" type="button">-</button>
@@ -127,7 +127,7 @@ catch (\Exception $e)
                         </div>
 
                         <div class="spinbox" data-min="0" data-max="999" data-step="1">
-                            <input class="form-control spinbox-input" name="team2score" type="text" pattern="\d*" value="0">
+                            <input class="form-control spinbox-input" name="team2score" type="text" pattern="\d*" value="<?php echo $gamedata["game_team2score"]; ?>">
                             <div class="spinbox-buttons">
                                 <button class="spinbox-up btn btn-default btn-xs alert-success" type="button">+</button>
                                 <button class="spinbox-down btn btn-default btn-xs alert-danger" type="button">-</button>
@@ -142,10 +142,12 @@ catch (\Exception $e)
 
                         $players = $team->getAllTeamPlayers();
                         $players_num = count($players);
+
+                        $game_players = $gamedata["game_team1players"];
                         if ($players_num == 0)
                         {
                             echo "<div class='alert alert-danger alert-block'>W drużynie nie ma zawodników!</div>";
-                            echo "<input type='hidden' name='blocker' value=''>"; // zapobiega wysłaniu formularza
+                            echo "<input type='hidden' name='blocker' value=''>"; // zapobiega wysłaniu formularza, gdy nie wybrany żaden zawodnik
                         }
                         else
                         {
@@ -161,7 +163,7 @@ catch (\Exception $e)
                                 {
                                     echo "<div class='row'>";
                                 }
-                                echo "<div class='alert alert-info col-md-4' style='margin-left: 5px;' onclick='choosePlayer(".$player["user_id"].")' data-playerid='".$player["user_id"]."'>".$player["user_name"]." ".$player["user_surname"]."</div>";
+                                echo "<div class='alert ". (in_array($player["user_id"], $game_players) ? "alert-success" : "alert-info") ." col-md-4' style='margin-left: 5px;' onclick='choosePlayer(".$player["user_id"].")' data-playerid='".$player["user_id"]."'>".$player["user_name"]." ".$player["user_surname"]."</div>";
                                 $counter++;
                             }
                             echo "</div>";
@@ -170,7 +172,19 @@ catch (\Exception $e)
                         ?>
                     </div>
                     <div id="players2sent" style="display: none;">
+                        <?php
 
+                        $counter = 1;
+                        foreach ($players as $player)
+                        {
+                            if (in_array($player["user_id"], $game_players))
+                            {
+                                echo "<input name='player".$counter."' value='".$player["user_id"]."' type='hidden'>";
+                                $counter++;
+                            }
+                        }
+
+                        ?>
                     </div>
 
                     <label for="gamereport">Wpisz ogólny raport z meczu</label>
@@ -197,48 +211,121 @@ catch (\Exception $e)
                             <th>Sekunda</th>
                         </tr>
                         </thead>
-                        <tbody>
-                        <tr id="action1">
-                            <td>
-                                <select name="playername1" class="btn-block">
+                        <tbody id="actiontbody">
+                        <?php
 
-                                </select>
-                            </td>
-                            <td>
-                                <select name="actionname1" class="btn-block">
-                                    <?php
+                        $gameactions = $game->getAllGameActions();
+                        $user = new \User\User();
 
-                                    $sport_id= $team->getTeamInfo()["team_sport"];
-                                    $sport = new \Team\Sport($sport_id);
-                                    $actions = $sport->getAllSportActions();
-                                    foreach ($actions as $action)
-                                    {
-                                        try
+                        $counter = 1;
+                        if (!empty($gameactions) && !\Utils\General::in_array_r(null, $gameactions))
+                        {
+                            $is_football = $team->isFootballTeam();
+                            foreach ($gameactions as $action)
+                            {
+                                //if (($is_football && \Utils\General::in_array_r(null, $gameactions)) || ($is_football && \Utils\General::in_array_r(null, $gameactions))) break;
+                                $participant = $user->findUsersByCredentials($action["user_name"], $action["user_surname"])[0];
+                                ?>
+                                    <tr id="action<?php echo $counter; ?>">
+                                        <td>
+                                            <select title="playername" name="playername<?php echo $counter; ?>" class="btn-block">
+                                                <option value="<?php echo $participant->getUserId(); ?>"><?php echo $action["user_name"]." ".$action["user_surname"]; ?></option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select title="actionname" name="actionname<?php echo $counter; ?>" class="btn-block">
+                                                <?php
+
+                                                $sport_id= $team->getTeamInfo()["team_sport"];
+                                                $sport = new \Team\Sport($sport_id);
+                                                $actions = $sport->getAllSportActions();
+                                                foreach ($actions as $sportaction)
+                                                {
+                                                    try
+                                                    {
+                                                        $transalated = \Utils\Dictionary::keyToWord($sportaction);
+                                                        if ($transalated == $sportaction)
+                                                        {
+                                                            \Utils\Front::error("Problem z tłumaczeniem");
+                                                            break;
+                                                        }
+                                                        echo "<option value='".$sportaction."'>".$transalated."</option>";
+                                                    }
+                                                    catch (\Exception $e)
+                                                    {
+                                                        \Utils\Front::error($e->getMessage());
+                                                    }
+                                                }
+
+                                                ?>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="number" class="btn-block" title="minute" name="actionminute<?php echo $counter; ?>" pattern="\d*" data-minutesinput="1" value="<?php echo ($is_football ? $action["football_minute"] : $action["general_minute"])?>" min="0" max="120">
+                                        </td>
+                                        <td>
+                                            <input type="number" class="btn-block" title="second" name="actionsecond<?php echo $counter; ?>" pattern="\d*" data-secondsinput="1" value="<?php echo ($is_football ? $action["football_second"] : $action["general_second"])?>" min="0" max="59">
+                                        </td>
+                                    </tr>
+                                <?php
+                                $counter++;
+                            }
+                        }
+                        else
+                        {
+                            ?>
+                            <tr id="action1">
+                                <td>
+                                    <select title="playername" name="playername1" class="btn-block">
+                                        <?php
+
+                                        foreach ($players as $player)
                                         {
-                                            $transalated = \Utils\Dictionary::keyToWord($action);
-                                            if ($transalated == $action)
+                                            echo "<option value='".$player["user_id"]."'>". $player["user_name"]." ".$player["user_surname"]."</option>";
+                                        }
+
+                                        ?>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select title="actionname" name="actionname1" class="btn-block">
+                                        <?php
+
+                                        $sport_id= $team->getTeamInfo()["team_sport"];
+                                        $sport = new \Team\Sport($sport_id);
+                                        $actions = $sport->getAllSportActions();
+                                        foreach ($actions as $action)
+                                        {
+                                            try
                                             {
-                                                \Utils\Front::error("Problem z tłumaczeniem");
-                                                break;
+                                                $transalated = \Utils\Dictionary::keyToWord($action);
+                                                if ($transalated == $action)
+                                                {
+                                                    \Utils\Front::error("Problem z tłumaczeniem");
+                                                    break;
+                                                }
+                                                echo "<option value='".$action."'>".$transalated."</option>";
                                             }
-                                            echo "<option value='".$action."'>".$transalated."</option>";
+                                            catch (\Exception $e)
+                                            {
+                                                \Utils\Front::error($e->getMessage());
+                                            }
                                         }
-                                        catch (\Exception $e)
-                                        {
-                                            \Utils\Front::error($e->getMessage());
-                                        }
-                                    }
 
-                                    ?>
-                                </select>
-                            </td>
-                            <td>
-                                <input type="number" class="btn-block" name="actionminute1" pattern="\d*" data-minutesinput="1" value="0" min="0" max="120">
-                            </td>
-                            <td>
-                                <input type="number" class="btn-block" name="actionsecond1" pattern="\d*" data-secondsinput="1" value="0" min="0" max="59">
-                            </td>
-                        </tr>
+                                        ?>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="number" class="btn-block" name="actionminute1" title="actionminute" pattern="\d*" data-minutesinput="1" value="0" min="0" max="120">
+                                </td>
+                                <td>
+                                    <input type="number" class="btn-block" name="actionsecond1" title="actionminute" pattern="\d*" data-secondsinput="1" value="0" min="0" max="59">
+                                </td>
+                            </tr>
+                        <?php
+                        }
+
+                        ?>
                         </tbody>
                     </table>
                 </div>
@@ -249,9 +336,11 @@ catch (\Exception $e)
             $(function () {
                 $('#datetimepicker1').datetimepicker({
                     locale: "pl",
-                    maxDate: new Date()
+                    maxDate: new Date(),
+                    date: new Date(<?php echo $gamedata["game_date"] * 1000; ?>)
                 });
                 CKEDITOR.replace("gamereport");
+                CKEDITOR.instances["gamereport"].setData("<?php echo html_entity_decode($gamedata["game_generaldesc"]); ?>");
             });
 
             $(document).on('click', '.spinbox-up, .spinbox-down', function() {
@@ -357,7 +446,7 @@ catch (\Exception $e)
     <div class="row">
         <div class="col-md-4"></div>
         <div class="col-md-4 text-center">
-            <input type="submit" value="Zakończ dodawanie" class="btn btn-success btn-block">
+            <input type="submit" value="Wprowadź zmiany" class="btn btn-success btn-block">
         </div>
         <div class="col-md-4"></div>
     </div>

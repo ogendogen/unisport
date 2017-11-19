@@ -17,7 +17,7 @@ function redirectSummary()
 
 function redirectEditGame()
 {
-    window.location.href = "index.php?tab=games&minor=editgame&gameid=" + game_choosen.toString();
+    window.location.href = "index.php?tab=games&minor=editgame&gameid=" + game_choosen.toString() + "&teamid=" + getUrlParameter("teamid");
 }
 
 function redirectPDF()

@@ -243,7 +243,7 @@ namespace Team {
                 if (!is_integer($team1_score) || $team1_score < 0) throw new \Exception("Wynik twojej drużyny jest niepoprawny!");
                 if (!is_integer($team2_score) || $team2_score < 0) throw new \Exception("Wynik drużyny przeciwnej jest niepoprawny!");
                 if ($game_time > time()) throw new \Exception("Data meczu jeszcze nie nastąpiła!");
-                $this->db->exec("UPDATE games SET game_team2id = ?, game_date = ?, game_team1score = ?, game_team2score = ?, game_generaldesc = ? WHERE game_id = ?", [$opponent_id, $game_time, $team1_score, $team2_score, $game_report]);
+                $this->db->exec("UPDATE games SET game_team2id = ?, game_date = ?, game_team1score = ?, game_team2score = ?, game_generaldesc = ? WHERE game_id = ?", [$opponent_id, $game_time, $team1_score, $team2_score, $game_report, $this->game_id]);
             }
             catch (\Exception $e)
             {
@@ -277,13 +277,6 @@ namespace Team {
         {
             try
             {
-                /* array action ->
-                    int player_id,
-                    string action_name,
-                    int action_minute,
-                    int action_second
-                */
-
                 foreach ($actions as $action) $this->validateAction($action["player_id"], $action["action_name"], $action["action_minute"], $action["action_second"]);
                 $this->deleteAllGameActions();
                 foreach ($actions as $action) $this->addAction($action["player_id"], $action["action_name"], $action["action_minute"], $action["action_second"], true);

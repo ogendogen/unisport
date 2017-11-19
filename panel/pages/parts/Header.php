@@ -23,6 +23,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
           page. However, you can choose any other skin. Make sure you
           apply the skin class to the body tag so the changes take effect. -->
     <link rel="stylesheet" href="dist/css/skins/skin-blue.min.css">
+    <!-- fullCalendar -->
+    <link rel="stylesheet" href="bower_components/fullcalendar/dist/fullcalendar.css">
+    <link rel="stylesheet" href="bower_components/fullcalendar/dist/fullcalendar.print.min.css" media="print">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../css/panel.css">
 
@@ -39,7 +42,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="bower_components/moment/locale/pl.js"></script>
     <!-- Bootstrap DateTime Picker JS and Locales -->
     <script src="bower_components/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
-    <!--<script src="bower_components/bootstrap-datetimepicker/dist/locales/bootstrap-datetimepicker.pl.min.js"></script>-->
+    <!-- fullCalendar -->
+    <script src="bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
+    <script src="../js/calendar.js"></script>
+    <script src="bower_components/fullcalendar/dist/locale/pl.js"></script>
     <!-- Custom JS -->
     <script src="../js/panelmain.js"></script>
     <script src="../js/games.js"></script>

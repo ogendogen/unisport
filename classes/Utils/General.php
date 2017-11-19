@@ -60,11 +60,19 @@ namespace Utils
             if (!$ret) throw new \Exception("Problem z wysłaniem wiadomości email");
         }
 
-        public static function retJson(int $code, string $msg, int $arg = 256): string
+        public static function retJson(int $code, string $msg, int $arg = 256) : string
         {
             $ret = array();
             $ret["msg"] = $msg;
             $ret["code"] = $code;
+            return json_encode($ret, $arg);
+        }
+
+        public static function retJsonArray(int $code, array $msg, int $arg = 256) : string
+        {
+            $ret = array();
+            $ret["code"] = $code;
+            $ret["arr"] = $msg;
             return json_encode($ret, $arg);
         }
 
@@ -76,6 +84,12 @@ namespace Utils
                 }
             }
             return false;
+        }
+
+        public static function validateDate(string $date, string $format)
+        {
+            $d = \DateTime::createFromFormat($format, $date);
+            return $d && $d->format($format) === $date;
         }
 
         public static function preparePDF(int $game_id = 0) : TCPDF

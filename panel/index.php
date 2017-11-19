@@ -63,6 +63,10 @@ if (isset($_GET["tab"]))
             include("pages/major/MembersEdit.php");
             break;
 
+        case "teamcalendar":
+            include("pages/major/Calendar.php");
+            break;
+
         default:
             include("pages/major/Dashboard.php");
             break;

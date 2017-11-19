@@ -87,5 +87,17 @@ namespace Db
                 throw $e;
             }
         }
+
+        public function getLastInsertId(string $column)
+        {
+            try
+            {
+                return $this->conn->lastInsertId($column);
+            }
+            catch (\PDOException $e)
+            {
+                throw $e;
+            }
+        }
     }
 }

@@ -35,6 +35,7 @@
         $sidemenu->addSingleTab("Pulpit", "home", "fa fa-home");
         $sidemenu->addSingleTab("Moje drużyny", "teams", "fa fa-users");
         $sidemenu->addSingleTab("Moje mecze", "games", "glyphicon glyphicon-list-alt");
+        $sidemenu->addSingleTab("Kalendarz", "teamcalendar", "fa fa-calendar");
 
         $multisub = array();
 

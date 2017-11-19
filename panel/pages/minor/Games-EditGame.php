@@ -73,7 +73,7 @@ try
         }
 
         $game->editGameActions($actions);
-        \Utils\Front::success("Mecz został poprawnie edytowany");
+        \Utils\General::redirectWithMessageAndDelay("?tab=games&teamid=".$_GET["teamid"], "Powodzenie", "Mecz został poprawnie edytowany", "success", 2);
     }
 }
 catch (\Exception $e)
@@ -119,7 +119,7 @@ catch (\Exception $e)
                     <label for="scorepicking">Wynik meczu</label>
                     <div id="scorepicking" class="form-group">
                         <div class="spinbox" data-min="0" data-max="999" data-step="1">
-                            <input class="form-control spinbox-input" name="team1score" type="text" pattern="\d*" value="<?php echo $gamedata["game_team1score"]; ?>">
+                            <input title="minutes" class="form-control spinbox-input" name="team1score" type="text" pattern="\d*" value="<?php echo $gamedata["game_team1score"]; ?>">
                             <div class="spinbox-buttons">
                                 <button class="spinbox-up btn btn-default btn-xs alert-success" type="button">+</button>
                                 <button class="spinbox-down btn btn-default btn-xs alert-danger" type="button">-</button>
@@ -127,7 +127,7 @@ catch (\Exception $e)
                         </div>
 
                         <div class="spinbox" data-min="0" data-max="999" data-step="1">
-                            <input class="form-control spinbox-input" name="team2score" type="text" pattern="\d*" value="<?php echo $gamedata["game_team2score"]; ?>">
+                            <input title="seconds" class="form-control spinbox-input" name="team2score" type="text" pattern="\d*" value="<?php echo $gamedata["game_team2score"]; ?>">
                             <div class="spinbox-buttons">
                                 <button class="spinbox-up btn btn-default btn-xs alert-success" type="button">+</button>
                                 <button class="spinbox-down btn btn-default btn-xs alert-danger" type="button">-</button>
@@ -218,18 +218,25 @@ catch (\Exception $e)
                         $user = new \User\User();
 
                         $counter = 1;
-                        if (!empty($gameactions) && !\Utils\General::in_array_r(null, $gameactions))
+                        if (!empty($gameactions))
                         {
                             $is_football = $team->isFootballTeam();
                             foreach ($gameactions as $action)
                             {
-                                //if (($is_football && \Utils\General::in_array_r(null, $gameactions)) || ($is_football && \Utils\General::in_array_r(null, $gameactions))) break;
                                 $participant = $user->findUsersByCredentials($action["user_name"], $action["user_surname"])[0];
                                 ?>
                                     <tr id="action<?php echo $counter; ?>">
                                         <td>
                                             <select title="playername" name="playername<?php echo $counter; ?>" class="btn-block">
-                                                <option value="<?php echo $participant->getUserId(); ?>"><?php echo $action["user_name"]." ".$action["user_surname"]; ?></option>
+                                                <?php
+
+                                                $teamplayers = $team->getAllTeamPlayers();
+                                                foreach ($teamplayers as $teamplayer)
+                                                {
+                                                    echo "<option value=". $teamplayer["user_id"] ." ". ($teamplayer["user_id"] == $participant->getUserId() ? "selected='selected'" : "").">". $teamplayer["user_name"]." ".$teamplayer["user_surname"] ."</option>";
+                                                }
+
+                                                ?>
                                             </select>
                                         </td>
                                         <td>
@@ -249,7 +256,7 @@ catch (\Exception $e)
                                                             \Utils\Front::error("Problem z tłumaczeniem");
                                                             break;
                                                         }
-                                                        echo "<option value='".$sportaction."'>".$transalated."</option>";
+                                                        echo "<option value='".$sportaction."'". ($is_football ? ($sportaction == $action["football_action"] ? "selected='selected'" : "") : ($sportaction == $action["general_action"] ? "selected='selected'" : "")).">".$transalated."</option>";
                                                     }
                                                     catch (\Exception $e)
                                                     {

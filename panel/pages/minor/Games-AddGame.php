@@ -43,7 +43,6 @@ try
 
         if ($res != $players_choosen) throw new \Exception("Przynajmniej jeden z wybranych graczy nie gra w tej drużynie!");
         $report = $_POST["report"];
-        // todo: zapis raportu w postaci base64 (???)
 
         $team1_score = intval($_POST["team1score"]);
         $team2_score = intval($_POST["team2score"]);
@@ -62,7 +61,7 @@ try
             $game->addAction($playerid, $actionname, $actionminute, $actionsecond, true);
         }
 
-        \Utils\Front::success("Mecz został dodany prawidłowo");
+        \Utils\General::redirectWithMessageAndDelay("?tab=games&teamid=".$_GET["teamid"], "Powodzenie", "Mecz został dodany prawidłowo", "success", 2);
     }
 }
 catch (\Exception $e)
@@ -108,7 +107,7 @@ catch (\Exception $e)
                     <label for="scorepicking">Wynik meczu</label>
                     <div id="scorepicking" class="form-group">
                         <div class="spinbox" data-min="0" data-max="999" data-step="1">
-                            <input class="form-control spinbox-input" name="team1score" type="text" pattern="\d*" value="0">
+                            <input title="team1score" class="form-control spinbox-input" name="team1score" type="text" pattern="\d*" value="0">
                             <div class="spinbox-buttons">
                                 <button class="spinbox-up btn btn-default btn-xs alert-success" type="button">+</button>
                                 <button class="spinbox-down btn btn-default btn-xs alert-danger" type="button">-</button>
@@ -116,7 +115,7 @@ catch (\Exception $e)
                         </div>
 
                         <div class="spinbox" data-min="0" data-max="999" data-step="1">
-                            <input class="form-control spinbox-input" name="team2score" type="text" pattern="\d*" value="0">
+                            <input title="team2score" class="form-control spinbox-input" name="team2score" type="text" pattern="\d*" value="0">
                             <div class="spinbox-buttons">
                                 <button class="spinbox-up btn btn-default btn-xs alert-success" type="button">+</button>
                                 <button class="spinbox-down btn btn-default btn-xs alert-danger" type="button">-</button>

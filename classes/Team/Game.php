@@ -126,16 +126,16 @@ namespace Team {
                 if ($this->is_football)
                 {
                     return $this->db->exec("SELECT user_name, user_surname, football_action, football_minute, football_second FROM `games_players` 
-                                              LEFT JOIN `games_players_football_info` ON games_players.player_id = games_players_football_info.football_gameplayerid 
-                                              LEFT JOIN `users` ON games_players.player_playerid = users.user_id
+                                              INNER JOIN `games_players_football_info` ON games_players.player_id = games_players_football_info.football_gameplayerid 
+                                              INNER JOIN `users` ON games_players.player_playerid = users.user_id
                                               WHERE games_players.player_gameid = ?
                                               ORDER BY football_minute ASC, football_second ASC", [$this->game_id]);
                 }
                 else
                 {
                     return $this->db->exec("SELECT user_name, user_surname, general_action, general_minute, general_second FROM `games_players` 
-                                              LEFT JOIN `games_players_general_info` ON games_players.player_id = games_players_general_info.generalgame_gameplayerid
-                                              LEFT JOIN `users` ON games_players.player_playerid = users.user_id
+                                              INNER JOIN `games_players_general_info` ON games_players.player_id = games_players_general_info.generalgame_gameplayerid
+                                              INNER JOIN `users` ON games_players.player_playerid = users.user_id
                                               WHERE games_players.player_gameid = ?
                                               ORDER BY general_minute ASC, general_second ASC", [$this->game_id]);
                 }
@@ -214,18 +214,28 @@ namespace Team {
                 $gameplayerid = $this->db->exec("SELECT player_id FROM games_players WHERE player_gameid = ? AND player_teamid = ? AND player_playerid = ?", [$this->game_id, ($is_team1 ? $this->team1 : $this->team2), $player_id])[0]["player_id"];
 
                 if (!$gameplayerid) throw new \Exception("Problem z dopasowaniem gracza do meczu!");
-                if ($is_football) {
-                    $this->db->exec("INSERT INTO games_players_football_info SET
+                try
+                {
+                    if ($is_football)
+                    {
+                        $this->db->exec("INSERT INTO games_players_football_info SET
                                                 football_gameplayerid = ?,
                                                 football_action = ?,
                                                 football_minute = ?,
                                                 football_second = ?", [$gameplayerid, $action_name, $action_minute, $action_second]);
-                } else {
-                    $this->db->exec("INSERT INTO games_players_general_info SET
+                    }
+                    else
+                    {
+                        $this->db->exec("INSERT INTO games_players_general_info SET
                                                 generalgame_gameplayerid = ?,
                                                 general_action  = ?,
                                                 general_minute = ?,
                                                 general_second = ?", [$gameplayerid, $action_name, $action_minute, $action_second]);
+                    }
+                }
+                catch (\Exception $e)
+                {
+                    if ($e->getCode() != 23000) throw $e; // rethrow only if exception isn't about doubled actions (unique key for 4 columns)
                 }
             }
             catch (\Exception $e)
@@ -279,7 +289,38 @@ namespace Team {
             {
                 foreach ($actions as $action) $this->validateAction($action["player_id"], $action["action_name"], $action["action_minute"], $action["action_second"]);
                 $this->deleteAllGameActions();
-                foreach ($actions as $action) $this->addAction($action["player_id"], $action["action_name"], $action["action_minute"], $action["action_second"], true);
+                $counter = 1;
+                foreach ($actions as $action)
+                {
+                    echo $counter.": ".var_dump($action)."<br><br>";
+                    $counter++;
+                    $this->addAction($action["player_id"], $action["action_name"], $action["action_minute"], $action["action_second"], true);
+                }
+            }
+            catch (\Exception $e)
+            {
+                throw $e;
+            }
+        }
+
+        private function deleteAllGameActions()
+        {
+            try
+            {
+                $gameplayersids_raw = $this->db->exec("SELECT player_id FROM games_players WHERE player_gameid = ?", [$this->game_id]);
+                $gameplayersids = array();
+                foreach ($gameplayersids_raw as $id) array_push($gameplayersids, $id["player_id"]);
+
+                var_dump(implode(',', $gameplayersids));
+                echo "<br><br>";
+                if ($this->is_football)
+                {
+                    $this->db->exec("DELETE FROM games_players_football_info WHERE football_gameplayerid IN (?)", [implode(',', $gameplayersids)]);
+                }
+                else
+                {
+                    $this->db->exec("DELETE FROM games_players_general_info WHERE generalgame_gameplayerid IN (?)", [implode(',', $gameplayersids)]);
+                }
             }
             catch (\Exception $e)
             {
@@ -305,25 +346,6 @@ namespace Team {
 
                 $actions = $this->db->getEnumPossibleValues(($is_football ? "games_players_football_info" : "games_players_general_info"), ($is_football ? "football_action" : "general_action"));
                 if (!in_array($action_name, $actions)) throw new \Exception("Taka akcja nie istnieje!", 0);
-            }
-            catch (\Exception $e)
-            {
-                throw $e;
-            }
-        }
-
-        private function deleteAllGameActions()
-        {
-            try
-            {
-                if ($this->is_football)
-                {
-                    $this->db->exec("DELETE FROM games_players_football_info WHERE football_gameplayerid = ?", [$this->team1]);
-                }
-                else
-                {
-                    $this->db->exec("DELETE FROM games_players_general_info WHERE generalgame_gameplayerid = ?", [$this->team1]);
-                }
             }
             catch (\Exception $e)
             {

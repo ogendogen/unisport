@@ -46,7 +46,7 @@ $(function () {
             day  : 'Dzień'
         },
         //Random default events
-        events    : [
+        /*events    : [
             {
                 title          : 'All Day Event',
                 start          : new Date(y, m, 1),
@@ -91,7 +91,7 @@ $(function () {
                 backgroundColor: '#3c8dbc', //Primary (light-blue)
                 borderColor    : '#3c8dbc' //Primary (light-blue)
             }
-        ],
+        ],*/
         editable  : true,
         droppable : true, // this allows things to be dropped onto the calendar !!!
         drop      : function (date, allDay) { // this function is called when something is dropped

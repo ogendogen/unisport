@@ -17,7 +17,7 @@ namespace Team
         {
             try
             {
-                if (!is_int($teamid)) throw new \Exception("Niepoprawna drużyna!");
+                if (!is_int($teamid)) throw new \Exception("Niepoprawna drużyna!", 21);
                 $this->team = new \Team\Team($teamid);
                 $this->teamid = $teamid;
                 $this->db = \Db\Database::getInstance();
@@ -41,20 +41,20 @@ namespace Team
             }
         }
 
-        public function addEvent(string $startdate, string $enddate, string $event, string $priority) : int
+        public function addEvent(string $startdatetime, string $enddatetime, string $event, string $priority) : int
         {
             try
             {
                 if (!in_array($priority, $this->priorities)) throw new \Exception("Niepoprawny priorytet!");
-                if (!\Utils\General::validateDate($startdate,"Y-m-d")) throw new \Exception("Początkowa data jest niepoprawna!");
-                if (!\Utils\General::validateDate($enddate, "Y-m-d")) throw new \Exception("Końcowa data jest niepoprawna!");
+                if (!\Utils\General::validateDate($startdatetime,"Y.m.d H:s")) throw new \Exception("Format początkowej daty jest niepoprawny!");
+                if (!\Utils\General::validateDate($enddatetime, "Y-m-d H:s")) throw new \Exception("Format końcowej daty jest niepoprawny!");
                 if (strlen($event) > 32) throw new \Exception("Opis zdarzenia jest za długi! (maks 32 znaki)");
 
                 $this->db->exec("INSERT INTO calendar SET calendar_teamid = ?,
                                             calendar_startdate = ?,
                                             calendar_enddate = ?,
                                             calendar_event = ?,
-                                            calendar_priority = ?", [$this->teamid, $startdate, $enddate, $event, $priority]);
+                                            calendar_priority = ?", [$this->teamid, $startdatetime, $enddatetime, $event, $priority]);
 
                 return $this->db->getLastInsertId("calendar_id");
             }

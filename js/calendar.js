@@ -1,3 +1,5 @@
+var calendar = null;
+
 $(function () {
 
     /* initialize the external events
@@ -9,10 +11,10 @@ $(function () {
             // it doesn't need to have a start or end
             var eventObject = {
                 title: $.trim($(this).text()) // use the element's text as the event title
-            }
+            };
 
             // store the Event Object in the DOM element so we can get to it later
-            $(this).data('eventObject', eventObject)
+            $(this).data('eventObject', eventObject);
 
             // make the event draggable using jQuery UI
             $(this).draggable({
@@ -24,16 +26,16 @@ $(function () {
         })
     }
 
-    init_events($('#external-events div.external-event'))
+    init_events($('#external-events div.external-event'));
 
     /* initialize the calendar
      -----------------------------------------------------------------*/
     //Date for the calendar events (dummy data)
-    var date = new Date()
+    var date = new Date();
     var d    = date.getDate(),
         m    = date.getMonth(),
-        y    = date.getFullYear()
-    $('#calendar').fullCalendar({
+        y    = date.getFullYear();
+    calendar = $('#calendar').fullCalendar({
         header    : {
             left  : 'prev,next today',
             center: 'title',
@@ -97,63 +99,152 @@ $(function () {
         drop      : function (date, allDay) { // this function is called when something is dropped
 
             // retrieve the dropped element's stored Event Object
-            var originalEventObject = $(this).data('eventObject')
+            var originalEventObject = $(this).data('eventObject');
 
             // we need to copy it, so that multiple events don't have a reference to the same object
-            var copiedEventObject = $.extend({}, originalEventObject)
+            var copiedEventObject = $.extend({}, originalEventObject);
 
             // assign it the date that was reported
-            copiedEventObject.start           = date
-            copiedEventObject.allDay          = allDay
-            copiedEventObject.backgroundColor = $(this).css('background-color')
-            copiedEventObject.borderColor     = $(this).css('border-color')
+            copiedEventObject.start           = date;
+            copiedEventObject.allDay          = allDay;
+            copiedEventObject.backgroundColor = $(this).css('background-color');
+            copiedEventObject.borderColor     = $(this).css('border-color');
 
             // render the event on the calendar
             // the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
-            $('#calendar').fullCalendar('renderEvent', copiedEventObject, true)
+            $('#calendar').fullCalendar('renderEvent', copiedEventObject, true);
 
             // is the "remove after drop" checkbox checked?
             if ($('#drop-remove').is(':checked')) {
                 // if so, remove the element from the "Draggable Events" list
-                $(this).remove()
+                $(this).remove();
             }
 
         }
-    })
+    });
 
     /* ADDING EVENTS */
-    var currColor = '#3c8dbc' //Red by default
+    var currColor = '#3c8dbc'; //Red by default
     //Color chooser button
-    var colorChooser = $('#color-chooser-btn')
+    var colorChooser = $('#color-chooser-btn');
     $('#color-chooser > li > a').click(function (e) {
-        e.preventDefault()
+        e.preventDefault();
         //Save color
-        currColor = $(this).css('color')
+        currColor = $(this).css('color');
         //Add color effect to button
         $('#add-new-event').css({ 'background-color': currColor, 'border-color': currColor })
-    })
+    });
     $('#add-new-event').click(function (e) {
-        e.preventDefault()
+        e.preventDefault();
         //Get value and make sure it is not null
-        var val = $('#new-event').val()
-        if (val.length == 0) {
+        var val = $('#new-event').val();
+        if (val.length === 0) {
             return
         }
 
         //Create events
-        var event = $('<div />')
+        var event = $('<div />');
         event.css({
             'background-color': currColor,
             'border-color'    : currColor,
             'color'           : '#fff'
-        }).addClass('external-event')
-        event.html(val)
-        $('#external-events').prepend(event)
+        }).addClass('external-event');
+        event.html(val);
+        $('#external-events').prepend(event);
 
         //Add draggable funtionality
-        init_events(event)
+        init_events(event);
 
         //Remove event from text input
-        $('#new-event').val('')
-    })
-})
+        $('#new-event').val('');
+    });
+});
+
+function addEvent(id, title, startdatetime, enddatetime, priority)
+{
+    var color;
+    switch(priority)
+    {
+        case "low":
+            color = "#7CFC00";
+            break;
+
+        case "medium":
+            color = "#FFD700";
+            break;
+
+        case "high":
+            color = "#B22222";
+            break;
+
+        default:
+            return false;
+    }
+
+    calendar.fullCalendar('renderEvent',
+    {
+        id: id,
+        title: title,
+        start: moment(startdatetime, "DD.MM.YYYY HH.mm"),
+        end: moment(enddatetime, "DD.MM.YYYY HH.mm"),
+        borderColor: "#000000",
+        textColor: "#000000",
+        color: color
+    }, true);
+
+    return true;
+}
+
+/*function readAllEvents()
+{
+    var ret = $.get("/ajax/CalendarGetAllTeamEvents.php?teamid=" + getUrlParameter("teamid").toString()).done(function(data) {
+       var obj = jQuery.parseJSON(JSON.stringify(data));
+       if (obj.code == "1")
+       {
+           return obj.arr;
+       }
+       else if (obj.code == 0)
+       {
+           modalWarning("Uwaga", obj.msg);
+           return 0;
+       }
+       else if (obj.code == -1)
+       {
+           modalError("Błąd", obj.msg);
+           return -1;
+       }
+       else
+       {
+           modalError("Nieznany błąd", "Nieznany kod");
+           return -1;
+       }
+    });
+}*/
+/*function addEvent(evt)
+{
+    evt.preventDefault(); // zatrzymaj zwykłe wysyłanie na serwer, zostanie wysłane przez AJAX
+    $.get("/ajax/CalendarAddEvent.php?teamid=" + teamid).done(function(data) {
+        var obj = jQuery.parseJSON(JSON.stringify(data));
+        if (obj.code == "1")
+        {
+            modalSuccess("Powodzenie", obj.msg);
+            $("#inv" + teamid.toString()).remove();
+            if ($.trim($("#invbox").html()).length == 0)
+            {
+                $("#invbox").text("Nie jesteś aktualnie zaproszony do żadnej drużyny");
+            }
+        }
+        else if (obj.code == "0")
+        {
+            modalWarning("Uwaga", obj.msg);
+        }
+        else if (obj.code == "-1")
+        {
+            modalError("Błąd", obj.msg);
+        }
+        else
+        {
+            modalWarning("Uwaga", "Nieznany kod");
+        }
+    });
+}*/

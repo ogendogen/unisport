@@ -71,11 +71,11 @@ namespace Team
         {
             try
             {
-                if (!\Utils\General::validateDate($new_startdate,"Y-m-d")) throw new \Exception("Początkowa data jest niepoprawna!");
-                if (!\Utils\General::validateDate($new_enddate, "Y-m-d")) throw new \Exception("Końcowa data jest niepoprawna!");
-                if (!is_int($eventid)) throw new \Exception("Niepoprawne wydarzenie!");
+                if (!\Utils\General::validateDate($new_startdate,"d.m.Y H:s")) throw new \Exception("Początkowa data jest niepoprawna!");
+                if (!\Utils\General::validateDate($new_enddate, "d.m.Y H:s")) throw new \Exception("Końcowa data jest niepoprawna!");
 
-                $this->db->exec("UPDATE calendar SET calendar_startdate = ?, calendar_enddate = ? WHERE calendar_id = ? AND calendar_teamid = ?", [$new_startdate, $new_enddate, $eventid, $this->teamid]);
+                $ret = $this->db->exec("UPDATE calendar SET calendar_startdate = ?, calendar_enddate = ? WHERE calendar_id = ? AND calendar_teamid = ?", [$new_startdate, $new_enddate, $eventid, $this->teamid]);
+                if (!$ret) throw new \Exception("Problem z przesunięciem wydarzenia");
             }
             catch (\Exception $e)
             {

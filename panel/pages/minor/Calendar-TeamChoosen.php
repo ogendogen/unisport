@@ -6,11 +6,13 @@ try
 {
     if (!isset($_GET["teamid"])) throw new \Exception("Nie wybrałeś drużyny!", 21);
     else $team = new \Team\Team($_GET["teamid"]);
+    if (!$team->isUserInTeam($_SESSION["userid"])) throw new \Exception("Nie jesteś w tej drużynie!", 21);
 
-    $events = null;
     $calendar = new \Team\Calendar($_GET["teamid"]);
     if (isset($_POST["eventname"]))
     {
+        if (!$team->isUserLeader($_SESSION["userid"])) throw new \Exception("Nie jesteś liderem!");
+
         \Utils\Validations::validatePostArray($_POST);
         \Utils\Validations::validateWholeArray($_POST);
 
@@ -20,13 +22,13 @@ try
         $eventendtime = $_POST["eventenddatetime"];
 
         $calendar->addEvent($eventstarttime, $eventendtime, $eventname, $eventpriority);
-        \Utils\Front::success("Wydarzenie dodane poprawnie do kalendarza");
+        \Utils\Front::success("Wydarzenie poprawnie dodane do kalendarza");
     }
 }
 catch (\Exception $e)
 {
     if ($e->getCode() == 21) \Utils\General::redirectWithMessageAndDelay("?tab=dashboard", "Uwaga", $e->getMessage(), "warning", 2);
-    else throw $e;
+    else \Utils\Front::error($e->getMessage());
 }
 
 
@@ -74,6 +76,19 @@ catch (\Exception $e)
                 </form>
             </div>
         </div>
+
+        <div class="box box-default">
+            <div class="box-header">
+                <h4>Tryby kalendarza</h4>
+            </div>
+            <div class="box-body">
+                <div class="form-group">
+                    <p><input type="radio" title="mode" checked="checked" name="mode" id="standardmode" onclick="calendarMode(0)"> Standardowy tryb</p>
+                    <p><input type="radio" title="mode" name="mode" id="editmode" onclick="calendarMode(1)"> Tryb edycji</p>
+                    <p><input type="radio" title="mode" name="mode" id="deletemode" onclick="calendarMode(2)"> Tryb usuwania</p>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="col-md-9">
         <div class="box box-primary">
@@ -99,15 +114,16 @@ catch (\Exception $e)
         <?php echo "var events = ".json_encode($calendar->getAllTeamEvents()); ?>
 
         var len = events.length;
-        for (var i = 0; i < len; i++)
-        {
-            var ret = addEvent(events[i].calendar_id, events[i].calendar_event, events[i].calendar_startdate, events[i].calendar_enddate, events[i].calendar_priority);
-            console.log(ret);
-        }
+        for (var i = 0; i < len; i++) addEvent(events[i].calendar_id, events[i].calendar_event, events[i].calendar_startdate, events[i].calendar_enddate, events[i].calendar_priority);
 
         $('#calendar').fullCalendar('rerenderEvents');
 
         checkLeadership(getUrlParameter("teamid"));
-        if (window.localStorage.isLeader !== "1") $("#eventadd").prop("disabled", "disabled");
+        if (window.localStorage.isLeader !== "1")
+        {
+            $("#eventadd").prop("disabled", "disabled");
+            $("#editmode").prop("disabled", "disabled");
+            $("#deletemode").prop("disabled", "disabled");
+        }
     });
 </script>

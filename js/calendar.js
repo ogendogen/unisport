@@ -1,4 +1,5 @@
 var calendar = null;
+var mode = 0;
 
 $(function () {
 
@@ -160,6 +161,11 @@ $(function () {
     });
 });
 
+function updateEvent(id, startdate, enddate)
+{
+
+}
+
 function addEvent(id, title, startdatetime, enddatetime, priority)
 {
     var color;
@@ -193,6 +199,11 @@ function addEvent(id, title, startdatetime, enddatetime, priority)
     }, true);
 
     return true;
+}
+
+function calendarMode(mode)
+{
+
 }
 
 /*function readAllEvents()

@@ -9,10 +9,18 @@ try
 
     $events = null;
     $calendar = new \Team\Calendar($_GET["teamid"]);
-    if (isset($_POST))
+    if (isset($_POST["eventname"]))
     {
         \Utils\Validations::validatePostArray($_POST);
         \Utils\Validations::validateWholeArray($_POST);
+
+        $eventname = $_POST["eventname"];
+        $eventpriority = $_POST["eventpriority"];
+        $eventstarttime = $_POST["eventstartdatetime"];
+        $eventendtime = $_POST["eventenddatetime"];
+
+        $calendar->addEvent($eventstarttime, $eventendtime, $eventname, $eventpriority);
+        \Utils\Front::success("Wydarzenie dodane poprawnie do kalendarza");
     }
 }
 catch (\Exception $e)
@@ -30,7 +38,7 @@ catch (\Exception $e)
                 <h4>Zaplanuj nowe wydarzenie</h4>
             </div>
             <div class="box-body">
-                <form method="get" onsubmit="return addEvent()">
+                <form method="post">
                     <p><label for="eventname">Krótki opis wydarzenia</label></p>
                     <p><input type="text" class="btn-block" name="eventname" title="eventname" placeholder="Trening wieczorem"></p>
 
@@ -45,7 +53,7 @@ catch (\Exception $e)
                     <p><label for="eventtime">Początek wydarzenia</label></p>
                     <div class="form-group">
                         <div class='input-group date' id='datetimepicker1'>
-                            <input id="matchdatetime" title="calendardatetime" name="matchdatetime" type='text' class="form-control" />
+                            <input id="matchdatetime" title="calendardatetime" name="eventstartdatetime" type='text' class="form-control" />
                             <span class="input-group-addon">
                                 <span class="glyphicon glyphicon-calendar"></span>
                             </span>
@@ -55,7 +63,7 @@ catch (\Exception $e)
                     <p><label for="eventtime">Koniec wydarzenia</label></p>
                     <div class="form-group">
                         <div class='input-group date' id='datetimepicker2'>
-                            <input id="matchdatetime" title="calendardatetime" name="matchdatetime" type='text' class="form-control" />
+                            <input id="matchdatetime" title="calendardatetime" name="eventenddatetime" type='text' class="form-control" />
                             <span class="input-group-addon">
                                 <span class="glyphicon glyphicon-calendar"></span>
                             </span>

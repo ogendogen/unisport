@@ -162,7 +162,7 @@
                         }
                         else
                         {
-                            echo "<div class='alert alert-info btn-block'>Nie jesteś w żadnej drużynie. Poproś swojego lidera o zaproszenie lub stwórz własną drużynę !</div>";
+                            echo "<div class='alert alert-info btn-block' id='noteam_alert'>Nie jesteś w żadnej drużynie. Poproś swojego lidera o zaproszenie lub stwórz własną drużynę !</div>";
                         }
                         ?>
                     </tbody>

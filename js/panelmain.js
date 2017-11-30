@@ -21,8 +21,15 @@ var getUrlParameter = function getUrlParameter(sParam) {
 function setActiveClass()
 {
     var tab = getUrlParameter("tab");
-    $("#"+tab).addClass("active");
-    if ($("#"+tab).parent().parent().hasClass("treeview")) $("#"+tab).parent().parent().addClass("active");
+    if (tab == null)
+    {
+        $("#home").addClass("active");
+    }
+    else
+    {
+        $("#"+tab).addClass("active");
+        if ($("#"+tab).parent().parent().hasClass("treeview")) $("#"+tab).parent().parent().addClass("active");
+    }
 }
 
 function acceptInvitation(teamid)
@@ -33,9 +40,11 @@ function acceptInvitation(teamid)
         {
             modalSuccess("Powodzenie", obj.msg);
             $("#inv" + teamid.toString()).remove();
-            if ($.trim($("#invbox").html()).length == 0)
+            if ($.trim($("#invbox").html()).length == 0) $("#invbox").text("Nie jesteś aktualnie zaproszony do żadnej drużyny");
+            if ($("#noteam_alert").length > 0)
             {
-                $("#invbox").text("Nie jesteś aktualnie zaproszony do żadnej drużyny");
+                $("#noteam_alert").remove();
+                setTimeout(function() { window.location.reload(); }, 1000);
             }
         }
         else if (obj.code == "0")

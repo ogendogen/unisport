@@ -22,9 +22,9 @@ $(function () {
                 zIndex        : 1070,
                 revert        : true, // will cause the event to go back to its
                 revertDuration: 0  //  original position after the drag
-            })
+            });
 
-        })
+        });
     }
 
     init_events($('#external-events div.external-event'));
@@ -96,6 +96,13 @@ $(function () {
             }
         ],*/
         editable  : true,
+        eventDrop: function(event, delta, revertFunc) {
+
+            var id = event.id;
+            var moment_start = moment(event.start).format("DD.MM.YYYY HH:mm");
+            var moment_stop = moment(event.end).format("DD.MM.YYYY HH:mm");
+            updateEvent(id, moment_start, moment_stop);
+        },
         droppable : true, // this allows things to be dropped onto the calendar !!!
         drop      : function (date, allDay) { // this function is called when something is dropped
 
@@ -140,7 +147,7 @@ $(function () {
         //Get value and make sure it is not null
         var val = $('#new-event').val();
         if (val.length === 0) {
-            return
+            return;
         }
 
         //Create events
@@ -161,9 +168,25 @@ $(function () {
     });
 });
 
-function updateEvent(id, startdate, enddate)
+function updateEvent(id, start, end)
 {
-
+    var start_prepared = encodeURI(start.toString());
+    var end_prepared = encodeURI(end.toString());
+    $.get("/ajax/CalendarUpdateEvent.php?teamid=" + getUrlParameter("teamid") + "&eventid=" + id + "&startdate=" + start_prepared + "&enddate=" + end_prepared).done(function(data) {
+        var obj = jQuery.parseJSON(JSON.stringify(data));
+        if (obj.code == "-1")
+        {
+            modalError("Błąd", obj.msg);
+        }
+        else if (obj.code == "0")
+        {
+            modalWarning("Uwaga", obj.msg);
+        }
+        else if (obj.code != "1")
+        {
+            modalError("Błąd", "Nieznana odpowiedź serwera:" + obj.msg);
+        }
+    });
 }
 
 function addEvent(id, title, startdatetime, enddatetime, priority)
@@ -200,62 +223,3 @@ function addEvent(id, title, startdatetime, enddatetime, priority)
 
     return true;
 }
-
-function calendarMode(mode)
-{
-
-}
-
-/*function readAllEvents()
-{
-    var ret = $.get("/ajax/CalendarGetAllTeamEvents.php?teamid=" + getUrlParameter("teamid").toString()).done(function(data) {
-       var obj = jQuery.parseJSON(JSON.stringify(data));
-       if (obj.code == "1")
-       {
-           return obj.arr;
-       }
-       else if (obj.code == 0)
-       {
-           modalWarning("Uwaga", obj.msg);
-           return 0;
-       }
-       else if (obj.code == -1)
-       {
-           modalError("Błąd", obj.msg);
-           return -1;
-       }
-       else
-       {
-           modalError("Nieznany błąd", "Nieznany kod");
-           return -1;
-       }
-    });
-}*/
-/*function addEvent(evt)
-{
-    evt.preventDefault(); // zatrzymaj zwykłe wysyłanie na serwer, zostanie wysłane przez AJAX
-    $.get("/ajax/CalendarAddEvent.php?teamid=" + teamid).done(function(data) {
-        var obj = jQuery.parseJSON(JSON.stringify(data));
-        if (obj.code == "1")
-        {
-            modalSuccess("Powodzenie", obj.msg);
-            $("#inv" + teamid.toString()).remove();
-            if ($.trim($("#invbox").html()).length == 0)
-            {
-                $("#invbox").text("Nie jesteś aktualnie zaproszony do żadnej drużyny");
-            }
-        }
-        else if (obj.code == "0")
-        {
-            modalWarning("Uwaga", obj.msg);
-        }
-        else if (obj.code == "-1")
-        {
-            modalError("Błąd", obj.msg);
-        }
-        else
-        {
-            modalWarning("Uwaga", "Nieznany kod");
-        }
-    });
-}*/

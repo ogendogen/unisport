@@ -33,7 +33,9 @@ namespace Team
             try
             {
                 $db = \Db\Database::getInstance();
-                return $db->exec("SELECT calendar_teamid FROM calendar WHERE calendar_id = ?", [$event_id])[0];
+                $ret = $db->exec("SELECT calendar_teamid FROM calendar WHERE calendar_id = ?", [$event_id]);
+                if (empty($ret)) throw new \Exception("Takie wydarzenie nie istnieje!");
+                return $ret[0]["calendar_teamid"];
             }
             catch (\Exception $e)
             {
@@ -87,6 +89,18 @@ namespace Team
             try
             {
                 return $this->db->exec("SELECT * FROM calendar WHERE calendar_teamid = ?", [$this->teamid]);
+            }
+            catch (\Exception $e)
+            {
+                throw $e;
+            }
+        }
+
+        public function deleteEvent(int $eventid)
+        {
+            try
+            {
+                $this->db->exec("DELETE FROM calendar WHERE calendar_id = ?", [$eventid]);
             }
             catch (\Exception $e)
             {

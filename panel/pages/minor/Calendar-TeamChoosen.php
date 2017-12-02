@@ -37,7 +37,7 @@ catch (\Exception $e)
     <div class="col-md-3">
         <div class="box box-default">
             <div class="box-header">
-                <h4>Zaplanuj nowe wydarzenie</h4>
+                <h4><i class="fa fa-calendar-plus-o" aria-hidden="true"></i> Zaplanuj nowe wydarzenie</h4>
             </div>
             <div class="box-body">
                 <form method="post">
@@ -78,15 +78,11 @@ catch (\Exception $e)
         </div>
 
         <div class="box box-default">
-            <div class="box-header">
-                <h4>Tryby kalendarza</h4>
+            <div class="box-header" style="border-bottom: #e6e6e6 1px solid;">
+                <h4><i class="fa fa-trash" aria-hidden="true"></i> Upuść wydarzenie poniżej aby usunąć</h4>
             </div>
-            <div class="box-body">
-                <div class="form-group">
-                    <p><input type="radio" title="mode" checked="checked" name="mode" id="standardmode" onclick="calendarMode(0)"> Standardowy tryb</p>
-                    <p><input type="radio" title="mode" name="mode" id="editmode" onclick="calendarMode(1)"> Tryb edycji</p>
-                    <p><input type="radio" title="mode" name="mode" id="deletemode" onclick="calendarMode(2)"> Tryb usuwania</p>
-                </div>
+            <div class="box-body" id="dropzone" style="height: 250px;" ondrop="dropEvent(event)" ondragover="dragOverEvent(event)">
+                <!-- Drop Zone -->
             </div>
         </div>
     </div>

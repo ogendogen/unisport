@@ -1,8 +1,21 @@
 var calendar = null;
 var mode = 0;
 
-$(function () {
+// Mark element when hovered (needed for deleting events by dragging)
+$(document).on({
+    mouseenter: function(evt) {
+        $(evt.target).data('hovering', true);
+    },
+    mouseleave: function(evt) {
+        $(evt.target).data('hovering', false);
+    }
+}, "*");
 
+jQuery.expr[":"].hovering = function(elem) {
+    return $(elem).data('hovering');
+};
+
+$(function () {
     /* initialize the external events
      -----------------------------------------------------------------*/
     function init_events(ele) {
@@ -95,7 +108,7 @@ $(function () {
                 borderColor    : '#3c8dbc' //Primary (light-blue)
             }
         ],*/
-        editable  : true,
+        editable  : (window.localStorage.isLeader === "1"), // only leader is allowed to edit or drop, even when it's replaced there is server-side validation
         eventDrop: function(event, delta, revertFunc) {
 
             var id = event.id;
@@ -103,7 +116,37 @@ $(function () {
             var moment_stop = moment(event.end).format("DD.MM.YYYY HH:mm");
             updateEvent(id, moment_start, moment_stop);
         },
-        droppable : true, // this allows things to be dropped onto the calendar !!!
+        dragRevertDuration: 0,
+        eventDragStop: function(event, jsEvent, ui, view) {
+            var trashEl = jQuery("#dropzone");
+            var ofs = trashEl.offset();
+
+            var x1 = ofs.left;
+            var x2 = ofs.left + trashEl.outerWidth(true);
+            var y1 = ofs.top;
+            var y2 = ofs.top + trashEl.outerHeight(true);
+
+            if (jsEvent.pageX >= x1 && jsEvent.pageX<= x2 && jsEvent.pageY >= y1 && jsEvent.pageY <= y2)
+            {
+                $.get("/ajax/CalendarDeleteEvent.php?eventid=" + event.id).done(function(data) {
+                    var obj = jQuery.parseJSON(JSON.stringify(data));
+                    if (obj.code == "-1")
+                    {
+                        modalError("Błąd", obj.msg);
+                    }
+                    else if (obj.code == "0")
+                    {
+                        modalWarning("Uwaga", obj.msg);
+                    }
+                    else if (obj.code == "1")
+                    {
+                        $('#calendar').fullCalendar('removeEvents', event.id);
+                        modalSuccess("Powodzenie", "Usunięto wydarzenie: " + event.title);
+                    }
+                });
+            }
+        },
+        droppable : (window.localStorage.isLeader === "1"), // this allows things to be dropped onto the calendar !!!
         drop      : function (date, allDay) { // this function is called when something is dropped
 
             // retrieve the dropped element's stored Event Object

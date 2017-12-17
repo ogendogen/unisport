@@ -15,8 +15,8 @@
             </div>
             <div class="box-body no-padding">
                 <ul class="nav nav-pills nav-stacked">
-                    <li><a href="?tab=mailbox&minor=main"><i class="fa fa-inbox"></i> Odebrane
-                            <span class="label label-primary pull-right"><?php echo \User\Message::countUnreadMessages($_SESSION["userid"]); ?></span></a></li>
+                    <li class="active"><a href="?tab=mailbox&minor=main"><i class="fa fa-inbox"></i> Odebrane
+                            <span class="label label-primary pull-right"><?php $count = \User\Message::countUnreadMessages($_SESSION["userid"]); if ($count > 0) echo $count;?></span></a></li>
                     <li><a href="?tab=mailbox&minor=sent"><i class="fa fa-envelope-o"></i> Wysłane</a></li>
                 </ul>
             </div>
@@ -75,14 +75,14 @@
                         }
 
                         ?>
-                        <tr>
+                        <!--<tr>
                             <td><input type="checkbox"></td>
                             <td class="mailbox-star"><a href="#"><i class="fa fa-star text-yellow"></i></a></td>
                             <td class="mailbox-name"><a href="read-mail.html">Alexander Pierce</a></td>
                             <td class="mailbox-subject"><b>AdminLTE 2.0 Issue</b> - Trying to find a solution to this problem...</td>
                             <td class="mailbox-attachment"></td>
                             <td class="mailbox-date">5 mins ago</td>
-                        </tr>
+                        </tr>-->
                         </tbody>
                     </table>
                 </div>

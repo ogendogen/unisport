@@ -12,8 +12,7 @@ try
 }
 catch (\Exception $e)
 {
-    echo "error: ".$e->getMessage();
-    //\Utils\General::redirectWithMessageAndDelay("?tab=dashboard", "Błąd", $e->getMessage(), "danger", 2);
+    \Utils\General::redirectWithMessageAndDelay("?tab=dashboard", "Błąd", $e->getMessage(), "danger", 2);
 }
 
 ?>
@@ -76,7 +75,7 @@ catch (\Exception $e)
                 <div class="mailbox-read-message">
                     <?php
 
-                    echo $msgdata["message_text"];
+                    echo html_entity_decode($msgdata["message_text"]);
 
                     ?>
                 </div>

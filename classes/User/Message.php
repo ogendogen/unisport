@@ -131,7 +131,7 @@ namespace User
             try
             {
                 $db = \Db\Database::getInstance();
-                $ret = $db->exec("SELECT COUNT(*) AS 'messages' FROM messages WHERE message_receiver = ?", [$user_id])[0];
+                $ret = $db->exec("SELECT COUNT(*) AS 'messages' FROM messages WHERE message_receiver = ? AND message_read = 0", [$user_id])[0];
                 return intval($ret["messages"]);
             }
             catch(\Exception $e)
@@ -169,6 +169,20 @@ namespace User
                 return $db->exec("SELECT users.user_name, users.user_surname, messages.message_title, messages.message_text, messages.message_sent, messages.message_read, messages.message_id FROM `messages`
                                     LEFT JOIN `users` ON users.user_id = messages.message_sender
                                     WHERE users.user_id = ?", [$user_id]);
+            }
+            catch(\Exception $e)
+            {
+                throw $e;
+            }
+        }
+
+        public static function deleteMessages(int $user_id, array $msg_ids)
+        {
+            try
+            {
+                $db = \Db\Database::getInstance();
+                $idsToDelete = implode($msg_ids, ', ');
+                $db->exec("DELETE FROM messages WHERE message_receiver = ? AND message_id IN (".$idsToDelete.")");
             }
             catch(\Exception $e)
             {

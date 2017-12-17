@@ -3,17 +3,18 @@
 namespace {
     require_once(__DIR__."/../Db/Database.php");
     require_once(__DIR__."/../Team/Team.php");
+    require_once(__DIR__."/../Utils/General.php");
 }
 
 namespace Expert
 {
     class Expert
     {
-        private $db;
-        private $team;
-        private $team_id;
+        protected $db;
+        protected $team;
+        protected $team_id;
 
-        public function __construct(int $team_id)
+        protected function __construct(int $team_id)
         {
             try
             {
@@ -29,7 +30,7 @@ namespace Expert
             }
         }
 
-        public function getAllTeamPlayersActions(): array
+        protected function getAllTeamPlayersActions(): array
         {
             try
             {
@@ -45,19 +46,7 @@ namespace Expert
             }
         }
 
-        public function findPosition() : string
-        {
-            try
-            {
-
-            }
-            catch (\Exception $e)
-            {
-                throw $e;
-            }
-        }
-
-        private function checkRequirements()
+        protected function checkRequirements()
         {
             try
             {
@@ -66,7 +55,7 @@ namespace Expert
                                             INNER JOIN `users` ON games_players.player_playerid = users.user_id 
                                             WHERE games_players.player_teamid = ?
                                             GROUP BY user_id", [$this->team_id]);
-                if (empty($ret)) return false;
+                if (empty($ret)) throw new \Exception("Brakuje danych lub zawodników do przeprowadzenia analizy!");
                 foreach($ret as $row)
                 {
                     if (intval($row["amount"]) < 2) throw new \Exception("Za mało danych! Brakuje danych dla: ". $row["user_name"]." ".$row["user_surname"]);
@@ -78,19 +67,5 @@ namespace Expert
                 throw $e;
             }
         }
-    }
-}
-
-namespace
-{
-    try
-    {
-        $expert = new \Expert\Expert(4);
-
-        //echo var_dump($expert->getAllTeamPlayersActions());
-    }
-    catch (\Exception $e)
-    {
-        echo $e->getMessage();
     }
 }

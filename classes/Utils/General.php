@@ -86,10 +86,34 @@ namespace Utils
             return false;
         }
 
-        public static function validateDate(string $date, string $format)
+        public static function countOccurencesInArray(array $hay, mixed $needle, bool $typecheck = false) : int
         {
-            $d = \DateTime::createFromFormat($format, $date);
-            return $d && $d->format($format) === $date;
+            $counter = 0;
+            foreach ($hay as $occur)
+            {
+                if ($typecheck)
+                {
+                    if ($occur === $needle) $counter++;
+                }
+                else
+                {
+                    if ($occur == $needle) $counter++;
+                }
+            }
+            return $counter;
+        }
+
+        public static function counInNestedArrayByKey(array $hay, string $key, mixed $value) : int
+        {
+            $counter = 0;
+            foreach ($hay as $row)
+            {
+                foreach ($row as $occur)
+                {
+                    if ($row[$key] == $value) $counter++;
+                }
+            }
+            return $counter;
         }
 
         public static function preparePDF(int $game_id = 0) : TCPDF

@@ -40,6 +40,12 @@ namespace Utils
             return $d && $d->format($format) == $date;
         }
 
+        public static function validateDate(string $date, string $format)
+        {
+            $d = \DateTime::createFromFormat($format, $date);
+            return $d && $d->format($format) === $date;
+        }
+
         public static function validateInput(string $input) : string
         {
             return htmlspecialchars(trim(stripslashes($input)));

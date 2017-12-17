@@ -1,0 +1,1 @@
+<?php \Utils\Front::printPageDesc("Nowa wiadomość", "Tworzenie nowej wiadomości prywatnej"); ?>

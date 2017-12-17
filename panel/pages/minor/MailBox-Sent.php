@@ -1,0 +1,1 @@
+<?php \Utils\Front::printPageDesc("Skrzynka nadawcza", "Wysłane wiadomości"); ?>

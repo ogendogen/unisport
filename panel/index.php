@@ -67,6 +67,10 @@ if (isset($_GET["tab"]))
             include("pages/major/Calendar.php");
             break;
 
+        case "mailbox":
+            include("pages/major/MailBox.php");
+            break;
+
         default:
             include("pages/major/Dashboard.php");
             break;

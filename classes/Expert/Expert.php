@@ -4,6 +4,8 @@ namespace {
     require_once(__DIR__."/../Db/Database.php");
     require_once(__DIR__."/../Team/Team.php");
     require_once(__DIR__."/../Utils/General.php");
+    require_once(__DIR__."/../Utils/Dictionary.php");
+    require_once(__DIR__."/../User/LoggedUser.php");
 }
 
 namespace Expert
@@ -23,6 +25,7 @@ namespace Expert
                 $this->team_id = $team_id;
                 $this->team = new \Team\Team($team_id);
                 if (!$this->team->isTeamExists()) throw new \Exception("Drużyna nie istnieje!");
+                $this->checkRequirements();
             }
             catch (\Exception $e)
             {
@@ -46,7 +49,7 @@ namespace Expert
             }
         }
 
-        protected function checkRequirements()
+        private function checkRequirements()
         {
             try
             {

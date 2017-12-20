@@ -103,7 +103,7 @@ namespace Utils
             return $counter;
         }
 
-        public static function counInNestedArrayByKey(array $hay, string $key, mixed $value) : int
+        public static function countInNestedArrayByKey(array $hay, string $key, $value) : int
         {
             $counter = 0;
             foreach ($hay as $row)

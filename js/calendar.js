@@ -217,17 +217,17 @@ function updateEvent(id, start, end)
     var end_prepared = encodeURI(end.toString());
     $.get("/ajax/CalendarUpdateEvent.php?teamid=" + getUrlParameter("teamid") + "&eventid=" + id + "&startdate=" + start_prepared + "&enddate=" + end_prepared).done(function(data) {
         var obj = jQuery.parseJSON(JSON.stringify(data));
-        if (obj.code == "-1")
+        if (obj.code === -1)
         {
             modalError("Błąd", obj.msg);
         }
-        else if (obj.code == "0")
+        else if (obj.code === 0)
         {
             modalWarning("Uwaga", obj.msg);
         }
-        else if (obj.code != "1")
+        else if (obj.code !== 1)
         {
-            modalError("Błąd", "Nieznana odpowiedź serwera:" + obj.msg);
+            modalError("Błąd", "Nieznana odpowiedź serwera: " + obj.msg);
         }
     });
 }

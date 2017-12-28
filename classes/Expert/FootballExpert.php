@@ -27,12 +27,88 @@ namespace Expert
                 $this->positions["Skrzydłowy pomocnik"] = 2;
                 $this->positions["Środkowy obrońca"] = 2;
                 $this->positions["Skrzydłowy obrońca"] = 2;
-                //echo var_dump($this->data);
             }
             catch (\Exception $e)
             {
                 throw $e;
             }
+        }
+
+        private function prepareDataToAnalyse() : array
+        {
+            $players_ids = $this->getPlayersToAnalyse();
+            $toanalyse = array();
+            foreach ($players_ids as $player_id)
+            {
+                $row = array();
+                $row["player_id"] = $player_id; // needed only to identify by index
+
+                $subrow = array();
+                $subrow["goal"] = 0;
+                $subrow["accurate_shot"] = 0;
+                $subrow["assist"] = 0;
+                $subrow["shot"] = 0;
+                $subrow["faul"] = 0;
+                $subrow["overtake"] = 0;
+                $subrow["offside"] = 0;
+
+                // Actions that don't take part in analyse
+                $subrow["defence"] = 0;
+                $subrow["overtake"] = 0;
+                $subrow["counter"] = 0;
+
+                array_push($row, $subrow);
+                array_push($toanalyse, $row);
+            }
+
+            return $toanalyse;
+        }
+
+        private function parseData(array $raw_players) : array
+        {
+            foreach ($this->data as $row)
+            {
+                foreach ($raw_players as &$player)
+                {
+                    /*
+                     * Struktura:
+                     * arr
+                     * {
+                     *  arr[0]
+                     *  {
+                     *      arr["player_id"]
+                     *      arr[0]
+                     *      {
+                     *          ["goal"] = 0
+                     *          ["assist"] = 0
+                     *          etc...
+                     *      }
+                     *  }
+                     * }
+                     */
+                    if ($player["player_id"] == $row["user_id"]) $player[0][$row["football_action"]]++;
+                }
+            }
+            return $raw_players;
+        }
+
+        private function getMaxOfActions(array $parsed_data, string $action) : array
+        {
+            $max = 0;
+            $max_id = 0;
+            foreach ($parsed_data as $player)
+            {
+                if ($player[0][$action] > $max)
+                {
+                    $max = $player[0][$action];
+                    $max_id = $player["player_id"];
+                }
+            }
+
+            $ret = array();
+            $ret["max"] = $max;
+            $ret["max_id"] = $max_id;
+            return $ret;
         }
 
         public function doAnalyse(int $goalkeeper_id, array $players_to_omit = null) : array
@@ -41,10 +117,282 @@ namespace Expert
             {
                 if (!$this->team->isUserInTeam($goalkeeper_id)) throw new \Exception("Proponowany bramkarz nie jest w drużynie!");
                 if (!is_null($players_to_omit) && count($this->team->getAllTeamPlayers()) - count($players_to_omit) < 11) throw new \Exception("Drużyna musi składać się z 11 graczy!");
+                $players = $this->prepareDataToAnalyse();
+                $toanalyse = $this->parseData($players);
+                $ret = array();
+
+                //region Bramkarz
+
+                $row["player_id"] = $goalkeeper_id;
+                $row["player_pos"] = "Bramkarz";
+                $user = new \User\LoggedUser($goalkeeper_id);
+                $row["credentials"] = $user->getUserCredentials();
+                array_push($ret, $row);
+
+                //endregion
+
+                //region Środkowy napastnik
+                $max = 0;
+                $maxid = 0;
+                $counter = -1;
+                $player_to_delete = -1;
+                foreach ($toanalyse as $player)
+                {
+                    $counter++;
+                    if ($player[0]["goal"] + $player[0]["accurate_shot"] > $max)
+                    {
+                        $max = $player[0]["goal"] + $player[0]["accurate_shot"];
+                        $maxid = $player["player_id"];
+                        $player_to_delete = $counter;
+                    }
+                }
+                $row = array();
+                $row["player_pos"] = "Środkowy napastnik";
+                $row["player_id"] = $maxid;
+
+                $user = new \User\LoggedUser($maxid);
+                $row["credentials"] = $user->getUserCredentials();
+
+                array_push($ret, $row);
+                unset($toanalyse[$player_to_delete]);
+                $toanalyse = array_values($toanalyse);
+                //endregion
+
+                //region Środkowy pomocnik
+                $max = 0;
+                $maxid = 0;
+                $counter = -1;
+                $player_to_delete = -1;
+                foreach ($toanalyse as $player)
+                {
+                    $counter++;
+                    if ($player[0]["assist"] > $max)
+                    {
+                        $max = $player[0]["assist"];
+                        $maxid = $player["player_id"];
+                        $player_to_delete = $counter;
+                    }
+                }
+                $row = array();
+                $row["player_pos"] = "Środkowy pomocnik";
+                $row["player_id"] = $maxid;
+
+                $user = new \User\LoggedUser($maxid);
+                $row["credentials"] = $user->getUserCredentials();
+
+                array_push($ret, $row);
+                unset($toanalyse[$player_to_delete]);
+                $toanalyse = array_values($toanalyse);
+                //endregion
+
+                //region Skrzydłowy napastnik x1
+                $max = 0;
+                $maxid = 0;
+                $counter = -1;
+                $player_to_delete = -1;
+                foreach ($toanalyse as $player)
+                {
+                    $counter++;
+                    if ($player[0]["shot"] > $max)
+                    {
+                        $max = $player[0]["shot"];
+                        $maxid = $player["player_id"];
+                        $player_to_delete = $counter;
+                    }
+                }
+                $row = array();
+                $row["player_pos"] = "Skrzydłowy napastnik";
+                $row["player_id"] = $maxid;
+
+                $user = new \User\LoggedUser($maxid);
+                $row["credentials"] = $user->getUserCredentials();
+
+                array_push($ret, $row);
+                unset($toanalyse[$player_to_delete]);
+                $toanalyse = array_values($toanalyse);
+                //endregion
+
+                //region Skrzydłowy napastnik x2
+                $max = 0;
+                $maxid = 0;
+                $counter = -1;
+                $player_to_delete = -1;
+                foreach ($toanalyse as $player)
+                {
+                    $counter++;
+                    if ($player[0]["shot"] > $max)
+                    {
+                        $max = $player[0]["shot"];
+                        $maxid = $player["player_id"];
+                        $player_to_delete = $counter;
+                    }
+                }
+                $row = array();
+                $row["player_pos"] = "Skrzydłowy napastnik";
+                $row["player_id"] = $maxid;
+
+                $user = new \User\LoggedUser($maxid);
+                $row["credentials"] = $user->getUserCredentials();
+
+                array_push($ret, $row);
+                unset($toanalyse[$player_to_delete]);
+                $toanalyse = array_values($toanalyse);
+                //endregion
+
+                //region Środkowy obrońca x1
+                $max = 0;
+                $maxid = 0;
+                $counter = -1;
+                $player_to_delete = -1;
+                foreach ($toanalyse as $player)
+                {
+                    $counter++;
+                    if ($player[0]["faul"] + $player[0]["overtake"] > $max)
+                    {
+                        $max = $player[0]["faul"] + $player[0]["overtake"];
+                        $maxid = $player["player_id"];
+                        $player_to_delete = $counter;
+                    }
+                }
+                $row = array();
+                $row["player_pos"] = "Środkowy obrońca";
+                $row["player_id"] = $maxid;
+
+                $user = new \User\LoggedUser($maxid);
+                $row["credentials"] = $user->getUserCredentials();
+
+                array_push($ret, $row);
+                unset($toanalyse[$player_to_delete]);
+                $toanalyse = array_values($toanalyse);
+                //endregion
+
+                //region Środkowy obrońca x2
+                $max = 0;
+                $maxid = 0;
+                $counter = -1;
+                $player_to_delete = -1;
+                foreach ($toanalyse as $player)
+                {
+                    $counter++;
+                    if ($player[0]["faul"] + $player[0]["overtake"] > $max)
+                    {
+                        $max = $player[0]["faul"] + $player[0]["overtake"];
+                        $maxid = $player["player_id"];
+                        $player_to_delete = $counter;
+                    }
+                }
+                $row = array();
+                $row["player_pos"] = "Środkowy obrońca";
+                $row["player_id"] = $maxid;
+
+                $user = new \User\LoggedUser($maxid);
+                $row["credentials"] = $user->getUserCredentials();
+
+                array_push($ret, $row);
+                unset($toanalyse[$player_to_delete]);
+                $toanalyse = array_values($toanalyse);
+                //endregion
+
+                //region Skrzydłowy obrońca x1
+                $max = 0;
+                $maxid = 0;
+                $counter = -1;
+                $player_to_delete = -1;
+                foreach ($toanalyse as $player)
+                {
+                    $counter++;
+                    if ($player[0]["faul"] > $max)
+                    {
+                        $max = $player[0]["faul"];
+                        $maxid = $player["player_id"];
+                        $player_to_delete = $counter;
+                    }
+                    else if ($player[0]["offside"] > $max)
+                    {
+                        $max = $player[0]["offside"];
+                        $maxid = $player["player_id"];
+                        $player_to_delete = $counter;
+                    }
+                }
+                $row = array();
+                $row["player_pos"] = "Skrzydłowy obrońca";
+                $row["player_id"] = $maxid;
+
+                $user = new \User\LoggedUser($maxid);
+                $row["credentials"] = $user->getUserCredentials();
+
+                array_push($ret, $row);
+                unset($toanalyse[$player_to_delete]);
+                $toanalyse = array_values($toanalyse);
+                //endregion
+
+                //region Skrzydłowy obrońca x2
+                $max = 0;
+                $maxid = 0;
+                $counter = -1;
+                $player_to_delete = -1;
+                foreach ($toanalyse as $player)
+                {
+                    $counter++;
+                    if ($player[0]["faul"] > $max)
+                    {
+                        $max = $player[0]["faul"];
+                        $maxid = $player["player_id"];
+                        $player_to_delete = $counter;
+                    }
+                    else if ($player[0]["offside"] > $max)
+                    {
+                        $max = $player[0]["offside"];
+                        $maxid = $player["player_id"];
+                        $player_to_delete = $counter;
+                    }
+                }
+                $row = array();
+                $row["player_pos"] = "Skrzydłowy obrońca";
+                $row["player_id"] = $maxid;
+
+                $user = new \User\LoggedUser($maxid);
+                $row["credentials"] = $user->getUserCredentials();
+
+                array_push($ret, $row);
+                unset($toanalyse[$player_to_delete]);
+                $toanalyse = array_values($toanalyse);
+                //endregion
+
+                //region Skrzydłowy pomocnik
+
+                $row["player_id"] = $toanalyse[0]["player_id"];
+                $row["player_pos"] = "Skrzydłowy pomocnik";
+                $user = new \User\LoggedUser($toanalyse[0]["player_id"]);
+                $row["credentials"] = $user->getUserCredentials();
+                array_push($ret, $row);
+
+                $row["player_id"] = $toanalyse[1]["player_id"];
+                $row["player_pos"] = "Skrzydłowy pomocnik";
+                $user = new \User\LoggedUser($toanalyse[1]["player_id"]);
+                $row["credentials"] = $user->getUserCredentials();
+                array_push($ret, $row);
+
+                //endregion
+
+                return $ret;
+            }
+            catch(\Exception $e)
+            {
+                throw $e;
+            }
+        }
+
+        // to niżej idzie chyba do pieca XD
+
+        public function doAnalyse_Naive(int $goalkeeper_id, array $players_to_omit = null) : array
+        {
+            try
+            {
+                if (!$this->team->isUserInTeam($goalkeeper_id)) throw new \Exception("Proponowany bramkarz nie jest w drużynie!");
+                if (!is_null($players_to_omit) && count($this->team->getAllTeamPlayers()) - count($players_to_omit) < 11) throw new \Exception("Drużyna musi składać się z 11 graczy!");
                 $ret = array(); // returning array with results
                 $this->analyse_buffer = array();
-                //$ret["playerid"]
-                //$ret["playerpos"]
 
                 $this->analyse_rettmp = array();
                 $toanalyse = $this->getPlayersToAnalyse(); // players left to analyse
@@ -136,8 +484,6 @@ namespace Expert
         {
             try
             {
-                echo "<br><br>";
-                var_dump($result);
                 foreach ($this->positions as $position)
                 {
                     $key = key($this->positions);
@@ -194,27 +540,10 @@ namespace Expert
                     }
                 }
 
-                /*echo "id = ".$userid." ";
-                var_dump($collection);
-                echo " ".$action;
-                echo "<br>";*/
-                //echo $userid." ".$action." ";
-                //var_dump($collection);
-                if (empty($collection))
-                {
-                    //var_dump(false);
-                    return false;
-                }
+                if (empty($collection)) return false;
 
                 $max = array_keys($collection, max($collection));
-                //var_dump($max);
-                //var_dump(in_array($userid, $max));
-                //echo "max = ";
-                //var_dump(in_array($userid, $max));
-                //var_dump($max);
 
-                //echo "<hr color='black' size='4'></hr>";
-                //return $max == $userid;
                 return in_array($userid, $max);
                 //return $max[0] == $userid;
             }
@@ -239,8 +568,6 @@ namespace Expert
                 }
 
                 $max = array_keys($collection, max($collection));
-                //var_dump($max);
-                //echo "<br>";
                 return 1;
             }
             catch (\Exception $e)
@@ -258,20 +585,12 @@ namespace
         try
         {
             $expert = new \Expert\FootballExpert(4);
-            /*$players = $expert->getPlayersToAnalyse();
-            $x = $expert->getByTheMostActions($players, "goal");
-
-            $expert->getByTheMostActions($players, "goal");*/
-            //var_dump($expert->isTheMostActions(5, "goal"));
             $ret = $expert->doAnalyse(12);
-            var_dump($ret);
+
             foreach ($ret as $player)
             {
-                $user = new \User\LoggedUser($player["playerid"]);
-                echo "<span style='font-weight: bold;'>".$user->getUserCredentials()."</span> został wytypowany na pozycję <span style='font-weight: bold;'>".\Utils\Dictionary::keyToWord($player["playerpos"])."</span><br>";
+                echo "<span style='font-weight: bold;'>".$player["credentials"]."</span> został wytypowany na pozycję <span style='font-weight: bold;'>".\Utils\Dictionary::keyToWord($player["player_pos"])."</span><br>";
             }
-
-            echo $expert->isCorrectionNeeded($ret);
         }
         catch (\Exception $e)
         {

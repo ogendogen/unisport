@@ -1,0 +1,5 @@
+<?php
+
+//frontend goes here...
+
+?>

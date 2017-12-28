@@ -1,17 +1,20 @@
 <?php
 
-$teamid = $_GET["teamid"];
-if (!is_numeric($teamid)) die(\Utils\General::redirectWithMessageAndDelay("?tab=dashboard", "Błąd!", "Taka drużyna nie istnieje!", "danger", 2));
-
+$is_leader = false;
 try
 {
+    if (!isset($_GET["teamid"])) throw new \Exception("Nie wybrałeś drużyny!");
+    $teamid = $_GET["teamid"];
+    if (!is_numeric($teamid)) throw new \Exception("Taka drużyna nie istnieje!");
     $team = new \Team\Team($teamid);
-    if (!$team->isTeamExists()) die(\Utils\General::redirectWithMessageAndDelay("?tab=dashboard", "Błąd!", "Taka drużyna nie istnieje!", "danger", 2));
-    if (!$team->isUserInTeam($_SESSION["userid"])) die(\Utils\General::redirectWithMessageAndDelay("?tab=dashboard", "Błąd!", "Nie należysz do tej drużyny!", "danger", 2));
+    if (!$team->isTeamExists()) throw new \Exception("Taka drużyna nie istnieje!");
+    if (!$team->isUserInTeam($_SESSION["userid"])) throw new \Exception("Nie należysz do tej drużyny!");
+
+    $is_leader = $team->isUserLeader($_SESSION["userid"]);
 }
 catch (\Exception $e)
 {
-    throw $e;
+    die(\Utils\General::redirectWithMessageAndDelay("?tab=dashboard", "Błąd!", $e->getMessage(), "danger", 2));
 }
 
 ?>
@@ -23,12 +26,12 @@ catch (\Exception $e)
                 <i class="glyphicon glyphicon-th"> Akcje</i>
             </div>
             <div id="actionbuttons" class="box-body text-center">
-                <button type="button" data-actionid="0" class="btn btn-block btn-primary" disabled="disabled" onclick="redirectAddGame()">Dodaj mecz</button>
+                <button type="button" data-actionid="0" class="btn btn-block btn-primary" <?php if (!$is_leader) echo "disabled='disabled'";?> onclick="redirectAddGame()">Dodaj mecz</button>
                 <button type="button" data-actionid="1" class="btn btn-block btn-primary" disabled="disabled" onclick="redirectEditGame()">Wprowadź zmiany</button>
                 <button type="button" data-actionid="2" class="btn btn-block btn-primary" disabled="disabled" onclick="redirectSummary()">Zobacz ogólne podsumowanie</button>
                 <button type="button" data-actionid="3" class="btn btn-block btn-primary" disabled="disabled" onclick="redirectPDF()">Generuj szczegółowy raport PDF</button>
-                <button type="button" data-actionid="4" class="btn btn-block btn-primary" disabled="disabled">Zaproponuj układ na następny mecz</button>
-                <button type="button" data-actionid="5" class="btn btn-block btn-primary" disabled="disabled" onclick="redirectShowAll()">Wyświetl wszystkie mecze</button>
+                <button type="button" data-actionid="4" class="btn btn-block btn-primary">Zaproponuj układ na następny mecz</button>
+                <button type="button" data-actionid="5" class="btn btn-block btn-primary" onclick="redirectShowAll()">Wyświetl wszystkie mecze</button>
             </div>
         </div>
     </div>

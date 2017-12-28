@@ -116,6 +116,21 @@ namespace Utils
             return $counter;
         }
 
+        public static function countInArrayByKey(array $hay, string $key, $value) : int
+        {
+            $counter = 0;
+            foreach ($hay as $row)
+            {
+                if ($row[$key] == $value) $counter++;
+            }
+            return $counter;
+        }
+
+        public static function getKeyByValue($needle, array $hay)
+        {
+            return array_search($needle, $hay);
+        }
+
         public static function preparePDF(int $game_id = 0) : TCPDF
         {
             require_once(__DIR__."/TCPDF/tcpdf.php");

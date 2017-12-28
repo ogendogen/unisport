@@ -35,11 +35,11 @@ function redirectPDF()
             else if (header === "application/json")
             {
                 var obj = jQuery.parseJSON(JSON.stringify(data));
-                if (obj.code == "-1")
+                if (obj.code === 1)
                 {
                     modalError("Błąd", obj.msg);
                 }
-                else if (obj.code == "0")
+                else if (obj.code === 0)
                 {
                     modalWarning("Uwaga!", obj.msg);
                 }
@@ -55,12 +55,33 @@ function redirectPDF()
     });
 }
 
+function checkLeadership_Games(teamid)
+{
+    var btns = $("#actionbuttons");
+    $.get("/ajax/IsUserLeader.php?teamid=" + teamid.toString()).done(function(data) {
+        var obj = jQuery.parseJSON(JSON.stringify(data));
+        if (obj.code === -1)
+        {
+            modalError("Błąd", obj.msg);
+        }
+        else if (obj.code === 0)
+        {
+            //btns.children()[0].attr("disabled", "disabled");
+            //btns.children()[1].attr("disabled", "disabled");
+        }
+        else if (obj.code === 1)
+        {
+            btns.children()[1].disabled = !btns.children()[1].disabled;
+        }
+    });
+}
+
 function chooseGame(gameid)
 {
     var row = $("[data-gameid=" + gameid.toString() + "]");
     var btns = $("#actionbuttons").children();
     var is_choosen_already = ($("[data-selected=1]").length > 0);
-    checkLeadership(getUrlParameter("teamid"));
+
     if (row.attr("data-selected") == "1")
     {
         row.css("background-color", "#FFFFFF");
@@ -74,22 +95,12 @@ function chooseGame(gameid)
     }
     else if ((is_choosen_already && row.attr("data-selected") == "1") || (!is_choosen_already))
     {
-        if (window.localStorage.isLeader == 1)
-        {
-            btns.each(function(){
-                $(this).removeAttr("disabled");
-            });
-        }
-        else if (window.localStorage.isLeader == 0)
-        {
-            btns.eq(2).removeAttr("disabled");
-            btns.eq(3).removeAttr("disabled");
-            btns.eq(4).removeAttr("disabled");
-        }
-        else
-        {
-            modalError("Błąd", "Problem z autoryzacją lidera. Sprawdź połączenie internetowe lub przeloguj się");
-        }
+        checkLeadership_Games(getUrlParameter("teamid"));
+        btns.eq(2).removeAttr("disabled");
+        btns.eq(3).removeAttr("disabled");
+        //btns.eq(2).disabled = false;
+        //btns.eq(3).disabled = false;
+
         row.css("background-color", "#FFD700");
         row.attr("data-selected", "1");
         game_choosen = gameid;

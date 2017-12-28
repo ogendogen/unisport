@@ -36,7 +36,7 @@ function acceptInvitation(teamid)
 {
     $.get("/ajax/InvitationAccepted.php?teamid=" + teamid).done(function(data) {
         var obj = jQuery.parseJSON(JSON.stringify(data));
-        if (obj.code == "1")
+        if (obj.code === 1)
         {
             modalSuccess("Powodzenie", obj.msg);
             $("#inv" + teamid.toString()).remove();
@@ -47,11 +47,11 @@ function acceptInvitation(teamid)
                 setTimeout(function() { window.location.reload(); }, 1000);
             }
         }
-        else if (obj.code == "0")
+        else if (obj.code === 0)
         {
             modalWarning("Uwaga", obj.msg);
         }
-        else if (obj.code == "-1")
+        else if (obj.code === -1)
         {
             modalError("Błąd", obj.msg);
         }
@@ -66,7 +66,7 @@ function rejectInvitation(teamid)
 {
     $.get("/ajax/RejectInvitation.php?teamid=" + teamid).done(function(data) {
         var obj = jQuery.parseJSON(JSON.stringify(data));
-        if (obj.code == "1")
+        if (obj.code === 1)
         {
             modalSuccess("Powodzenie", obj.msg);
             $("#inv" + teamid.toString()).remove();
@@ -75,11 +75,11 @@ function rejectInvitation(teamid)
                 $("#invbox").text("Nie jesteś aktualnie zaproszony do żadnej drużyny");
             }
         }
-        else if (obj.code == "0")
+        else if (obj.code === 0)
         {
             modalWarning("Uwaga", obj.msg);
         }
-        else if (obj.code == "-1")
+        else if (obj.code === -1)
         {
             modalError("Błąd", obj.msg);
         }
@@ -186,15 +186,15 @@ function sendInvitation()
 
     $.get("/ajax/SendInvitation.php?teamid=" + teamid.toString() + "&receivers=" + receivers).done(function(data){
        var obj = jQuery.parseJSON(JSON.stringify(data));
-       if (obj.code == "-1")
+       if (obj.code === -1)
        {
            modalError("Błąd", obj.msg);
        }
-       else if (obj.code == "0")
+       else if (obj.code === 0)
        {
            modalWarning("Uwaga!", obj.msg);
        }
-       else if (obj.code == "1")
+       else if (obj.code === 1)
        {
            modalSuccess("Powodzenie", obj.msg);
            choosen_rows.remove();
@@ -210,7 +210,7 @@ function user_logout()
 {
     $.get("/ajax/Logout.php").done(function(data){
         var obj = jQuery.parseJSON(JSON.stringify(data));
-        if (obj.code == "1")
+        if (obj.code === 1)
         {
             modalSuccess("Powodzenie", "Zostałeś poprawnie wylogowany!");
             setTimeout(logout2, 2000);
@@ -232,15 +232,15 @@ function deleteTeam()
     var teamid = team_selected;
     $.get("/ajax/DeleteTeam.php?teamid=" + teamid.toString()).done(function(data){
         var obj = jQuery.parseJSON(JSON.stringify(data));
-        if (obj.code == "-1")
+        if (obj.code === -1)
         {
             modalError("Błąd", obj.msg);
         }
-        else if (obj.code == "0")
+        else if (obj.code === 0)
         {
             modalWarning("Uwaga!", obj.msg);
         }
-        else if (obj.code == "1")
+        else if (obj.code === 1)
         {
             modalSuccess("Powodzenie", obj.msg);
             $("#team" + teamid.toString()).remove();
@@ -265,15 +265,15 @@ function removeMember()
 
     $.get("/ajax/DeleteTeamMember.php?teamid=" + teamid.toString() + "&kicked=" + kicked).done(function(data){
         var obj = jQuery.parseJSON(JSON.stringify(data));
-        if (obj.code == "-1")
+        if (obj.code === -1)
         {
             modalError("Błąd", obj.msg);
         }
-        else if (obj.code == "0")
+        else if (obj.code === 0)
         {
             modalWarning("Uwaga!", obj.msg);
         }
-        else if (obj.code == "1")
+        else if (obj.code === 1)
         {
             modalSuccess("Powodzenie", obj.msg);
             choosen_rows.remove();
@@ -297,22 +297,42 @@ function addGame()
     window.location.href = "index.php?tab=games&minor=addgame&teamid=" + teamid.toString();
 }
 
-function checkLeadership(teamid)
+function checkLeadershipOld(teamid)
 {
     $.get("/ajax/IsUserLeader.php?teamid=" + teamid.toString()).done(function(data) {
+        var obj = jQuery.parseJSON(JSON.stringify(data));
+        if (obj.code === -1)
+        {
+            window.localStorage.isLeader = -1;
+            modalError("Błąd", obj.msg);
+        }
+        else if (obj.code === 0)
+        {
+            window.localStorage.isLeader = 0;
+        }
+        else if (obj.code === 1)
+        {
+            window.localStorage.isLeader = 1;
+        }
+    });
+}
+
+function checkLeadership(teamid)
+{
+    var btns = $("#teamLeaderBtns");
+    $.get("/ajax/IsUserLeader.php?teamid=" + teamid.toString()).done(function(data) {
        var obj = jQuery.parseJSON(JSON.stringify(data));
-       if (obj.code == "-1")
+       if (obj.code === -1)
        {
-           window.localStorage.isLeader = -1;
            modalError("Błąd", obj.msg);
        }
-       else if (obj.code == "0")
+       else if (obj.code === 0)
        {
-           window.localStorage.isLeader = 0;
+           btns.children().attr("disabled", "disabled");
        }
-       else if (obj.code == "1")
+       else if (obj.code === 1)
        {
-           window.localStorage.isLeader = 1;
+           btns.children().removeAttr("disabled");
        }
     });
 }
@@ -333,7 +353,7 @@ function chooseTeam(id)
         team_selected = id;
         row.css("background-color", "#FFD700");
         checkLeadership(team_selected);
-        if (window.localStorage.isLeader == "1") btns.children().prop("disabled", false);
+        //if (window.localStorage.isLeader == "1") btns.children().prop("disabled", false);
     }
     // w innym wypadku ignoruj - prawdopodobnie próbuje zaznaczyć dwie drużyny
 }

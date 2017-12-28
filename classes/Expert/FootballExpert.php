@@ -10,13 +10,23 @@ namespace Expert
     class FootballExpert extends Expert
     {
         private $data;
-        private $analyse_buffer;
+        private $analyse_buffer; // used to collect already choosen players
+        //private $positions = ["Bramkarz", "Środkowy napastnik", "Skrzydłowy napastnik", "Środkowy pomocnik", "Skrzydłowy pomocnik", "Środkowy obrońca", "Skrzydłowy obrońca"];
+        private $positions = array();
         public function __construct(int $team_id)
         {
             try
             {
                 parent::__construct($team_id);
                 $this->data = parent::getAllTeamPlayersActions();
+
+                $this->positions["Bramkarz"] = 1;
+                $this->positions["Środkowy napastnik"] = 1;
+                $this->positions["Skrzydłowy napastnik"] = 2;
+                $this->positions["Środkowy pomocnik"] = 1;
+                $this->positions["Skrzydłowy pomocnik"] = 2;
+                $this->positions["Środkowy obrońca"] = 2;
+                $this->positions["Skrzydłowy obrońca"] = 2;
                 //echo var_dump($this->data);
             }
             catch (\Exception $e)
@@ -38,8 +48,14 @@ namespace Expert
 
                 $this->analyse_rettmp = array();
                 $toanalyse = $this->getPlayersToAnalyse(); // players left to analyse
+
+                $counter = 0;
                 foreach($toanalyse as $playerid)
                 {
+                    $counter++;
+                    var_dump($toanalyse);
+                    echo "<br>";
+
                     if (!is_null($players_to_omit) && in_array($playerid, $players_to_omit)) continue;
                     $row = array();
                     $row["playerid"] = $playerid;
@@ -47,61 +63,62 @@ namespace Expert
                     {
                         $row["playerpos"] = "Bramkarz";
                         array_push($ret, $row);
+                        unset($toanalyse[\Utils\General::getKeyByValue($playerid, $toanalyse)]);
                         continue;
                     }
 
-                    if ($this->isTheMostActions($playerid, "goal") && \Utils\General::countInNestedArrayByKey($row, "playerpos", "goal") == 1)
+                    if ($this->isTheMostActions($playerid, "goal"))
                     {
                         if ($this->isTheMostActions($playerid, "accurate_shot"))
                         {
                             $row["playerpos"] = "Środkowy napastnik";
                             array_push($ret, $row);
-                            array_push($this->analyse_buffer, "Środkowy napastnik");
+                            unset($toanalyse[\Utils\General::getKeyByValue($playerid, $toanalyse)]);
                             continue;
                         }
                     }
 
-                    if ($this->isTheMostActions($playerid, "assist") && \Utils\General::countInNestedArrayByKey($row, "playerpos", "assist") == 1)
+                    if ($this->isTheMostActions($playerid, "assist"))
                     {
                         $row["playerpos"] = "Środkowy pomocnik";
                         array_push($ret, $row);
-                        array_push($this->analyse_buffer, "Środkowy pomocnik");
+                        unset($toanalyse[\Utils\General::getKeyByValue($playerid, $toanalyse)]);
                         continue;
                     }
                     else
                     {
-                        if ($this->isTheMostActions($playerid, "shot") && \Utils\General::countInNestedArrayByKey($row, "playerpos", "shot") == 2)
+                        if ($this->isTheMostActions($playerid, "shot"))
                         {
                             $row["playerpos"] = "Skrzydłowy napastnik";
                             array_push($ret, $row);
-                            array_push($this->analyse_buffer, "Skrzydłowy napastnik");
+                            unset($toanalyse[\Utils\General::getKeyByValue($playerid, $toanalyse)]);
                             continue;
                         }
                         else
                         {
                             if ($this->isTheMostActions($playerid, "faul"))
                             {
-                                if ($this->isTheMostActions($playerid, "overtake") && \Utils\General::countInNestedArrayByKey($row, "playerpos", "overtake") == 2)
+                                if ($this->isTheMostActions($playerid, "overtake"))
                                 {
                                     $row["playerpos"] = "Skrzydłowy obrońca";
                                     array_push($ret, $row);
-                                    array_push($this->analyse_buffer, "Skrzydłowy obrońca");
+                                    unset($toanalyse[\Utils\General::getKeyByValue($playerid, $toanalyse)]);
                                     continue;
                                 }
                             }
 
-                            if ($this->isTheMostActions($playerid, "offset") && \Utils\General::countInNestedArrayByKey($row, "playerpos", "offset") == 2)
+                            if ($this->isTheMostActions($playerid, "offset"))
                             {
                                 $row["playerpos"] = "Skrzydłowy obrońca";
                                 array_push($ret, $row);
-                                array_push($this->analyse_buffer, "Skrzydłowy obrońca");
+                                unset($toanalyse[\Utils\General::getKeyByValue($playerid, $toanalyse)]);
                                 continue;
                             }
                             else
                             {
                                 $row["playerpos"] = "Skrzydłowy pomocnik";
                                 array_push($ret, $row);
-                                array_push($this->analyse_buffer, "Skrzydłowy pomocnik");
+                                unset($toanalyse[\Utils\General::getKeyByValue($playerid, $toanalyse)]);
                                 continue;
                             }
                         }
@@ -115,7 +132,41 @@ namespace Expert
             }
         }
 
-        private function getPlayersToAnalyse() : array
+        public function isCorrectionNeeded(array $result) : string
+        {
+            try
+            {
+                echo "<br><br>";
+                var_dump($result);
+                foreach ($this->positions as $position)
+                {
+                    $key = key($this->positions);
+                    echo \Utils\General::countInNestedArrayByKey($result, "playerpos", $key);
+                    echo "<br>".$position;
+                    if (\Utils\General::countInNestedArrayByKey($result, "playerpos", $key) > $position) return $key;
+                }
+
+                return "";
+            }
+            catch (\Exception $e)
+            {
+                throw $e;
+            }
+        }
+
+        public function doCorrection()
+        {
+            try
+            {
+
+            }
+            catch (\Exception $e)
+            {
+                throw $e;
+            }
+        }
+
+        public function getPlayersToAnalyse() : array
         {
             try
             {
@@ -143,14 +194,54 @@ namespace Expert
                     }
                 }
 
-                echo "id = ".$userid." ";
+                /*echo "id = ".$userid." ";
                 var_dump($collection);
                 echo " ".$action;
-                echo "<br>";
-                if (empty($collection)) return false;
+                echo "<br>";*/
+                //echo $userid." ".$action." ";
+                //var_dump($collection);
+                if (empty($collection))
+                {
+                    //var_dump(false);
+                    return false;
+                }
 
                 $max = array_keys($collection, max($collection));
-                return $max[0] == $userid;
+                //var_dump($max);
+                //var_dump(in_array($userid, $max));
+                //echo "max = ";
+                //var_dump(in_array($userid, $max));
+                //var_dump($max);
+
+                //echo "<hr color='black' size='4'></hr>";
+                //return $max == $userid;
+                return in_array($userid, $max);
+                //return $max[0] == $userid;
+            }
+            catch (\Exception $e)
+            {
+                throw $e;
+            }
+        }
+
+        public function getByTheMostActions(array $players, string $action) : int
+        {
+            try
+            {
+                $collection = array();
+                foreach ($this->data as $player)
+                {
+                    if ($player["football_action"] == $action)
+                    {
+                        if (isset($collection[strval($player["user_id"])])) $collection[strval($player["user_id"])]++;
+                        else $collection[strval($player["user_id"])] = 1;
+                    }
+                }
+
+                $max = array_keys($collection, max($collection));
+                //var_dump($max);
+                //echo "<br>";
+                return 1;
             }
             catch (\Exception $e)
             {
@@ -162,19 +253,29 @@ namespace Expert
 
 namespace
 {
-    try
+    if (isset($_GET["test"]))
     {
-        $expert = new \Expert\FootballExpert(4);
-        //var_dump($expert->isTheMostActions(5, "goal"));
-        $ret = $expert->doAnalyse(12);
-        foreach ($ret as $player)
+        try
         {
-            $user = new \User\LoggedUser($player["playerid"]);
-            echo "<span style='font-weight: bold;'>".$user->getUserCredentials()."</span> został wytypowany na pozycję <span style='font-weight: bold;'>".\Utils\Dictionary::keyToWord($player["playerpos"])."</span><br>";
+            $expert = new \Expert\FootballExpert(4);
+            /*$players = $expert->getPlayersToAnalyse();
+            $x = $expert->getByTheMostActions($players, "goal");
+
+            $expert->getByTheMostActions($players, "goal");*/
+            //var_dump($expert->isTheMostActions(5, "goal"));
+            $ret = $expert->doAnalyse(12);
+            var_dump($ret);
+            foreach ($ret as $player)
+            {
+                $user = new \User\LoggedUser($player["playerid"]);
+                echo "<span style='font-weight: bold;'>".$user->getUserCredentials()."</span> został wytypowany na pozycję <span style='font-weight: bold;'>".\Utils\Dictionary::keyToWord($player["playerpos"])."</span><br>";
+            }
+
+            echo $expert->isCorrectionNeeded($ret);
         }
-    }
-    catch (\Exception $e)
-    {
-        echo $e->getMessage();
+        catch (\Exception $e)
+        {
+            echo $e->getMessage();
+        }
     }
 }

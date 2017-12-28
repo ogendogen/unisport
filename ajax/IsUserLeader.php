@@ -5,7 +5,6 @@ require_once(__DIR__."/../classes/Team/Team.php");
 require_once(__DIR__."/../classes/Utils/General.php");
 header('Content-Type: application/json'); // json response
 
-global $CONF;
 session_start();
 
 if (!isset($_SESSION["userid"]))

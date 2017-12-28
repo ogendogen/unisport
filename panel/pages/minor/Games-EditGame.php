@@ -151,20 +151,10 @@ catch (\Exception $e)
                         }
                         else
                         {
-                            $counter = 1;
+                            echo "<div class='row-centered'>";
                             foreach ($players as $player)
                             {
-                                if ($counter % 3 == 0)
-                                {
-                                    echo "</div>";
-                                    $counter = 1;
-                                }
-                                if ($counter == 1)
-                                {
-                                    echo "<div class='row'>";
-                                }
-                                echo "<div class='alert ". (in_array($player["user_id"], $game_players) ? "alert-success" : "alert-info") ." col-md-4' style='margin-left: 5px;' onclick='choosePlayer(".$player["user_id"].")' data-playerid='".$player["user_id"]."'>".$player["user_name"]." ".$player["user_surname"]."</div>";
-                                $counter++;
+                                echo "<div class='alert ". (in_array($player["user_id"], $game_players) ? "alert-success" : "alert-info") ." col-md-3 col-centered' style='margin-left: 5px; width: 30%;' onclick='choosePlayer(".$player["user_id"].")' data-playerid='".$player["user_id"]."'>".$player["user_name"]." ".$player["user_surname"]."</div>";
                             }
                             echo "</div>";
                         }

@@ -3,6 +3,7 @@
 namespace {
     require_once(__DIR__ . "/../Db/Database.php");
     require_once(__DIR__ . "/../Team/Team.php");
+    require_once(__DIR__. "/../Utils/Validations.php");
 }
 
 namespace Team

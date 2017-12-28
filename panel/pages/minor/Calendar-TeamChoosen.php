@@ -114,12 +114,21 @@ catch (\Exception $e)
 
         $('#calendar').fullCalendar('rerenderEvents');
 
-        checkLeadership(getUrlParameter("teamid"));
-        if (window.localStorage.isLeader !== "1")
+        <?php
+            if (!$team->isUserLeader($_SESSION["userid"]))
+            {
+                echo "$('#eventadd').prop('disabled', 'disabled');";
+                echo "$('#editmode').prop('disabled', 'disabled');";
+                echo "$('#deletemode').prop('disabled', 'disabled');";
+                echo "$('#calendar').fullCalendar('option', 'editable', false)";
+            }
+        ?>
+        //checkLeadership(getUrlParameter("teamid"));
+        /*if (window.localStorage.isLeader !== "1")
         {
             $("#eventadd").prop("disabled", "disabled");
             $("#editmode").prop("disabled", "disabled");
             $("#deletemode").prop("disabled", "disabled");
-        }
+        }*/
     });
 </script>

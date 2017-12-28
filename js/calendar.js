@@ -108,7 +108,7 @@ $(function () {
                 borderColor    : '#3c8dbc' //Primary (light-blue)
             }
         ],*/
-        editable  : (window.localStorage.isLeader === "1"), // only leader is allowed to edit or drop, even when it's replaced there is server-side validation
+        editable  : true, // (variable) only leader is allowed to edit or drop, even when it's replaced there is server-side validation
         eventDrop: function(event, delta, revertFunc) {
 
             var id = event.id;
@@ -130,15 +130,15 @@ $(function () {
             {
                 $.get("/ajax/CalendarDeleteEvent.php?eventid=" + event.id).done(function(data) {
                     var obj = jQuery.parseJSON(JSON.stringify(data));
-                    if (obj.code == "-1")
+                    if (obj.code === -1)
                     {
                         modalError("Błąd", obj.msg);
                     }
-                    else if (obj.code == "0")
+                    else if (obj.code === 0)
                     {
                         modalWarning("Uwaga", obj.msg);
                     }
-                    else if (obj.code == "1")
+                    else if (obj.code === 1)
                     {
                         $('#calendar').fullCalendar('removeEvents', event.id);
                         modalSuccess("Powodzenie", "Usunięto wydarzenie: " + event.title);

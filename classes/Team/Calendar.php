@@ -51,6 +51,7 @@ namespace Team
                 if (!in_array($priority, $this->priorities)) throw new \Exception("Niepoprawny priorytet!");
                 if (!\Utils\Validations::validateDate($startdatetime,"d.m.Y H:s")) throw new \Exception("Format początkowej daty jest niepoprawny!");
                 if (!\Utils\Validations::validateDate($enddatetime, "d.m.Y H:s")) throw new \Exception("Format końcowej daty jest niepoprawny!");
+                if (strtotime($startdatetime) >= strtotime($enddatetime)) throw new \Exception("Data zakończenia jest wcześniejsza niż rozpoczęcia!");
                 if (strlen($event) > 32) throw new \Exception("Opis zdarzenia jest za długi! (maks 32 znaki)");
 
                 //$startdatetime = str_replace("-", ".", $startdatetime);

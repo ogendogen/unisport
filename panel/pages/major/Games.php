@@ -26,6 +26,10 @@ else
                 include(__DIR__."/../minor/Games-Summary.php");
                 break;
 
+            case "expert":
+                include(__DIR__."/../minor/Games-Expert.php");
+                break;
+
             default:
                 include(__DIR__."/../minor/Games-TeamChoosen.php");
                 break;

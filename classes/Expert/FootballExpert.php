@@ -71,7 +71,7 @@ namespace Expert
                 foreach ($raw_players as &$player)
                 {
                     /*
-                     * Struktura:
+                     * Structure:
                      * arr
                      * {
                      *  arr[0]
@@ -116,7 +116,7 @@ namespace Expert
             try
             {
                 if (!$this->team->isUserInTeam($goalkeeper_id)) throw new \Exception("Proponowany bramkarz nie jest w drużynie!");
-                if (!is_null($players_to_omit) && count($this->team->getAllTeamPlayers()) - count($players_to_omit) < 11) throw new \Exception("Drużyna musi składać się z 11 graczy!");
+                if (!is_null($players_to_omit) && count($this->team->getAllTeamPlayers()) - count($players_to_omit) < 11) throw new \Exception("Drużyna musi składać się z przynajmniej 11 graczy!");
                 $players = $this->prepareDataToAnalyse();
                 $toanalyse = $this->parseData($players);
                 $ret = array();
@@ -125,9 +125,14 @@ namespace Expert
 
                 $row["player_id"] = $goalkeeper_id;
                 $row["player_pos"] = "Bramkarz";
+                $row["how"] = "Wybrany przez użytkownika";
                 $user = new \User\LoggedUser($goalkeeper_id);
                 $row["credentials"] = $user->getUserCredentials();
                 array_push($ret, $row);
+
+                $to_delete = array_search($goalkeeper_id, $toanalyse); // will always find, because we check above whether goalkeeper is in team
+                unset($toanalyse[$to_delete]);
+                $toanalyse = array_values($toanalyse);
 
                 //endregion
 
@@ -149,6 +154,7 @@ namespace Expert
                 $row = array();
                 $row["player_pos"] = "Środkowy napastnik";
                 $row["player_id"] = $maxid;
+                $row["how"] = "Najwięcej goli i celnych strzałów";
 
                 $user = new \User\LoggedUser($maxid);
                 $row["credentials"] = $user->getUserCredentials();
@@ -176,6 +182,7 @@ namespace Expert
                 $row = array();
                 $row["player_pos"] = "Środkowy pomocnik";
                 $row["player_id"] = $maxid;
+                $row["how"] = "Najwięcej asyst";
 
                 $user = new \User\LoggedUser($maxid);
                 $row["credentials"] = $user->getUserCredentials();
@@ -203,6 +210,7 @@ namespace Expert
                 $row = array();
                 $row["player_pos"] = "Skrzydłowy napastnik";
                 $row["player_id"] = $maxid;
+                $row["how"] = "Najwięcej strzałów";
 
                 $user = new \User\LoggedUser($maxid);
                 $row["credentials"] = $user->getUserCredentials();
@@ -230,6 +238,7 @@ namespace Expert
                 $row = array();
                 $row["player_pos"] = "Skrzydłowy napastnik";
                 $row["player_id"] = $maxid;
+                $row["how"] = "Najwięcej strzałów";
 
                 $user = new \User\LoggedUser($maxid);
                 $row["credentials"] = $user->getUserCredentials();
@@ -257,6 +266,7 @@ namespace Expert
                 $row = array();
                 $row["player_pos"] = "Środkowy obrońca";
                 $row["player_id"] = $maxid;
+                $row["how"] = "Największa ilość fauli i przejęć";
 
                 $user = new \User\LoggedUser($maxid);
                 $row["credentials"] = $user->getUserCredentials();
@@ -284,6 +294,7 @@ namespace Expert
                 $row = array();
                 $row["player_pos"] = "Środkowy obrońca";
                 $row["player_id"] = $maxid;
+                $row["how"] = "Największa ilość fauli i przejęć";
 
                 $user = new \User\LoggedUser($maxid);
                 $row["credentials"] = $user->getUserCredentials();
@@ -317,6 +328,7 @@ namespace Expert
                 $row = array();
                 $row["player_pos"] = "Skrzydłowy obrońca";
                 $row["player_id"] = $maxid;
+                $row["how"] = "Najwięcej fauli lub spalonych";
 
                 $user = new \User\LoggedUser($maxid);
                 $row["credentials"] = $user->getUserCredentials();
@@ -350,6 +362,7 @@ namespace Expert
                 $row = array();
                 $row["player_pos"] = "Skrzydłowy obrońca";
                 $row["player_id"] = $maxid;
+                $row["how"] = "Najwięcej fauli lub spalonych";
 
                 $user = new \User\LoggedUser($maxid);
                 $row["credentials"] = $user->getUserCredentials();
@@ -363,12 +376,14 @@ namespace Expert
 
                 $row["player_id"] = $toanalyse[0]["player_id"];
                 $row["player_pos"] = "Skrzydłowy pomocnik";
+                $row["how"] = "Pozostali zawodnicy";
                 $user = new \User\LoggedUser($toanalyse[0]["player_id"]);
                 $row["credentials"] = $user->getUserCredentials();
                 array_push($ret, $row);
 
                 $row["player_id"] = $toanalyse[1]["player_id"];
                 $row["player_pos"] = "Skrzydłowy pomocnik";
+                $row["how"] = "Pozostali zawodnicy";
                 $user = new \User\LoggedUser($toanalyse[1]["player_id"]);
                 $row["credentials"] = $user->getUserCredentials();
                 array_push($ret, $row);

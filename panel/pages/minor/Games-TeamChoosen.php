@@ -30,7 +30,7 @@ catch (\Exception $e)
                 <button type="button" data-actionid="1" class="btn btn-block btn-primary" disabled="disabled" onclick="redirectEditGame()">Wprowadź zmiany</button>
                 <button type="button" data-actionid="2" class="btn btn-block btn-primary" disabled="disabled" onclick="redirectSummary()">Zobacz ogólne podsumowanie</button>
                 <button type="button" data-actionid="3" class="btn btn-block btn-primary" disabled="disabled" onclick="redirectPDF()">Generuj szczegółowy raport PDF</button>
-                <button type="button" data-actionid="4" class="btn btn-block btn-primary">Zaproponuj układ na następny mecz</button>
+                <button type="button" data-actionid="4" class="btn btn-block btn-primary" onclick="redirectExpert()">Zaproponuj układ na następny mecz</button>
                 <button type="button" data-actionid="5" class="btn btn-block btn-primary" onclick="redirectShowAll()">Wyświetl wszystkie mecze</button>
             </div>
         </div>

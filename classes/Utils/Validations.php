@@ -55,7 +55,17 @@ namespace Utils
         {
             foreach($arr as $key => $value)
             {
-                $arr[$key] = self::validateInput($value);
+                if (is_string($value))
+                {
+                    $arr[$key] = self::validateInput($value);
+                }
+                else if (is_array($value))
+                {
+                    foreach ($value as $subkey => $subvalue)
+                    {
+                        $arr[$key[$subkey]] = self::validateInput($subvalue);
+                    }
+                }
             }
         }
     }

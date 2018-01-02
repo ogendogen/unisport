@@ -51,7 +51,7 @@ catch (\Exception $e)
                             <th>Fragment raportu</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="tbody_games">
                         <?php
 
                         $games = null;
@@ -92,9 +92,8 @@ catch (\Exception $e)
 </div>
 <script>
     $(document).ready(function(){
-       checkLeadership(getUrlParameter("teamid"));
+        checkLeadership_Games(getUrlParameter("teamid"));
        var btns = $("#actionbuttons").children();
-       if (window.localStorage.isLeader == 1) btns.eq(0).removeAttr("disabled");
        btns.eq(4).removeAttr("disabled");
        btns.eq(5).removeAttr("disabled");
     });

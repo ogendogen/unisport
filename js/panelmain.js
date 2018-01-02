@@ -339,23 +339,14 @@ function checkLeadership(teamid)
 
 function chooseTeam(id)
 {
-    var real_id = "team" + id;
-    var row = $("#" + real_id);
     var btns = $("#teamLeaderBtns");
-    if (team_selected === id) // kliknięcie w zaznaczone
-    {
-        team_selected = -1;
-        row.css("background-color", "#FFFFFF");
-        btns.children().prop("disabled", true);
-    }
-    else if (team_selected === -1) // zaznaczył nową drużynę
-    {
-        team_selected = id;
-        row.css("background-color", "#FFD700");
-        checkLeadership(team_selected);
-        //if (window.localStorage.isLeader == "1") btns.children().prop("disabled", false);
-    }
-    // w innym wypadku ignoruj - prawdopodobnie próbuje zaznaczyć dwie drużyny
+    var real_id = "team" + id;
+    var new_row = $("#" + real_id);
+    var rows = $("#teams_tbody").children();
+    team_selected = id;
+    checkLeadership(id);
+    rows.css("background-color", "#FFF");
+    new_row.css("background-color", "#FFD700");
 }
 
 function modalSuccess(title, msg)

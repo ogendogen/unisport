@@ -7,10 +7,6 @@ try
     if (!isset($_GET["teamid"])) throw new \Exception("Taka drużyna nie istnieje!");
     $team = new \Team\Team($_GET["teamid"]);
     if (!$team->isFootballTeam()) throw new \Exception("Opcja dostępna tylko dla drużyn piłki nożnej!");
-    if (isset($_POST["start"]))
-    {
-        $a = 1;
-    }
 }
 catch (\Exception $e)
 {
@@ -66,7 +62,7 @@ catch (\Exception $e)
                         <td>No.</td>
                         <td>Imię i nazwisko</td>
                         <td>Pozycja</td>
-                        <td>Jak ?</td>
+                        <td>Dlaczego ?</td>
                     </tr>
                     <?php
 

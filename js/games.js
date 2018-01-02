@@ -69,14 +69,10 @@ function checkLeadership_Games(teamid)
         {
             modalError("Błąd", obj.msg);
         }
-        else if (obj.code === 0)
-        {
-            //btns.children()[0].attr("disabled", "disabled");
-            //btns.children()[1].attr("disabled", "disabled");
-        }
         else if (obj.code === 1)
         {
-            btns.children()[1].disabled = !btns.children()[1].disabled;
+            btns.children()[0].disabled = false;
+            btns.children()[1].disabled = false;
         }
     });
 }
@@ -85,7 +81,17 @@ function chooseGame(gameid)
 {
     var row = $("[data-gameid=" + gameid.toString() + "]");
     var btns = $("#actionbuttons").children();
-    var is_choosen_already = ($("[data-selected=1]").length > 0);
+    var rows = $("#tbody_games").children();
+
+    rows.css("background-color", "#fff");
+    game_choosen = gameid;
+    checkLeadership_Games(getUrlParameter("teamid"));
+    row.css("background-color", "#ffd700");
+
+    btns.eq(2).removeAttr("disabled");
+    btns.eq(3).removeAttr("disabled");
+
+    /*var is_choosen_already = ($("[data-selected=1]").length > 0);
 
     if (row.attr("data-selected") == "1")
     {
@@ -109,7 +115,7 @@ function chooseGame(gameid)
         row.css("background-color", "#FFD700");
         row.attr("data-selected", "1");
         game_choosen = gameid;
-    }
+    }*/
 }
 
 function addNewGameAction()

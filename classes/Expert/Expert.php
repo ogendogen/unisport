@@ -61,7 +61,7 @@ namespace Expert
                 if (empty($ret)) throw new \Exception("Brakuje danych lub zawodników do przeprowadzenia analizy!");
                 foreach($ret as $row)
                 {
-                    if (intval($row["amount"]) < 2) throw new \Exception("Za mało danych! Brakuje danych dla: ". $row["user_name"]." ".$row["user_surname"]);
+                    if (intval($row["amount"]) < 4) throw new \Exception("Za mało danych! Brakuje danych dla: ". $row["user_name"]." ".$row["user_surname"]);
                 }
                 return true;
             }

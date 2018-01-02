@@ -15,7 +15,7 @@
                     <label>Opis</label>
                     <textarea class="form-control" style="resize: none;" maxlength="256" name="teamDescription" placeholder="Wprowadź krótki opis drużyny"></textarea>
                     <label>Wybór sportu</label>
-                    <select class="form-control" name="teamSport">
+                    <select class="form-control" title="team_sport" name="teamSport">
                         <?php
 
                         try
@@ -143,27 +143,35 @@
                         </tr>
                         <?php
 
-                        global $logged_user;
-                        $userteams = $logged_user->getAllUserTeams();
-                        $counter = 0;
-                        if (!empty($userteams))
+                        try
                         {
-                            foreach ($userteams as $userteam)
+                            global $logged_user;
+                            $userteams = $logged_user->getAllUserTeams();
+                            $counter = 0;
+                            if (!empty($userteams))
                             {
-                                echo "<tr id='team".$userteam["team_id"]."'>";
-                                echo "<td onclick='chooseTeam(".$userteam["team_id"].");'>".++$counter.".</td>";
-                                $counter--;
-                                echo "<td onclick='chooseTeam(".$userteam["team_id"].");'>".$userteam["team_name"]."</td>";
-                                echo "<td onclick='chooseTeam(".$userteam["team_id"].");'>".$userteam["team_description"]."</td>";
-                                echo "<td onclick='chooseTeam(".$userteam["team_id"].");'>".\Team\Sport::sportIdToName($userteam["team_sport"])."</td>";
-                                echo "</tr>";
-                                $counter++;
+                                foreach ($userteams as $userteam)
+                                {
+                                    echo "<tr id='team".$userteam["team_id"]."'>";
+                                    echo "<td onclick='chooseTeam(".$userteam["team_id"].");'>".++$counter.".</td>";
+                                    $counter--;
+                                    echo "<td onclick='chooseTeam(".$userteam["team_id"].");'>".$userteam["team_name"]."</td>";
+                                    echo "<td onclick='chooseTeam(".$userteam["team_id"].");'>".$userteam["team_description"]."</td>";
+                                    echo "<td onclick='chooseTeam(".$userteam["team_id"].");'>".\Team\Sport::sportIdToName($userteam["team_sport"])."</td>";
+                                    echo "</tr>";
+                                    $counter++;
+                                }
+                            }
+                            else
+                            {
+                                echo "<div class='alert alert-info btn-block' id='noteam_alert'>Nie jesteś w żadnej drużynie. Poproś swojego lidera o zaproszenie lub stwórz własną drużynę !</div>";
                             }
                         }
-                        else
+                        catch (\Exception $e)
                         {
-                            echo "<div class='alert alert-info btn-block' id='noteam_alert'>Nie jesteś w żadnej drużynie. Poproś swojego lidera o zaproszenie lub stwórz własną drużynę !</div>";
+                            \Utils\Front::error($e->getMessage());
                         }
+
                         ?>
                     </tbody>
                 </table>

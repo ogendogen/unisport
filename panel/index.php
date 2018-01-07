@@ -71,6 +71,10 @@ if (isset($_GET["tab"]))
             include("pages/major/MailBox.php");
             break;
 
+        case "medical":
+            include("pages/major/Medical.php");
+            break;
+
         default:
             include("pages/major/Dashboard.php");
             break;

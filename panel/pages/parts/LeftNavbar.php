@@ -36,8 +36,9 @@
         $sidemenu->addSingleTab("Moje drużyny", "teams", "fa fa-users");
         $sidemenu->addSingleTab("Moje mecze", "games", "glyphicon glyphicon-list-alt");
         $sidemenu->addSingleTab("Kalendarz", "teamcalendar", "fa fa-calendar");
+        $sidemenu->addSingleTab("Moduł medyczny", "medical", "fa fa-medkit");
 
-        $multisub = array();
+        /*$multisub = array();
 
         $multisub[0]["name"] = "Multi #1";
         $multisub[0]["tab"] = "tab1";
@@ -45,7 +46,7 @@
         $multisub[1]["name"] = "Multi #2";
         $multisub[1]["tab"] = "tab2";
 
-        $sidemenu->addMultiTab("Multitab", "multi", $multisub);
+        $sidemenu->addMultiTab("Multitab", "multi", $multisub);*/
         unset($sidemenu);
 
         ?>

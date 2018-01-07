@@ -131,6 +131,21 @@ namespace Expert
                 if (!is_null($players_to_omit) && count($this->team->getAllTeamPlayers()) - count($players_to_omit) < 11) throw new \Exception("Drużyna musi składać się z przynajmniej 11 graczy!");
                 $players = $this->prepareDataToAnalyse();
                 $toanalyse = $this->parseData($players);
+
+                if (!is_null($players_to_omit))
+                {
+                    $counter = -1;
+                    foreach ($toanalyse as $player)
+                    {
+                        $counter++;
+                        if (in_array($player["player_id"], $players_to_omit))
+                        {
+                            unset($toanalyse[$counter]);
+                            $toanalyse = array_values($toanalyse);
+                        }
+                    }
+                }
+
                 $ret = array();
 
                 //region Bramkarz

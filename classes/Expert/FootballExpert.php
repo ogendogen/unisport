@@ -86,7 +86,7 @@ namespace Expert
                      *  }
                      * }
                      */
-                    if ($player["player_id"] == $row["user_id"]) $player[0][$row["football_action"]]++;
+                    if ($player["player_id"] == $row["user_id"] && isset($player[0][$row["football_action"]])) $player[0][$row["football_action"]]++;
                 }
             }
             return $raw_players;
@@ -111,6 +111,18 @@ namespace Expert
             return $ret;
         }
 
+        /*private function parseFacts(array $action) : array
+        {
+            try
+            {
+                var_dump($action);
+            }
+            catch (\Exception $e)
+            {
+                throw $e;
+            }
+        }*/
+
         public function doAnalyse(int $goalkeeper_id, array $players_to_omit = null) : array
         {
             try
@@ -126,6 +138,12 @@ namespace Expert
                 $row["player_id"] = $goalkeeper_id;
                 $row["player_pos"] = "Bramkarz";
                 $row["how"] = "Wybrany przez użytkownika";
+                $row["facts"] = "Nie brane pod uwagę";
+
+                $row["rules"] = "Czy gracz bierze udział ? TAK<br>";
+                $row["rules"] .= "Czy gracz nie jest rezerwowym ? TAK<br>";
+                $row["rules"] .= "Czy gracz jest bramkarzem ? TAK<br>";
+
                 $user = new \User\LoggedUser($goalkeeper_id);
                 $row["credentials"] = $user->getUserCredentials();
                 array_push($ret, $row);
@@ -141,6 +159,7 @@ namespace Expert
                 $maxid = 0;
                 $counter = -1;
                 $player_to_delete = -1;
+                $facts = "";
                 foreach ($toanalyse as $player)
                 {
                     $counter++;
@@ -149,12 +168,27 @@ namespace Expert
                         $max = $player[0]["goal"] + $player[0]["accurate_shot"];
                         $maxid = $player["player_id"];
                         $player_to_delete = $counter;
+
+                        foreach ($player as $actions)
+                        {
+                            if (is_int($actions)) continue;
+                            foreach ($actions as $action => $action_occurences)
+                            {
+                                if ($action_occurences > 0) $facts .= $action_occurences." ".\Utils\Dictionary::keyToWord($action).", ";
+                            }
+                        }
                     }
                 }
                 $row = array();
                 $row["player_pos"] = "Środkowy napastnik";
                 $row["player_id"] = $maxid;
                 $row["how"] = "Najwięcej goli i celnych strzałów";
+                $row["facts"] = $facts;
+
+                $row["rules"] = "Czy gracz bierze udział ? TAK<br>";
+                $row["rules"] .= "Czy gracz nie jest rezerwowym ? TAK<br>";
+                $row["rules"] .= "Czy gracz jest bramkarzem ? NIE<br>";
+                $row["rules"] .= "Czy suma goli i celnych strzałów jest najwyższa ? TAK<br>";
 
                 $user = new \User\LoggedUser($maxid);
                 $row["credentials"] = $user->getUserCredentials();
@@ -169,6 +203,7 @@ namespace Expert
                 $maxid = 0;
                 $counter = -1;
                 $player_to_delete = -1;
+                $facts = "";
                 foreach ($toanalyse as $player)
                 {
                     $counter++;
@@ -177,12 +212,28 @@ namespace Expert
                         $max = $player[0]["assist"];
                         $maxid = $player["player_id"];
                         $player_to_delete = $counter;
+
+                        foreach ($player as $actions)
+                        {
+                            if (is_int($actions)) continue;
+                            foreach ($actions as $action => $action_occurences)
+                            {
+                                if ($action_occurences > 0) $facts .= $action_occurences." ".\Utils\Dictionary::keyToWord($action).", ";
+                            }
+                        }
                     }
                 }
                 $row = array();
                 $row["player_pos"] = "Środkowy pomocnik";
                 $row["player_id"] = $maxid;
                 $row["how"] = "Najwięcej asyst";
+                $row["facts"] = $facts;
+
+                $row["rules"] = "Czy gracz bierze udział ? TAK<br>";
+                $row["rules"] .= "Czy gracz nie jest rezerwowym ? TAK<br>";
+                $row["rules"] .= "Czy gracz jest bramkarzem ? NIE<br>";
+                $row["rules"] .= "Czy suma goli i celnych strzałów jest najwyższa ? NIE<br>";
+                $row["rules"] .= "Czy gracz wykonał najwięcej asyst ? TAK<br>";
 
                 $user = new \User\LoggedUser($maxid);
                 $row["credentials"] = $user->getUserCredentials();
@@ -197,6 +248,7 @@ namespace Expert
                 $maxid = 0;
                 $counter = -1;
                 $player_to_delete = -1;
+                $facts = "";
                 foreach ($toanalyse as $player)
                 {
                     $counter++;
@@ -205,12 +257,30 @@ namespace Expert
                         $max = $player[0]["shot"];
                         $maxid = $player["player_id"];
                         $player_to_delete = $counter;
+
+                        foreach ($player as $actions)
+                        {
+                            if (is_int($actions)) continue;
+                            foreach ($actions as $action => $action_occurences)
+                            {
+                                if ($action_occurences > 0) $facts .= $action_occurences." ".\Utils\Dictionary::keyToWord($action).", ";
+                            }
+                        }
                     }
                 }
                 $row = array();
                 $row["player_pos"] = "Skrzydłowy napastnik";
                 $row["player_id"] = $maxid;
                 $row["how"] = "Najwięcej strzałów";
+                $row["facts"] = $facts;
+
+                $row["rules"] = "Czy gracz bierze udział ? TAK<br>";
+                $row["rules"] .= "Czy gracz nie jest rezerwowym ? TAK<br>";
+                $row["rules"] .= "Czy gracz jest bramkarzem ? NIE<br>";
+                $row["rules"] .= "Czy suma goli i celnych strzałów jest najwyższa ? NIE<br>";
+                $row["rules"] .= "Czy gracz wykonał najwięcej asyst ? NIE<br>";
+                $row["rules"] .= "Czy gracz wykonał najwięcej strzałów na bramkę ? TAK<br>";
+
 
                 $user = new \User\LoggedUser($maxid);
                 $row["credentials"] = $user->getUserCredentials();
@@ -225,6 +295,7 @@ namespace Expert
                 $maxid = 0;
                 $counter = -1;
                 $player_to_delete = -1;
+                $facts = "";
                 foreach ($toanalyse as $player)
                 {
                     $counter++;
@@ -233,12 +304,29 @@ namespace Expert
                         $max = $player[0]["shot"];
                         $maxid = $player["player_id"];
                         $player_to_delete = $counter;
+
+                        foreach ($player as $actions)
+                        {
+                            if (is_int($actions)) continue;
+                            foreach ($actions as $action => $action_occurences)
+                            {
+                                if ($action_occurences > 0) $facts .= $action_occurences." ".\Utils\Dictionary::keyToWord($action).", ";
+                            }
+                        }
                     }
                 }
                 $row = array();
                 $row["player_pos"] = "Skrzydłowy napastnik";
                 $row["player_id"] = $maxid;
                 $row["how"] = "Najwięcej strzałów";
+                $row["facts"] = $facts;
+
+                $row["rules"] = "Czy gracz bierze udział ? TAK<br>";
+                $row["rules"] .= "Czy gracz nie jest rezerwowym ? TAK<br>";
+                $row["rules"] .= "Czy gracz jest bramkarzem ? NIE<br>";
+                $row["rules"] .= "Czy suma goli i celnych strzałów jest najwyższa ? NIE<br>";
+                $row["rules"] .= "Czy gracz wykonał najwięcej asyst ? NIE<br>";
+                $row["rules"] .= "Czy gracz wykonał najwięcej strzałów na bramkę ? TAK<br>";
 
                 $user = new \User\LoggedUser($maxid);
                 $row["credentials"] = $user->getUserCredentials();
@@ -253,6 +341,7 @@ namespace Expert
                 $maxid = 0;
                 $counter = -1;
                 $player_to_delete = -1;
+                $facts = "";
                 foreach ($toanalyse as $player)
                 {
                     $counter++;
@@ -261,12 +350,30 @@ namespace Expert
                         $max = $player[0]["faul"] + $player[0]["overtake"];
                         $maxid = $player["player_id"];
                         $player_to_delete = $counter;
+
+                        foreach ($player as $actions)
+                        {
+                            if (is_int($actions)) continue;
+                            foreach ($actions as $action => $action_occurences)
+                            {
+                                if ($action_occurences > 0) $facts .= $action_occurences." ".\Utils\Dictionary::keyToWord($action).", ";
+                            }
+                        }
                     }
                 }
                 $row = array();
                 $row["player_pos"] = "Środkowy obrońca";
                 $row["player_id"] = $maxid;
                 $row["how"] = "Największa ilość fauli i przejęć";
+                $row["facts"] = $facts;
+
+                $row["rules"] = "Czy gracz bierze udział ? TAK<br>";
+                $row["rules"] .= "Czy gracz nie jest rezerwowym ? TAK<br>";
+                $row["rules"] .= "Czy gracz jest bramkarzem ? NIE<br>";
+                $row["rules"] .= "Czy suma goli i celnych strzałów jest najwyższa ? NIE<br>";
+                $row["rules"] .= "Czy gracz wykonał najwięcej asyst ? NIE<br>";
+                $row["rules"] .= "Czy gracz wykonał najwięcej strzałów na bramkę ? NIE<br>";
+                $row["rules"] .= "Czy suma fauli i przejęć jest najwyższa ? TAK<br>";
 
                 $user = new \User\LoggedUser($maxid);
                 $row["credentials"] = $user->getUserCredentials();
@@ -281,6 +388,7 @@ namespace Expert
                 $maxid = 0;
                 $counter = -1;
                 $player_to_delete = -1;
+                $facts = "";
                 foreach ($toanalyse as $player)
                 {
                     $counter++;
@@ -289,12 +397,30 @@ namespace Expert
                         $max = $player[0]["faul"] + $player[0]["overtake"];
                         $maxid = $player["player_id"];
                         $player_to_delete = $counter;
+
+                        foreach ($player as $actions)
+                        {
+                            if (is_int($actions)) continue;
+                            foreach ($actions as $action => $action_occurences)
+                            {
+                                if ($action_occurences > 0) $facts .= $action_occurences." ".\Utils\Dictionary::keyToWord($action).", ";
+                            }
+                        }
                     }
                 }
                 $row = array();
                 $row["player_pos"] = "Środkowy obrońca";
                 $row["player_id"] = $maxid;
                 $row["how"] = "Największa ilość fauli i przejęć";
+                $row["facts"] = $facts;
+
+                $row["rules"] = "Czy gracz bierze udział ? TAK<br>";
+                $row["rules"] .= "Czy gracz nie jest rezerwowym ? TAK<br>";
+                $row["rules"] .= "Czy gracz jest bramkarzem ? NIE<br>";
+                $row["rules"] .= "Czy suma goli i celnych strzałów jest najwyższa ? NIE<br>";
+                $row["rules"] .= "Czy gracz wykonał najwięcej asyst ? NIE<br>";
+                $row["rules"] .= "Czy gracz wykonał najwięcej strzałów na bramkę ? NIE<br>";
+                $row["rules"] .= "Czy suma fauli i przejęć jest najwyższa ? TAK<br>";
 
                 $user = new \User\LoggedUser($maxid);
                 $row["credentials"] = $user->getUserCredentials();
@@ -309,6 +435,9 @@ namespace Expert
                 $maxid = 0;
                 $counter = -1;
                 $player_to_delete = -1;
+                $facts = "";
+                $is_faul = true;
+
                 foreach ($toanalyse as $player)
                 {
                     $counter++;
@@ -317,18 +446,49 @@ namespace Expert
                         $max = $player[0]["faul"];
                         $maxid = $player["player_id"];
                         $player_to_delete = $counter;
+
+                        foreach ($player as $actions)
+                        {
+                            if (is_int($actions)) continue;
+                            $facts = "";
+                            foreach ($actions as $action => $action_occurences)
+                            {
+                                if ($action_occurences > 0) $facts .= $action_occurences." ".\Utils\Dictionary::keyToWord($action).", ";
+                            }
+                        }
+                        $is_faul = true;
                     }
                     else if ($player[0]["offside"] > $max)
                     {
                         $max = $player[0]["offside"];
                         $maxid = $player["player_id"];
                         $player_to_delete = $counter;
+                        foreach ($player as $actions)
+                        {
+                            if (is_int($actions)) continue;
+                            $facts = "";
+                            foreach ($actions as $action => $action_occurences)
+                            {
+                                if ($action_occurences > 0) $facts .= $action_occurences." ".\Utils\Dictionary::keyToWord($action).", ";
+                            }
+                        }
+                        $is_faul = false;
                     }
                 }
                 $row = array();
                 $row["player_pos"] = "Skrzydłowy obrońca";
                 $row["player_id"] = $maxid;
                 $row["how"] = "Najwięcej fauli lub spalonych";
+                $row["facts"] = $facts;
+
+                $row["rules"] = "Czy gracz bierze udział ? TAK<br>";
+                $row["rules"] .= "Czy gracz nie jest rezerwowym ? TAK<br>";
+                $row["rules"] .= "Czy gracz jest bramkarzem ? NIE<br>";
+                $row["rules"] .= "Czy suma goli i celnych strzałów jest najwyższa ? NIE<br>";
+                $row["rules"] .= "Czy gracz wykonał najwięcej asyst ? NIE<br>";
+                $row["rules"] .= "Czy gracz wykonał najwięcej strzałów na bramkę ? NIE<br>";
+                $row["rules"] .= "Czy suma fauli i przejęć jest najwyższa ? NIE<br>";
+                $row["rules"] .= ($is_faul ? "Czy wykonał najwięcej fauli ? TAK<br>" : "Czy wykonał najwięcej fauli ? NIE<br>Czy wykonał najwięcej spalonych ? TAK");
 
                 $user = new \User\LoggedUser($maxid);
                 $row["credentials"] = $user->getUserCredentials();
@@ -351,18 +511,48 @@ namespace Expert
                         $max = $player[0]["faul"];
                         $maxid = $player["player_id"];
                         $player_to_delete = $counter;
+
+                        foreach ($player as $actions)
+                        {
+                            if (is_int($actions)) continue;
+                            $facts = "";
+                            foreach ($actions as $action => $action_occurences)
+                            {
+                                if ($action_occurences > 0) $facts .= $action_occurences." ".\Utils\Dictionary::keyToWord($action).", ";
+                            }
+                        }
                     }
                     else if ($player[0]["offside"] > $max)
                     {
                         $max = $player[0]["offside"];
                         $maxid = $player["player_id"];
                         $player_to_delete = $counter;
+
+                        foreach ($player as $actions)
+                        {
+                            if (is_int($actions)) continue;
+                            $facts = "";
+                            foreach ($actions as $action => $action_occurences)
+                            {
+                                if ($action_occurences > 0) $facts .= $action_occurences." ".\Utils\Dictionary::keyToWord($action).", ";
+                            }
+                        }
                     }
                 }
                 $row = array();
                 $row["player_pos"] = "Skrzydłowy obrońca";
                 $row["player_id"] = $maxid;
                 $row["how"] = "Najwięcej fauli lub spalonych";
+                $row["facts"] = $facts;
+
+                $row["rules"] = "Czy gracz bierze udział ? TAK<br>";
+                $row["rules"] .= "Czy gracz nie jest rezerwowym ? TAK<br>";
+                $row["rules"] .= "Czy gracz jest bramkarzem ? NIE<br>";
+                $row["rules"] .= "Czy suma goli i celnych strzałów jest najwyższa ? NIE<br>";
+                $row["rules"] .= "Czy gracz wykonał najwięcej asyst ? NIE<br>";
+                $row["rules"] .= "Czy gracz wykonał najwięcej strzałów na bramkę ? NIE<br>";
+                $row["rules"] .= "Czy suma fauli i przejęć jest najwyższa ? NIE<br>";
+                $row["rules"] .= ($is_faul ? "Czy wykonał najwięcej fauli ? TAK<br>" : "Czy wykonał najwięcej fauli ? NIE<br>Czy wykonał najwięcej spalonych ? TAK");
 
                 $user = new \User\LoggedUser($maxid);
                 $row["credentials"] = $user->getUserCredentials();
@@ -374,18 +564,62 @@ namespace Expert
 
                 //region Skrzydłowy pomocnik
 
+                $row = array();
                 $row["player_id"] = $toanalyse[0]["player_id"];
                 $row["player_pos"] = "Skrzydłowy pomocnik";
                 $row["how"] = "Pozostali zawodnicy";
+                $row["facts"] = "";
+                foreach ($toanalyse[0] as $actions)
+                {
+                    if (is_int($actions)) continue;
+                    foreach ($actions as $action => $action_occurences)
+                    {
+                        if ($action_occurences > 0) $row["facts"] .= $action_occurences." ".\Utils\Dictionary::keyToWord($action).", ";
+                    }
+                }
+
                 $user = new \User\LoggedUser($toanalyse[0]["player_id"]);
                 $row["credentials"] = $user->getUserCredentials();
+
+                $row["rules"] = "Czy gracz bierze udział ? TAK<br>";
+                $row["rules"] .= "Czy gracz nie jest rezerwowym ? TAK<br>";
+                $row["rules"] .= "Czy gracz jest bramkarzem ? NIE<br>";
+                $row["rules"] .= "Czy suma goli i celnych strzałów jest najwyższa ? NIE<br>";
+                $row["rules"] .= "Czy gracz wykonał najwięcej asyst ? NIE<br>";
+                $row["rules"] .= "Czy gracz wykonał najwięcej strzałów na bramkę ? NIE<br>";
+                $row["rules"] .= "Czy suma fauli i przejęć jest najwyższa ? NIE<br>";
+                $row["rules"] .= "Czy wykonał najwięcej fauli ? NIE<br>";
+                $row["rules"] .= "Czy wykonał najwięcej spalonych ? NIE";
+
                 array_push($ret, $row);
 
+                $row = array();
                 $row["player_id"] = $toanalyse[1]["player_id"];
                 $row["player_pos"] = "Skrzydłowy pomocnik";
                 $row["how"] = "Pozostali zawodnicy";
+                $row["facts"] = "";
+                foreach ($toanalyse[1] as $actions)
+                {
+                    if (is_int($actions)) continue;
+                    foreach ($actions as $action => $action_occurences)
+                    {
+                        if ($action_occurences > 0) $row["facts"] .= $action_occurences." ".\Utils\Dictionary::keyToWord($action).", ";
+                    }
+                }
+
                 $user = new \User\LoggedUser($toanalyse[1]["player_id"]);
                 $row["credentials"] = $user->getUserCredentials();
+
+                $row["rules"] = "Czy gracz bierze udział ? TAK<br>";
+                $row["rules"] .= "Czy gracz nie jest rezerwowym ? TAK<br>";
+                $row["rules"] .= "Czy gracz jest bramkarzem ? NIE<br>";
+                $row["rules"] .= "Czy suma goli i celnych strzałów jest najwyższa ? NIE<br>";
+                $row["rules"] .= "Czy gracz wykonał najwięcej asyst ? NIE<br>";
+                $row["rules"] .= "Czy gracz wykonał najwięcej strzałów na bramkę ? NIE<br>";
+                $row["rules"] .= "Czy suma fauli i przejęć jest najwyższa ? NIE<br>";
+                $row["rules"] .= "Czy wykonał najwięcej fauli ? NIE<br>";
+                $row["rules"] .= "Czy wykonał najwięcej spalonych ? NIE";
+
                 array_push($ret, $row);
 
                 //endregion

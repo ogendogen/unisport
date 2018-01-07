@@ -59,6 +59,7 @@ namespace Expert
                                             WHERE games_players.player_teamid = ?
                                             GROUP BY user_id", [$this->team_id]);
                 if (empty($ret)) throw new \Exception("Brakuje danych lub zawodników do przeprowadzenia analizy!");
+                if (count($ret) < count($this->team->getAllTeamPlayers())) throw new \Exception("Jeden lub więcej zawodników nie ma zapisanej żadnej akcji!");
                 foreach($ret as $row)
                 {
                     if (intval($row["amount"]) < 4) throw new \Exception("Za mało danych! Brakuje danych dla: ". $row["user_name"]." ".$row["user_surname"]);

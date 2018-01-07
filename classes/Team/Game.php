@@ -310,8 +310,7 @@ namespace Team {
                 $gameplayersids_raw = $this->db->exec("SELECT player_id FROM games_players WHERE player_gameid = ?", [$this->game_id]);
                 $gameplayersids = array();
                 foreach ($gameplayersids_raw as $id) array_push($gameplayersids, $id["player_id"]);
-
-                var_dump(implode(',', $gameplayersids));
+                
                 echo "<br><br>";
                 if ($this->is_football)
                 {

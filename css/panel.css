@@ -19,6 +19,16 @@
     cursor: pointer;
 }
 
+.tooltip-inner
+{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /*word-wrap: break-word;
+    text-align: left;
+    white-space: pre-line;*/
+    max-width: 700px !important;
+}
+
 /* centered columns styles */
 .row-centered {
     text-align:center;

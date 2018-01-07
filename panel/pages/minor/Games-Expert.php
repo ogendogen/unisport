@@ -18,7 +18,7 @@ catch (\Exception $e)
 <div class="row">
     <div class="col-md-3">
         <div class="box box-default">
-            <div class="btn btn-block btn-warning">Wyniki analizy zależą od danych podanych w module meczy</div>
+            <div class="alert btn-block alert-warning">Wyniki analizy zależą od danych podanych w module meczy</div>
             <div class="box-header with-border">
                 <i class="fa fa-address-book"> Wybór zawodników</i>
             </div>
@@ -63,6 +63,8 @@ catch (\Exception $e)
                         <td>Imię i nazwisko</td>
                         <td>Pozycja</td>
                         <td>Dlaczego ?</td>
+                        <td>Jak ?</td>
+                        <td>Fakty</td>
                     </tr>
                     <?php
 
@@ -86,6 +88,8 @@ catch (\Exception $e)
                                 echo "<td>".$result["credentials"]."</td>";
                                 echo "<td>".$result["player_pos"]."</td>";
                                 echo "<td><a href='#' data-toggle='tooltip' title='".$result["how"]."'><img src=\"data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTguMS4xLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDQ3NSA0NzUiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDQ3NSA0NzU7IiB4bWw6c3BhY2U9InByZXNlcnZlIiB3aWR0aD0iMTZweCIgaGVpZ2h0PSIxNnB4Ij4KPGc+Cgk8Zz4KCQk8Zz4KCQkJPHBhdGggZD0iTTIzOCwwQzEwNywwLDAsMTA3LDAsMjM4czEwNywyMzcsMjM4LDIzN3MyMzctMTA2LDIzNy0yMzdTMzY5LDAsMjM4LDB6IE0yMzgsNDMyICAgICBjLTEwNywwLTE5NC04Ny0xOTQtMTk0UzEzMSw0NCwyMzgsNDRzMTk0LDg3LDE5NCwxOTRTMzQ1LDQzMiwyMzgsNDMyeiIgZmlsbD0iI0Q4MDAyNyIvPgoJCQk8cGF0aCBkPSJNMjM2LDg5Yy04MCwwLTk4LDU5LTk4LDgyYzAsMTIsMTAsMjEsMjIsMjFzMjItOSwyMi0yMWMwLTksNS0zOSw1NC0zOWMyNCwwLDQyLDcsNTMsMTkgICAgIGMxNCwxNSwxMywzNSwxMiw0M2MtMywyMy0xNSwzNS0zOCwzNWMtNDAsMC00OSwyMi00OSw0MHYxOGMwLDEyLDEwLDIyLDIyLDIyczIyLTEwLDIyLTIydi0xNGMxLDAsMy0xLDUtMWMzNSwwLDc1LTE5LDgxLTczICAgICBjMy0yOS00LTU3LTIyLTc3QzMwOSwxMDcsMjgyLDg5LDIzNiw4OXoiIGZpbGw9IiNEODAwMjciLz4KCQkJPHBhdGggZD0iTTIzNiwzMzFjLTE1LDAtMjcsMTItMjcsMjdzMTIsMjcsMjcsMjdzMjctMTIsMjctMjdTMjUxLDMzMSwyMzYsMzMxeiIgZmlsbD0iI0Q4MDAyNyIvPgoJCTwvZz4KCTwvZz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8L3N2Zz4K\" /></a></td>";
+                                echo "<td><a href='#' data-html='true' data-toggle='tooltip' title='". (isset($result["rules"]) ? $result["rules"] : "Brak") ."'><img src=\"data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTguMS4xLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDQ3NSA0NzUiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDQ3NSA0NzU7IiB4bWw6c3BhY2U9InByZXNlcnZlIiB3aWR0aD0iMTZweCIgaGVpZ2h0PSIxNnB4Ij4KPGc+Cgk8Zz4KCQk8Zz4KCQkJPHBhdGggZD0iTTIzOCwwQzEwNywwLDAsMTA3LDAsMjM4czEwNywyMzcsMjM4LDIzN3MyMzctMTA2LDIzNy0yMzdTMzY5LDAsMjM4LDB6IE0yMzgsNDMyICAgICBjLTEwNywwLTE5NC04Ny0xOTQtMTk0UzEzMSw0NCwyMzgsNDRzMTk0LDg3LDE5NCwxOTRTMzQ1LDQzMiwyMzgsNDMyeiIgZmlsbD0iI0Q4MDAyNyIvPgoJCQk8cGF0aCBkPSJNMjM2LDg5Yy04MCwwLTk4LDU5LTk4LDgyYzAsMTIsMTAsMjEsMjIsMjFzMjItOSwyMi0yMWMwLTksNS0zOSw1NC0zOWMyNCwwLDQyLDcsNTMsMTkgICAgIGMxNCwxNSwxMywzNSwxMiw0M2MtMywyMy0xNSwzNS0zOCwzNWMtNDAsMC00OSwyMi00OSw0MHYxOGMwLDEyLDEwLDIyLDIyLDIyczIyLTEwLDIyLTIydi0xNGMxLDAsMy0xLDUtMWMzNSwwLDc1LTE5LDgxLTczICAgICBjMy0yOS00LTU3LTIyLTc3QzMwOSwxMDcsMjgyLDg5LDIzNiw4OXoiIGZpbGw9IiNEODAwMjciLz4KCQkJPHBhdGggZD0iTTIzNiwzMzFjLTE1LDAtMjcsMTItMjcsMjdzMTIsMjcsMjcsMjdzMjctMTIsMjctMjdTMjUxLDMzMSwyMzYsMzMxeiIgZmlsbD0iI0Q4MDAyNyIvPgoJCTwvZz4KCTwvZz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8L3N2Zz4K\" /></a></td>";
+                                echo "<td><a href='#' data-toggle='tooltip' title='".rtrim($result["facts"],", ")."'><img src=\"data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTguMS4xLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDQ3NSA0NzUiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDQ3NSA0NzU7IiB4bWw6c3BhY2U9InByZXNlcnZlIiB3aWR0aD0iMTZweCIgaGVpZ2h0PSIxNnB4Ij4KPGc+Cgk8Zz4KCQk8Zz4KCQkJPHBhdGggZD0iTTIzOCwwQzEwNywwLDAsMTA3LDAsMjM4czEwNywyMzcsMjM4LDIzN3MyMzctMTA2LDIzNy0yMzdTMzY5LDAsMjM4LDB6IE0yMzgsNDMyICAgICBjLTEwNywwLTE5NC04Ny0xOTQtMTk0UzEzMSw0NCwyMzgsNDRzMTk0LDg3LDE5NCwxOTRTMzQ1LDQzMiwyMzgsNDMyeiIgZmlsbD0iI0Q4MDAyNyIvPgoJCQk8cGF0aCBkPSJNMjM2LDg5Yy04MCwwLTk4LDU5LTk4LDgyYzAsMTIsMTAsMjEsMjIsMjFzMjItOSwyMi0yMWMwLTksNS0zOSw1NC0zOWMyNCwwLDQyLDcsNTMsMTkgICAgIGMxNCwxNSwxMywzNSwxMiw0M2MtMywyMy0xNSwzNS0zOCwzNWMtNDAsMC00OSwyMi00OSw0MHYxOGMwLDEyLDEwLDIyLDIyLDIyczIyLTEwLDIyLTIydi0xNGMxLDAsMy0xLDUtMWMzNSwwLDc1LTE5LDgxLTczICAgICBjMy0yOS00LTU3LTIyLTc3QzMwOSwxMDcsMjgyLDg5LDIzNiw4OXoiIGZpbGw9IiNEODAwMjciLz4KCQkJPHBhdGggZD0iTTIzNiwzMzFjLTE1LDAtMjcsMTItMjcsMjdzMTIsMjcsMjcsMjdzMjctMTIsMjctMjdTMjUxLDMzMSwyMzYsMzMxeiIgZmlsbD0iI0Q4MDAyNyIvPgoJCTwvZz4KCTwvZz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8L3N2Zz4K\" /></a></td>";
                                 echo "</tr>";
                             }
                         }
@@ -100,6 +104,23 @@ catch (\Exception $e)
             </div>
         </div>
     </div>
+    <!--<div class="col-md-1"></div>
+    <div class="col-md-3">
+        <div class="box box-default">
+            <div class="box-header with-border">
+                <i class="fa fa-database"> Fakty</i>
+            </div>
+            <div class="box-body">
+                <table class="table table-bordered" style="text-align: center;">
+                    <tr>
+                        <td>No.</td>
+                        <td>Imię i nazwisko</td>
+                        <td>Fakty</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>-->
 </div>
 <script>
     $(document).ready(function(){

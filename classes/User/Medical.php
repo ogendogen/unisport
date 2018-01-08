@@ -40,9 +40,9 @@ namespace User
                 $weight = round($weight, 2);
                 $waist = round($waist, 2);
 
-                if ($height < 140 || $height > 250) throw new \Exception("Wysokość z poza zakresu!");
-                if ($weight < 30.00 || $weight > 200.00) throw new \Exception("Waga z poza zakresu!");
-                if ($waist < 30.00 || $waist > 120.00) throw new \Exception("Obwód pasa z poza zakresu!");
+                if ($height < 140 || $height > 250) throw new \Exception("Wysokość z poza zakresu! (140-250)");
+                if ($weight < 30.00 || $weight > 200.00) throw new \Exception("Waga z poza zakresu! (30-200)");
+                if ($waist < 30.00 || $waist > 120.00) throw new \Exception("Obwód pasa z poza zakresu! (30-120)");
                 if (!in_array($generalhealthstate, $this->states)) throw new \Exception("Nieznany stan zdrowia");
                 if ($iscapable != 0 || $iscapable != 1) throw new \Exception("Nieznany stan zdolności");
 
@@ -60,6 +60,20 @@ namespace User
                                             medical_generalhealthstate = ?,
                                             medical_iscapable = ?,
                                             medical_date = ?", [$this->user->getUserId(), $this->team->getTeamInfo()["team_id"], $height, $weight, $fat, $bmi, $waist, $generalhealthstate, $iscapable]);
+            }
+            catch (\Exception $e)
+            {
+                throw $e;
+            }
+        }
+
+        public function getAllUserData() : array
+        {
+            try
+            {
+                return $this->db->exec("SELECT * FROM `medical`
+                                          WHERE medical_userid = ? AND medical_teamid = ?
+                                          ORDER BY medical_date DESC");
             }
             catch (\Exception $e)
             {

@@ -20,20 +20,23 @@ catch(\Exception $e)
 
 try
 {
-    $user = new \User\LoggedUser($_GET["playerid"]);
-    $team = new \Team\Team($_GET["teamid"]);
+    if (isset($_POST["height"]))
+    {
+        $user = new \User\LoggedUser($_GET["playerid"]);
+        $team = new \Team\Team($_GET["teamid"]);
 
-    \Utils\Validations::validatePostArray($_POST);
-    \Utils\Validations::validateWholeArray($_POST);
+        \Utils\Validations::validatePostArray($_POST);
+        \Utils\Validations::validateWholeArray($_POST);
 
-    if (intval($_POST["height"]) < 140 || intval($_POST["height"]) > 250) throw new \Exception("Wysokość po za zakresem!");
-    if (intval($_POST["weight"]) < 30 || intval($_POST["weight"]) > 200) throw new \Exception("Waga po za zakresem!");
-    if (intval($_POST["waist"]) < 30 || intval($_POST["waist"]) > 150) throw new \Exception("Obwód pasa po za zakresem!");
+        if (intval($_POST["height"]) < 140 || intval($_POST["height"]) > 250) throw new \Exception("Wysokość po za zakresem!");
+        if (intval($_POST["weight"]) < 30 || intval($_POST["weight"]) > 200) throw new \Exception("Waga po za zakresem!");
+        if (intval($_POST["waist"]) < 30 || intval($_POST["waist"]) > 150) throw new \Exception("Obwód pasa po za zakresem!");
 
-    $medical = new \User\Medical($_GET["playerid"], $_GET["teamid"]);
-    $medical->addNewMedicalRecord($_POST["height"], floatval($_POST["weight"]), floatval($_POST["waist"]), $_POST["state"], intval($_POST["iscapable"]));
+        $medical = new \User\Medical($_GET["playerid"], $_GET["teamid"]);
+        $medical->addNewMedicalRecord($_POST["height"], floatval($_POST["weight"]), floatval($_POST["waist"]), $_POST["state"], intval($_POST["iscapable"]));
 
-    \Utils\Front::success("Poprawnie dodano dane");
+        \Utils\Front::success("Poprawnie dodano dane");
+    }
 }
 catch (\Exception $e)
 {

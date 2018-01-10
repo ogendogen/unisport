@@ -29,31 +29,10 @@ function getPlayersList(team)
     });
 }
 
-/*
-        private function countBMI(int $height, float $weight) : float
-        {
-            $f_height = floatval($height);
-            $f_height = round($height / 100, 2);
-
-            return round($weight / ($f_height * $f_height), 2);
-        }
-
-        private function countFat(float $weight, float $waist) : float
-        {
-            $a = 4.15 * $waist;
-            $b = $a / 2.54;
-            $c = 0.082 * $weight * 2.2;
-            $d = $b - $c - 98.42;
-            $e = $weight * 2.2;
-
-            return round($d/$e * 100, 2);
-        }
-
- */
-
 function countBMI(height, weight)
 {
-    return weight / (height * height);
+    var num = weight / (height * height) * 10000;
+    return Math.round(num * 100) / 100;
 }
 
 function countFat(height, weight, waist)
@@ -63,8 +42,9 @@ function countFat(height, weight, waist)
     var c = 0.082 * weight * 2.2;
     var d = b - c - 98.42;
     var e = weight * 2.2;
+    var num = d/e * 100;
 
-    return d/e * 100;
+    return Math.round(num * 100) / 100;
 }
 
 function countParameters()
@@ -94,6 +74,36 @@ function countParameters()
 
     var bmi = countBMI(height, weight);
     var fat = countFat(height, weight, waist);
+    var result = $("#bmiresult");
+
+    result.removeClass();
+    result.addClass("btn-block");
+
+    if (bmi < 16.99)
+    {
+        result.text("Wychudzenie");
+        result.addClass("alert-danger");
+    }
+    else if (bmi < 18.5)
+    {
+        result.text("Niedowaga");
+        result.addClass("alert-warning");
+    }
+    else if (bmi < 24.99)
+    {
+        result.text("Waga prawidłowa");
+        result.addClass("alert-success");
+    }
+    else if (bmi < 29.99)
+    {
+        result.text("Nadwaga");
+        result.addClass("alert-warning");
+    }
+    else if (bmi > 30.00)
+    {
+        result.text("Otyłość");
+        result.addClass("alert-danger");
+    }
 
     $("#bmi").val(bmi);
     $("#fat").val(fat);

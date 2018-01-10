@@ -166,7 +166,9 @@ namespace User
         {
             try
             {
-                return $this->db->exec("SELECT * FROM users WHERE user_id = ?", [$id])[0];
+                $ret = $this->db->exec("SELECT * FROM users WHERE user_id = ?", [$id]);
+                if (empty($ret)) return array();
+                return $ret[0];
             }
             catch (\PDOException $e)
             {

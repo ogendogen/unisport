@@ -14,7 +14,7 @@ namespace User
         private $db;
         private $user;
         private $team;
-        private $states = ["ok", "injured", "bad", "injured"];
+        private $states = ["ok", "injured", "bad", "very fit"];
 
         public function __construct(int $user_id, int $team_id)
         {
@@ -44,7 +44,7 @@ namespace User
                 if ($weight < 30.00 || $weight > 200.00) throw new \Exception("Waga z poza zakresu! (30-200)");
                 if ($waist < 30.00 || $waist > 120.00) throw new \Exception("Obwód pasa z poza zakresu! (30-120)");
                 if (!in_array($generalhealthstate, $this->states)) throw new \Exception("Nieznany stan zdrowia");
-                if ($iscapable != 0 || $iscapable != 1) throw new \Exception("Nieznany stan zdolności");
+                if ($iscapable != 0 && $iscapable != 1) throw new \Exception("Nieznany stan zdolności");
 
                 $bmi = $this->countBMI($height, $weight);
                 $fat = $this->countFat($weight, $waist);
@@ -59,7 +59,7 @@ namespace User
                                             medical_waist = ?,
                                             medical_generalhealthstate = ?,
                                             medical_iscapable = ?,
-                                            medical_date = ?", [$this->user->getUserId(), $this->team->getTeamInfo()["team_id"], $height, $weight, $fat, $bmi, $waist, $generalhealthstate, $iscapable]);
+                                            medical_date = ?", [$this->user->getUserId(), $this->team->getTeamInfo()["team_id"], $height, $weight, $fat, $bmi, $waist, $generalhealthstate, $iscapable, time()]);
             }
             catch (\Exception $e)
             {

@@ -73,7 +73,19 @@ namespace User
             {
                 return $this->db->exec("SELECT * FROM `medical`
                                           WHERE medical_userid = ? AND medical_teamid = ?
-                                          ORDER BY medical_date DESC");
+                                          ORDER BY medical_date DESC", [$this->user->getUserId(), $this->team->getTeamInfo()["team_id"]]);
+            }
+            catch (\Exception $e)
+            {
+                throw $e;
+            }
+        }
+
+        public function deleteRow(int $id)
+        {
+            try
+            {
+                $this->db->exec("DELETE FROM `medical` WHERE medical_id = ?", [$id]);
             }
             catch (\Exception $e)
             {

@@ -24,6 +24,7 @@ try
     {
         $user = new \User\LoggedUser($_GET["playerid"]);
         $team = new \Team\Team($_GET["teamid"]);
+        if (!$team->isUserLeader($_SESSION["userid"])) throw new \Exception("Nie jesteś liderem!");
 
         \Utils\Validations::validatePostArray($_POST);
         \Utils\Validations::validateWholeArray($_POST);
@@ -37,6 +38,18 @@ try
 
         \Utils\Front::success("Poprawnie dodano dane");
     }
+
+    if (isset($_POST["id_to_delete"]))
+    {
+        $user = new \User\LoggedUser($_GET["playerid"]);
+        $team = new \Team\Team($_GET["teamid"]);
+        if (!$team->isUserLeader($_SESSION["userid"])) throw new \Exception("Nie jesteś liderem!");
+
+        $medical = new \User\Medical($_GET["playerid"], $_GET["teamid"]);
+        $medical->deleteRow($_POST["id_to_delete"]);
+
+        \Utils\Front::success("Pomyślnie usunięto wiersz");
+    }
 }
 catch (\Exception $e)
 {
@@ -46,6 +59,10 @@ catch (\Exception $e)
 ?>
 
 <script src="../../../js/medical.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+<!--<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>-->
 <div class="row">
     <div class="col-md-3">
         <div class="box box-default">
@@ -93,4 +110,78 @@ catch (\Exception $e)
             </div>
         </div>
     </div>
+    <div class="col-md-9" style="max-height: 450px;">
+        <div class="box box-default">
+            <div class="box-header with-border">
+                <h4><i class="fa fa-address-book"></i> Szczegółowe dane</h4>
+            </div>
+            <div class="box-body pre-scrollable">
+                <table class="table table-bordered textwrap">
+                    <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Wysokość</th>
+                        <th>Waga</th>
+                        <th>Obwód pasa</th>
+                        <th>BMI</th>
+                        <th>% Tkanki tłuszczowej</th>
+                        <th>Ogólny stan</th>
+                        <th>Czy zdolny do gry ?</th>
+                        <th>Data</th>
+                        <th>Usuń wiersz</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php
+
+                    $medical = new \User\Medical($_GET["playerid"], $_GET["teamid"]);
+                    $data = $medical->getAllUserData();
+                    if (empty($data)) echo "<div class='alert alert-warning btn-block'>Brak danych</div>";
+
+                    $counter = 0;
+                    foreach ($data as $data_row)
+                    {
+                        $counter++;
+                        echo "<tr>";
+                        echo "<td>".$counter."</td>";
+                        echo "<td>".$data_row["medical_height"]."</td>";
+                        echo "<td>".$data_row["medical_weight"]."</td>";
+                        echo "<td>".$data_row["medical_waist"]."</td>";
+                        echo "<td>".$data_row["medical_bmi"]."</td>";
+                        echo "<td>".$data_row["medical_fat"]."</td>";
+                        echo "<td>".$data_row["medical_generalhealthstate"]."</td>";
+                        echo "<td>".($data_row["medical_iscapable"] == "1" ? "Tak" : "Nie")."</td>";
+                        echo "<td>".date("Y-m-d", $data_row["medical_date"])."</td>";
+                        echo "
+                               <td style='text-align: center;'>
+                               <form method='post'>
+                                    <button type='submit' style='max-width: 100%;' onclick='return confirm(\"Czy na pewno chcesz usunąć ten wpis ?\");' name='deleteMedical' class='btn btn-danger'>
+                                        <i class='btn fa fa-trash'></i>
+                                    </button>
+                                    <input type='hidden' name='id_to_delete' value='".$data_row["medical_id"]."'>
+                               </form>";
+                        echo "</tr>";
+                    }
+
+                    ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
+<div class="row">
+    <div class="col-md-3" style="min-width: 25%; height: 100%;">
+        <canvas id="weight_chart" width="400" height="400"></canvas>
+    </div>
+    <div class="col-md-3" style="min-width: 25%; height: 100%;">
+        <canvas id="waist_chart" width="400" height="400"></canvas>
+    </div>
+    <div class="col-md-3" style="min-width: 25%; height: 100%;">
+        <canvas id="bmi_chart" width="400" height="400"></canvas>
+    </div>
+    <div class="col-md-3" style="min-width: 25%; height: 100%;">
+        <canvas id="fat_chart" width="400" height="400"></canvas>
+    </div>
+</div>
+<script src="../../../js/chartjs.js"></script>

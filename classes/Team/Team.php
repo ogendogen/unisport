@@ -190,6 +190,20 @@ namespace Team
             }
         }
 
+        public function getTeamSportId() : int
+        {
+            try
+            {
+                $ret = $this->db->exec("SELECT team_sport FROM `teams` WHERE team_id = ?", [$this->teamid]);
+                if (empty($ret)) return -1;
+                return $ret[0]["team_sport"];
+            }
+            catch (\Exception $e)
+            {
+                throw $e;
+            }
+        }
+
         public function getTeamInfo(bool $from_db=false) : array
         {
             if ($from_db)
@@ -237,10 +251,24 @@ namespace Team
         {
             try
             {
-                //if ($this->db->exec("SELECT team_sport FROM teams WHERE team_id = ?", [$this->teamid])[0]["team_sport"] == "1") return true;
                 $ret = $this->db->exec("SELECT team_sport FROM teams WHERE team_id = ?", [$this->teamid]);
                 if (!$ret) return false;
                 if ($ret[0]["team_sport"] == "1") return true;
+                return false;
+            }
+            catch (\Exception $e)
+            {
+                throw $e;
+            }
+        }
+
+        public function isBasketballTeam() : bool
+        {
+            try
+            {
+                $ret = $this->db->exec("SELECT team_sport FROM teams WHERE team_id = ?", [$this->teamid]);
+                if (!$ret) return false;
+                if ($ret[0]["team_sport"] == "2") return true;
                 return false;
             }
             catch (\Exception $e)

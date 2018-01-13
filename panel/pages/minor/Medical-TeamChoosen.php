@@ -153,9 +153,9 @@ catch (\Exception $e)
                         echo "<td>".($data_row["medical_iscapable"] == "1" ? "Tak" : "Nie")."</td>";
                         echo "<td>".date("Y-m-d", $data_row["medical_date"])."</td>";
                         echo "
-                               <td style='text-align: center;'>
+                               <td>
                                <form method='post'>
-                                    <button type='submit' style='max-width: 100%;' onclick='return confirm(\"Czy na pewno chcesz usunąć ten wpis ?\");' name='deleteMedical' class='btn btn-danger'>
+                                    <button type='submit' onclick='return confirm(\"Czy na pewno chcesz usunąć ten wpis ?\");' name='deleteMedical' class='btn btn-danger btn-block'>
                                         <i class='btn fa fa-trash'></i>
                                     </button>
                                     <input type='hidden' name='id_to_delete' value='".$data_row["medical_id"]."'>

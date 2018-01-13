@@ -178,6 +178,18 @@ function loadAllChartsData()
             }
         }
     });
+
+    weight_chart.data.datasets[0].backgroundColor = "rgba(255,127,80,0.5)";
+    weight_chart.update();
+
+    waist_chart.data.datasets[0].backgroundColor = "rgba(34,139,34,0.5)";
+    waist_chart.update();
+
+    bmi_chart.data.datasets[0].backgroundColor = "rgba(30,144,255,0.5)";
+    bmi_chart.update();
+
+    fat_chart.data.datasets[0].backgroundColor = "rgba(47,79,79,0.5)";
+    fat_chart.update();
 }
 
 function addData(chart, label, data) {

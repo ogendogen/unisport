@@ -33,7 +33,7 @@
 
         $sidemenu = new \Utils\MenuBuilder();
         $sidemenu->addSingleTab("Pulpit", "home", "fa fa-home");
-        $sidemenu->addSingleTab("Moje drużyny", "teams", "fa fa-users");
+        $sidemenu->addSingleTab("Moje drużyny", "teams", "fa fa-users", "teamedit,membersedit,definesport,definesport_edit,");
         $sidemenu->addSingleTab("Moje mecze", "games", "glyphicon glyphicon-list-alt");
         $sidemenu->addSingleTab("Kalendarz", "teamcalendar", "fa fa-calendar");
         $sidemenu->addSingleTab("Moduł medyczny", "medical", "fa fa-medkit");

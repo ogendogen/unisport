@@ -21,13 +21,22 @@ var getUrlParameter = function getUrlParameter(sParam) {
 function setActiveClass()
 {
     var tab = getUrlParameter("tab");
-    if (tab == null)
-    {
-        $("#home").addClass("active");
-    }
+    if (tab == null) $("#home").addClass("active");
     else
     {
         $("#"+tab).addClass("active");
+        var children = $("ul[data-widget='tree']").children();
+        var len = children.length;
+        for (var i=0; i<len; i++)
+        {
+            var alt = children.eq(i).prop("data-alt"); // todo: menuuu....
+            console.log(children.eq(i));
+            if (alt.includes(tab))
+            {
+                alt.addClass("active");
+                break;
+            }
+        }
         if ($("#"+tab).parent().parent().hasClass("treeview")) $("#"+tab).parent().parent().addClass("active");
     }
 }
@@ -289,6 +298,11 @@ function editTeam()
 function editMembers()
 {
     window.location.href = "index.php?tab=membersedit&teamid=" + team_selected.toString();
+}
+
+function defineSport()
+{
+    window.location.href = "index.php?tab=definesport&teamid=" + team_selected.toString();
 }
 
 function addGame()

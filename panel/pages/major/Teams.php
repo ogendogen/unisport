@@ -37,6 +37,7 @@
 
                     <div class="box-body">
                         <input type="submit" class="btn btn-block btn-primary" value="Stwórz nową drużynę">
+                        <input type="button" class="btn btn-block btn-warning" value="Zdefiniuj nową dyscyplinę" onclick="defineSport()">
                     </div>
                 </form>
             </div>

@@ -63,6 +63,14 @@ if (isset($_GET["tab"]))
             include("pages/major/MembersEdit.php");
             break;
 
+        case "definesport":
+            include("pages/major/DefineSport.php");
+            break;
+
+        case "definesport_edit":
+            include("pages/major/DefineSportEdit.php");
+            break;
+
         case "teamcalendar":
             include("pages/major/Calendar.php");
             break;

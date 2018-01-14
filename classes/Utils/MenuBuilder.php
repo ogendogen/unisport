@@ -20,9 +20,9 @@ namespace Utils
                 <li class="header">Główna nawigacja</li>';
         }
 
-        public function addSingleTab(string $name, string $tab, string $icon="fa fa-link")
+        public function addSingleTab(string $name, string $tab, string $icon="fa fa-link", string $altdata="")
         {
-            echo '<li id="'.$tab.'"><a href="?tab='.$tab.'"><i class="'.$icon.'"></i> <span>'.$name.'</span></a></li>';
+            echo '<li id="'.$tab.'" data-alt="'.$altdata.'"><a href="?tab='.$tab.'"><i class="'.$icon.'"></i> <span>'.$name.'</span></a></li>';
         }
 
         public function addMultiTab(string $name, string $tab, array $subpages, string $icon="fa fa-link") // subpages array map: "name" => "nazwa", "tab" => "strona"

@@ -64,6 +64,19 @@ namespace Team
             }
         }
 
+        public static function getAllTeams() : array
+        {
+            try
+            {
+                $db = \Db\Database::getInstance();
+                return $db->exec("SELECT * FROM `teams`");
+            }
+            catch (\Exception $e)
+            {
+                throw $e;
+            }
+        }
+
         public function createNewTeam(string $name, string $desc, int $leaderid, string $sport)
         {
             try

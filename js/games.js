@@ -17,6 +17,11 @@ function redirectSummary()
 
 function redirectEditGame()
 {
+    if (game_choosen === -1)
+    {
+        modalWarning("Uwaga!", "Wybierz mecz!");
+        return;
+    }
     window.location.href = "index.php?tab=games&minor=editgame&gameid=" + game_choosen.toString() + "&teamid=" + getUrlParameter("teamid");
 }
 

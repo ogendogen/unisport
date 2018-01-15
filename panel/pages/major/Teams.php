@@ -21,7 +21,7 @@
                         try
                         {
                             $sports = new \Team\Sport();
-                            $sports_arr = $sports->getAllSports();
+                            $sports_arr = $sports->getAllSportsForUser($_SESSION["userid"]);
                             foreach ($sports_arr as $sport)
                             {
                                 echo "<option value='".$sport["sport_id"]."'>".$sport["sport_name"]."</option>";

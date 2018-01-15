@@ -77,6 +77,37 @@ namespace Team
             }
         }
 
+        public function isTeamsSportCustom() : bool
+        {
+            try
+            {
+                $sport = new \Team\Sport($this->sport);
+                return $sport->isSportCustom();
+            }
+            catch (\Exception $e)
+            {
+                throw $e;
+            }
+        }
+
+        public function getTeamCustomActions() : array
+        {
+            try
+            {
+                if (!$this->isTeamsSportCustom()) throw new \Exception("Drużyna gra w standardową dyscyplinę");
+                $raw = $this->db->exec("SELECT sport_dictionary_key FROM sport_dictionary WHERE sport_dictionary_sportid = ?", [$this->sport]);
+                if (empty($raw)) return array();
+
+                $ret = array();
+                foreach ($raw as $row) array_push($ret, $row["sport_dictionary_key"]);
+                return $ret;
+            }
+            catch (\Exception $e)
+            {
+                throw $e;
+            }
+        }
+
         public function createNewTeam(string $name, string $desc, int $leaderid, string $sport)
         {
             try

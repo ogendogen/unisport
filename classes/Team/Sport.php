@@ -122,6 +122,18 @@ namespace Team
             }
         }
 
+        public function getAllSportsForUser(int $userid) : array
+        {
+            try
+            {
+                return $this->db->exec("SELECT * FROM `sports` WHERE sport_owner = -1 OR sport_owner = ?", [$userid]);
+            }
+            catch(\Exception $e)
+            {
+                throw $e;
+            }
+        }
+
         public function getAllSportActions() : array
         {
             try

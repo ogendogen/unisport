@@ -18,7 +18,6 @@ try
 
         $opponent_team_id = $_POST["opponent_team"];
         $opponent_team = new \Team\Team($opponent_team_id);
-        if ($opponent_team->getTeamInfo()["team_sport"] != $team->getTeamInfo()["team_sport"]) throw new \Exception("Przeciwnik nie gra w tę samą grę!");
         if ($opponent_team_id == $teamid) throw new \Exception("Nie możesz zagrać z samym sobą!");
 
         $date = $_POST["matchdatetime"];
@@ -215,10 +214,10 @@ catch (\Exception $e)
                                         </select>
                                     </td>
                                     <td>
-                                        <input type="number" class="btn-block" name="actionminute1" pattern="\d*" data-minutesinput="1" value="0" min="0" max="120">
+                                        <input type="number" title="minute" class="btn-block" name="actionminute1" pattern="\d*" data-minutesinput="1" value="0" min="0" max="120">
                                     </td>
                                     <td>
-                                        <input type="number" class="btn-block" name="actionsecond1" pattern="\d*" data-secondsinput="1" value="0" min="0" max="59">
+                                        <input type="number" title="second" class="btn-block" name="actionsecond1" pattern="\d*" data-secondsinput="1" value="0" min="0" max="59">
                                     </td>
                                 </tr>
                             </tbody>

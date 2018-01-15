@@ -201,13 +201,22 @@ namespace Team {
 
                 $team = new \Team\Team(($is_team1 ? $this->team1 : $this->team2));
                 $is_football = ($team->getTeamInfo()["team_sport"] == "1" ? true : false);
+                $is_basketball = $team->isBasketballTeam();
+                $is_custom = $team->isTeamsSportCustom();
+
                 if (!$team->isUserInTeam($player_id)) throw new \Exception("Gracz nie należy do drużyny!", 0);
                 if (!in_array($player_id, ($is_team1 ? $this->team1_players : $this->team2_players))) throw new \Exception("Gracz nie bierze udziału w tym meczu!");
 
-                if ($action_minute < 0 || $action_minute > 120) throw new \Exception("Minuta akcji jest spoza zakresu!", 0);
-                if ($action_second < 0 || $action_second > 59) throw new \Exception("Sekundy akcji są spoza zakresu!", 0);
+                if ($action_minute < 0 || $action_minute > 120) throw new \Exception("Minuta akcji jest z poza zakresu!", 0);
+                if ($action_second < 0 || $action_second > 59) throw new \Exception("Sekundy akcji są z poza zakresu!", 0);
 
-                $actions = $this->db->getEnumPossibleValues(($is_football ? "games_players_football_info" : "games_players_general_info"), ($is_football ? "football_action" : "general_action"));
+                $actions = array();
+
+                if ($is_football) $this->db->getEnumPossibleValues("games_players_football_info", "football_action");
+                else if ($is_basketball) $actions = $this->db->getEnumPossibleValues("games_players_basketball_info", "basketball_action");
+                else if ($is_custom) $actions = $team->getTeamCustomActions();
+                else $actions = $this->getGeneralActions();
+
                 if (!in_array($action_name, $actions)) throw new \Exception("Taka akcja nie istnieje!", 0);
 
                 $gameplayerid = null;
@@ -223,6 +232,14 @@ namespace Team {
                                                 football_action = ?,
                                                 football_minute = ?,
                                                 football_second = ?", [$gameplayerid, $action_name, $action_minute, $action_second]);
+                    }
+                    else if ($is_basketball)
+                    {
+                        $this->db->exec("INSERT INTO games_players_basketball_info SET
+                                                basketball_gameplayerid = ?,
+                                                basketball_action = ?,
+                                                basketball_minute = ?,
+                                                basketball_second = ?", [$gameplayerid, $action_name, $action_minute, $action_second]);
                     }
                     else
                     {
@@ -292,7 +309,6 @@ namespace Team {
                 $counter = 1;
                 foreach ($actions as $action)
                 {
-                    echo $counter.": ".var_dump($action)."<br><br>";
                     $counter++;
                     $this->addAction($action["player_id"], $action["action_name"], $action["action_minute"], $action["action_second"], true);
                 }
@@ -303,6 +319,21 @@ namespace Team {
             }
         }
 
+        private function getGeneralActions() : array
+        {
+            try
+            {
+                $raw = $this->db->exec("SELECT sport_dictionary_key FROM `sport_dictionary` WHERE sport_dictionary_sportid = ?", [$sportid]);
+                if (empty($raw)) return array();
+                $ret = array();
+                foreach ($raw as $row) array_push($ret, $row["sport_dictionary_key"]);
+                return $ret;
+            }
+            catch (\Exception $e)
+            {
+                throw $e;
+            }
+        }
         private function deleteAllGameActions()
         {
             try
@@ -336,14 +367,23 @@ namespace Team {
                 $player = new \User\LoggedUser($player_id);
 
                 $team = new \Team\Team($this->team1);
+                $sport = new \Team\Sport($team->getTeamInfo()["team_sport"]);
                 $is_football = ($team->getTeamInfo()["team_sport"] == "1" ? true : false);
+                $is_basketball = $team->isBasketballTeam();
+                $is_custom = $team->isTeamsSportCustom();
                 if (!$team->isUserInTeam($player_id)) throw new \Exception("Gracz nie należy do drużyny!", 0);
                 if (!in_array($player_id, ($this->team1_players))) throw new \Exception("Gracz nie bierze udziału w tym meczu!");
 
                 if ($action_minute < 0 || $action_minute > 120) throw new \Exception("Minuta akcji jest spoza zakresu!", 0);
                 if ($action_second < 0 || $action_second > 59) throw new \Exception("Sekundy akcji są spoza zakresu!", 0);
 
-                $actions = $this->db->getEnumPossibleValues(($is_football ? "games_players_football_info" : "games_players_general_info"), ($is_football ? "football_action" : "general_action"));
+                //$actions = $this->db->getEnumPossibleValues(($is_football ? "games_players_football_info" : "games_players_general_info"), ($is_football ? "football_action" : "general_action"));
+                $actions = array();
+                if ($is_football) $actions = $this->db->getEnumPossibleValues("games_players_football_info", "football_action");
+                else if ($is_basketball) $actions = $this->db->getEnumPossibleValues("games_players_basketball_info", "basketball_action");
+                else if ($is_custom) $actions = $team->getTeamCustomActions();
+                else $actions = $this->getGeneralActions();
+
                 if (!in_array($action_name, $actions)) throw new \Exception("Taka akcja nie istnieje!", 0);
             }
             catch (\Exception $e)

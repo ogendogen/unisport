@@ -54,7 +54,7 @@ catch (\Exception $e)
 
                             echo "<td>".$team1_name."</td>";
                             echo "<td>".$team2_name."</td>";
-                            echo "<td>".$gamedata["game_team1score"].":".$gamedata["game_team1score"]."</td>";
+                            echo "<td>".$gamedata["game_team1score"].":".$gamedata["game_team2score"]."</td>";
                             echo "<td>".date("d-m-Y H:m", $gamedata["game_date"])."</td>";
 
                             ?>
@@ -142,6 +142,17 @@ catch (\Exception $e)
                             }
                         }
                     }
+                    else if ($team->isBasketballTeam())
+                    {
+                        foreach ($actions as $action)
+                        {
+                            if (!in_array(null, $action))
+                            {
+                                $res = true;
+                                echo "<li>Gracz <span style='font-weight: bold'>".$action["user_name"]." ".$action["user_surname"]."</span> wykonał akcję <span style='font-weight: bold;'>".strtolower(\Utils\Dictionary::keyToWord($action["basketball_action"]))."</span> w minucie <span style='font-weight: bold'>".$action["basketball_minute"].":".$action["basketball_second"]."</span></li>";
+                            }
+                        }
+                    }
                     else
                     {
                         foreach ($actions as $action)
@@ -149,7 +160,7 @@ catch (\Exception $e)
                             if (!in_array(null, $action))
                             {
                                 $res = true;
-                                echo "<li>Gracz ".$action["user_name"]." ".$action["user_surname"]." wykonał akcję ".strtolower(\Utils\Dictionary::keyToWord($action["general_action"]))." w minucie ".$action["general_minute"].":".$action["general_second"]."</li>";
+                                echo "<li>Gracz <span style='font-weight: bold'>".$action["user_name"]." ".$action["user_surname"]."</span> wykonał akcję <span style='font-weight: bold'>".strtolower(\Utils\Dictionary::keyToWord($action["general_action"]))."</span> w minucie <span style='font-weight: bold'>".$action["general_minute"].":".$action["general_second"]."</span></li>";
                             }
                         }
                     }

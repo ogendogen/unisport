@@ -189,7 +189,7 @@ namespace Expert
                             if (is_int($actions)) continue;
                             foreach ($actions as $action => $action_occurences)
                             {
-                                if ($action_occurences > 0) $facts .= $action_occurences." ".\Utils\Dictionary::keyToWord($action).", ";
+                                if ($action_occurences > 0) $facts .= "(".\Utils\Dictionary::keyToWord($action).", ".$action_occurences.")";//$facts .= "(".$action_occurences.", ".\Utils\Dictionary::keyToWord($action).", ";
                             }
                         }
                     }
@@ -233,7 +233,7 @@ namespace Expert
                             if (is_int($actions)) continue;
                             foreach ($actions as $action => $action_occurences)
                             {
-                                if ($action_occurences > 0) $facts .= $action_occurences." ".\Utils\Dictionary::keyToWord($action).", ";
+                                if ($action_occurences > 0) $facts .= "(".\Utils\Dictionary::keyToWord($action).", ".$action_occurences.")";
                             }
                         }
                     }
@@ -278,7 +278,7 @@ namespace Expert
                             if (is_int($actions)) continue;
                             foreach ($actions as $action => $action_occurences)
                             {
-                                if ($action_occurences > 0) $facts .= $action_occurences." ".\Utils\Dictionary::keyToWord($action).", ";
+                                if ($action_occurences > 0) $facts .= "(".\Utils\Dictionary::keyToWord($action).", ".$action_occurences.")";
                             }
                         }
                     }
@@ -325,7 +325,7 @@ namespace Expert
                             if (is_int($actions)) continue;
                             foreach ($actions as $action => $action_occurences)
                             {
-                                if ($action_occurences > 0) $facts .= $action_occurences." ".\Utils\Dictionary::keyToWord($action).", ";
+                                if ($action_occurences > 0) $facts .= "(".\Utils\Dictionary::keyToWord($action).", ".$action_occurences.")";
                             }
                         }
                     }
@@ -371,7 +371,7 @@ namespace Expert
                             if (is_int($actions)) continue;
                             foreach ($actions as $action => $action_occurences)
                             {
-                                if ($action_occurences > 0) $facts .= $action_occurences." ".\Utils\Dictionary::keyToWord($action).", ";
+                                if ($action_occurences > 0) $facts .= "(".\Utils\Dictionary::keyToWord($action).", ".$action_occurences.")";
                             }
                         }
                     }
@@ -418,7 +418,7 @@ namespace Expert
                             if (is_int($actions)) continue;
                             foreach ($actions as $action => $action_occurences)
                             {
-                                if ($action_occurences > 0) $facts .= $action_occurences." ".\Utils\Dictionary::keyToWord($action).", ";
+                                if ($action_occurences > 0) $facts .= "(".\Utils\Dictionary::keyToWord($action).", ".$action_occurences.")";
                             }
                         }
                     }
@@ -468,7 +468,7 @@ namespace Expert
                             $facts = "";
                             foreach ($actions as $action => $action_occurences)
                             {
-                                if ($action_occurences > 0) $facts .= $action_occurences." ".\Utils\Dictionary::keyToWord($action).", ";
+                                if ($action_occurences > 0) $facts .= "(".\Utils\Dictionary::keyToWord($action).", ".$action_occurences.")";
                             }
                         }
                         $is_faul = true;
@@ -484,7 +484,7 @@ namespace Expert
                             $facts = "";
                             foreach ($actions as $action => $action_occurences)
                             {
-                                if ($action_occurences > 0) $facts .= $action_occurences." ".\Utils\Dictionary::keyToWord($action).", ";
+                                if ($action_occurences > 0) $facts .= "(".\Utils\Dictionary::keyToWord($action).", ".$action_occurences.")";
                             }
                         }
                         $is_faul = false;
@@ -533,7 +533,7 @@ namespace Expert
                             $facts = "";
                             foreach ($actions as $action => $action_occurences)
                             {
-                                if ($action_occurences > 0) $facts .= $action_occurences." ".\Utils\Dictionary::keyToWord($action).", ";
+                                if ($action_occurences > 0) $facts .= "(".\Utils\Dictionary::keyToWord($action).", ".$action_occurences.")";
                             }
                         }
                     }
@@ -549,7 +549,7 @@ namespace Expert
                             $facts = "";
                             foreach ($actions as $action => $action_occurences)
                             {
-                                if ($action_occurences > 0) $facts .= $action_occurences." ".\Utils\Dictionary::keyToWord($action).", ";
+                                if ($action_occurences > 0) $facts .= "(".\Utils\Dictionary::keyToWord($action).", ".$action_occurences.")";
                             }
                         }
                     }
@@ -589,7 +589,7 @@ namespace Expert
                     if (is_int($actions)) continue;
                     foreach ($actions as $action => $action_occurences)
                     {
-                        if ($action_occurences > 0) $row["facts"] .= $action_occurences." ".\Utils\Dictionary::keyToWord($action).", ";
+                        if ($action_occurences > 0) $row["facts"] .= "(".\Utils\Dictionary::keyToWord($action).", ".$action_occurences.")";
                     }
                 }
 
@@ -618,7 +618,7 @@ namespace Expert
                     if (is_int($actions)) continue;
                     foreach ($actions as $action => $action_occurences)
                     {
-                        if ($action_occurences > 0) $row["facts"] .= $action_occurences." ".\Utils\Dictionary::keyToWord($action).", ";
+                        if ($action_occurences > 0) $row["facts"] .= "(".\Utils\Dictionary::keyToWord($action).", ".$action_occurences.")";
                     }
                 }
 

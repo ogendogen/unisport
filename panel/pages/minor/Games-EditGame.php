@@ -24,7 +24,6 @@ try
 
         $opponent_team_id = $_POST["opponent_team"];
         $opponent_team = new \Team\Team($opponent_team_id);
-        if ($opponent_team->getTeamInfo()["team_sport"] != $team->getTeamInfo()["team_sport"]) throw new \Exception("Przeciwnik nie gra w tę samą grę!");
         if ($opponent_team_id == $teamid) throw new \Exception("Nie możesz zagrać z samym sobą!");
 
         $date = $_POST["matchdatetime"];
@@ -214,6 +213,7 @@ catch (\Exception $e)
                         if (!empty($gameactions))
                         {
                             $is_football = $team->isFootballTeam();
+                            $is_basketball = $team->isBasketballTeam();
                             foreach ($gameactions as $action)
                             {
                                 $participant = $user->findUsersByCredentials($action["user_name"], $action["user_surname"])[0];
@@ -243,13 +243,14 @@ catch (\Exception $e)
                                                 {
                                                     try
                                                     {
-                                                        $transalated = \Utils\Dictionary::keyToWord($sportaction);
-                                                        if ($transalated == $sportaction)
+                                                        $transalated = ($sport->isSportCustom() ? $sportaction["sport_dictionary_key"] : \Utils\Dictionary::keyToWord($sportaction));
+                                                        if ($transalated == $sportaction && !$sport->isSportCustom())
                                                         {
                                                             \Utils\Front::error("Problem z tłumaczeniem");
                                                             break;
                                                         }
-                                                        echo "<option value='".$sportaction."'". ($is_football ? ($sportaction == $action["football_action"] ? "selected='selected'" : "") : ($sportaction == $action["general_action"] ? "selected='selected'" : "")).">".$transalated."</option>";
+                                                        if ($sport->isSportCustom()) $sportaction = $transalated;
+                                                        echo "<option value='".$sportaction."'>".$transalated."</option>";
                                                     }
                                                     catch (\Exception $e)
                                                     {
@@ -261,10 +262,10 @@ catch (\Exception $e)
                                             </select>
                                         </td>
                                         <td>
-                                            <input type="number" class="btn-block" title="minute" name="actionminute<?php echo $counter; ?>" pattern="\d*" data-minutesinput="1" value="<?php echo ($is_football ? $action["football_minute"] : $action["general_minute"])?>" min="0" max="120">
+                                            <input type="number" class="btn-block" title="minute" name="actionminute<?php echo $counter; ?>" pattern="\d*" data-minutesinput="1" value="<?php echo ($is_football ? $action["football_minute"] : ($is_basketball ? $action["basketball_minute"] : $action["general_minute"]))?>" min="0" max="120">
                                         </td>
                                         <td>
-                                            <input type="number" class="btn-block" title="second" name="actionsecond<?php echo $counter; ?>" pattern="\d*" data-secondsinput="1" value="<?php echo ($is_football ? $action["football_second"] : $action["general_second"])?>" min="0" max="59">
+                                            <input type="number" class="btn-block" title="second" name="actionsecond<?php echo $counter; ?>" pattern="\d*" data-secondsinput="1" value="<?php echo ($is_football ? $action["football_second"] : ($is_basketball ? $action["basketball_second"] : $action["general_second"]))?>" min="0" max="59">
                                         </td>
                                     </tr>
                                 <?php

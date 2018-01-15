@@ -238,6 +238,9 @@ function user_logout()
 
 function deleteTeam()
 {
+    var process = confirm("Czy na pewno chcesz usunąć drużynę ? Spowoduje to nieodwracalne usunięcie wszystkich powiązanych z nią danych!");
+    if (!process) return;
+
     var teamid = team_selected;
     $.get("/ajax/DeleteTeam.php?teamid=" + teamid.toString()).done(function(data){
         var obj = jQuery.parseJSON(JSON.stringify(data));

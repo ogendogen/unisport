@@ -29,7 +29,7 @@ try
     $teaminfo = $team->getTeamInfo();
 
     $team2 = new \Team\Team($gamedata["game_team2id"]);
-    $team2info = $team->getTeamInfo();
+    $team2info = $team2->getTeamInfo();
 
     // PDF
     $pdf = \Utils\General::preparePDF($_GET["gameid"]);
@@ -68,6 +68,17 @@ try
             }
         }
     }
+    else if ($team->isBasketballTeam())
+    {
+        foreach ($actions as $action)
+        {
+            if (!in_array(null, $action))
+            {
+                $res = true;
+                $html .= "<p>Gracz <span style='font-weight: bold'>".$action["user_name"]." ".$action["user_surname"]."</span> wykonał akcję <span style='font-weight: bold;'>".strtolower(\Utils\Dictionary::keyToWord($action["basketball_action"]))."</span> w minucie <span style='font-weight: bold'>".$action["basketball_minute"].":".$action["basketball_second"]."</span></p>";
+            }
+        }
+    }
     else
     {
         foreach ($actions as $action)
@@ -75,7 +86,7 @@ try
             if (!in_array(null, $action))
             {
                 $res = true;
-                $html .= "<p>Gracz ".$action["user_name"]." ".$action["user_surname"]." wykonał akcję ".strtolower(\Utils\Dictionary::keyToWord($action["general_action"]))." w minucie ".$action["general_minute"].":".$action["general_second"]."</p>";
+                $html .= "<p>Gracz <span style='font-weight: bold'>".$action["user_name"]." ".$action["user_surname"]."</span> wykonał akcję <span style='font-weight: bold'>".strtolower(\Utils\Dictionary::keyToWord($action["general_action"]))."</span> w minucie <span style='font-weight: bold'>".$action["general_minute"].":".$action["general_second"]."</span></p>";
             }
         }
     }

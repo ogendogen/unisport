@@ -195,7 +195,8 @@ catch (\Exception $e)
                                             {
                                                 try
                                                 {
-                                                    $transalated = ($sport->isSportCustom() ? $action["sport_dictionary_key"] : \Utils\Dictionary::keyToWord($action));
+                                                    //todo: ???
+                                                    $transalated = (($sport->isSportCustom() || $sport_id == 2) ? $action["sport_dictionary_key"] : \Utils\Dictionary::keyToWord($action));
                                                     if ($transalated == $action && !$sport->isSportCustom())
                                                     {
                                                         \Utils\Front::error("Problem z tłumaczeniem");

@@ -6,7 +6,7 @@ try
 {
     if (!isset($_GET["teamid"])) throw new \Exception("Taka drużyna nie istnieje!");
     $team = new \Team\Team($_GET["teamid"]);
-    if (!$team->isFootballTeam()) throw new \Exception("Opcja dostępna tylko dla drużyn piłki nożnej!");
+    if (!$team->isFootballTeam() && !$team->isBasketballTeam()) throw new \Exception("Opcja dostępna tylko dla drużyn piłki nożnej i koszykówki!");
 }
 catch (\Exception $e)
 {
@@ -24,8 +24,8 @@ catch (\Exception $e)
             </div>
             <div class="box-body">
                 <form method="post">
-                    <p>Wybierz bramkarza:
-                    <select name="goalkeeper" title="goalkeeper">
+                    <p><?php echo ($team->isFootballTeam() ? "Wybierz bramkarza:" : "<span style='cursor: not-allowed;'>Wybierz bramkarza:</span>"); ?>
+                    <select name="goalkeeper" title="goalkeeper" <?php if (!$team->isFootballTeam()) echo "disabled='disabled' style='cursor: not-allowed;'"; ?>>
                         <?php
 
                         $players = $team->getAllTeamPlayers();
@@ -68,18 +68,27 @@ catch (\Exception $e)
                     </tr>
                     <?php
 
-                    if (isset($_POST["goalkeeper"]))
+                    if (isset($_POST["reserved"]))
                     {
                         try
                         {
                             \Utils\Validations::validateWholeArray($_POST);
                             \Utils\Validations::validatePostArray($_POST);
-
                             $players_amount = count($team->getAllTeamPlayers());
-                            $expert = new \Expert\FootballExpert($_GET["teamid"]);
-                            $ret = $expert->doAnalyse($_POST["goalkeeper"], $_POST["reserved"] ?? null); // equivalent to (isset($_POST["reserved"]) ? $_POST["reserved"] : null)
-                            $counter = 0;
+                            $ret = array();
 
+                            if ($team->isFootballTeam())
+                            {
+                                $expert = new \Expert\FootballExpert($team->getTeamId());
+                                $ret = $expert->doAnalyse($_POST["goalkeeper"], $_POST["reserved"] ?? null); // equivalent to (isset($_POST["reserved"]) ? $_POST["reserved"] : null)
+                            }
+                            else if ($team->isBasketballTeam())
+                            {
+                                $expert = new \Expert\BasketballExpert($team->getTeamId());
+                                $ret = $expert->doAnalyse($_POST["reserved"] ?? null);
+                            }
+
+                            $counter = 0;
                             foreach ($ret as $result)
                             {
                                 $counter++;
@@ -104,23 +113,6 @@ catch (\Exception $e)
             </div>
         </div>
     </div>
-    <!--<div class="col-md-1"></div>
-    <div class="col-md-3">
-        <div class="box box-default">
-            <div class="box-header with-border">
-                <i class="fa fa-database"> Fakty</i>
-            </div>
-            <div class="box-body">
-                <table class="table table-bordered" style="text-align: center;">
-                    <tr>
-                        <td>No.</td>
-                        <td>Imię i nazwisko</td>
-                        <td>Fakty</td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-    </div>-->
 </div>
 <script>
     $(document).ready(function(){

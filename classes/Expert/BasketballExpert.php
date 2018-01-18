@@ -43,7 +43,7 @@ namespace Expert
                 $subrow = array();
                 $subrow["pass"] = 0;
                 $subrow["dribble"] = 0;
-                $subrow["accurate_shot"] = 0;
+                $subrow["accurate_shot_basket"] = 0;
                 $subrow["catch"] = 0;
                 $subrow["3points"] = 0;
                 $subrow["basketaction"] = 0;
@@ -188,9 +188,9 @@ namespace Expert
                 foreach ($toanalyse as $player)
                 {
                     $counter++;
-                    if ($player[0]["accurate_show"] > $max)
+                    if ($player[0]["accurate_shot_basket"] > $max)
                     {
-                        $max = $player[0]["accurate_show"];
+                        $max = $player[0]["accurate_shot_basket"];
                         $maxid = $player["player_id"];
                         $player_to_delete = $counter;
 

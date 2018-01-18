@@ -77,6 +77,18 @@ namespace Team
             }
         }
 
+        public function getTeamId() : int
+        {
+            try
+            {
+                return $this->teamid;
+            }
+            catch (\Exception $e)
+            {
+                throw $e;
+            }
+        }
+
         public function isTeamsSportCustom() : bool
         {
             try

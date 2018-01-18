@@ -142,11 +142,7 @@ namespace Team
                 {
                     return $this->db->getEnumPossibleValues("games_players_football_info", "football_action");
                 }
-                if ($this->sport_id == 2)
-                {
-                    return $this->db->getEnumPossibleValues("games_players_basketball_info", "basketball_action");
-                }
-                if ($this->isSportCustom())
+                else if ($this->sport_id == 2 || $this->isSportCustom())
                 {
                     return $this->db->exec("SELECT sport_dictionary_key FROM `sport_dictionary` WHERE sport_dictionary_sportid = ?", [$this->sport_id]);
                 }

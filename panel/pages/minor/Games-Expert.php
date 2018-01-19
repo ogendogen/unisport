@@ -68,7 +68,7 @@ catch (\Exception $e)
                     </tr>
                     <?php
 
-                    if (isset($_POST["reserved"]))
+                    if ($_SERVER['REQUEST_METHOD'] == 'POST')
                     {
                         try
                         {

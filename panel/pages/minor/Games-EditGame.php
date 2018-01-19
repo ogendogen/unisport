@@ -98,7 +98,7 @@ catch (\Exception $e)
                         $sport_id = $team->getTeamInfo()["team_sport"];
                         $sport = new \Team\Sport($sport_id);
 
-                        $matched_teams = ($sport->isSportCustom() ? \Team\Team::getAllTeams() : \Team\Team::getAllTeamsBySport($team->getTeamInfo()["team_sport"]));
+                        $matched_teams = \Team\Team::getAllTeams();
                         foreach ($matched_teams as $matched_team)
                         {
                             if ($matched_team["team_id"] == $teamid) continue;
@@ -236,36 +236,30 @@ catch (\Exception $e)
                                             <select title="actionname" name="actionname<?php echo $counter; ?>" class="btn-block">
                                                 <?php
 
-                                                $sport_id = $team->getTeamInfo()["team_sport"];
-                                                $sport = new \Team\Sport($sport_id);
-                                                $actions = $sport->getAllSportActions();
-                                                foreach ($actions as $sportaction)
+                                                try
                                                 {
-                                                    try
+                                                    $sport_id = $team->getTeamInfo()["team_sport"];
+                                                    $sport = new \Team\Sport($sport_id);
+                                                    $actions = $sport->getAllSportActions();
+                                                    foreach ($actions as $sportaction)
                                                     {
-                                                        $transalated = ($sport->isSportCustom() ? $sportaction["sport_dictionary_key"] : \Utils\Dictionary::keyToWord($sportaction));
-                                                        if ($transalated == $sportaction && !$sport->isSportCustom())
-                                                        {
-                                                            \Utils\Front::error("Problem z tłumaczeniem");
-                                                            break;
-                                                        }
-                                                        if ($sport->isSportCustom()) $sportaction = $transalated;
-                                                        echo "<option value='".$sportaction."'>".$transalated."</option>";
+                                                        $ret = "<option value='".$sportaction."' ". ($sportaction == $action["actions_action"] ? "selected='selected'" : "") .">".$sportaction."</option>";
+                                                        echo $ret;
                                                     }
-                                                    catch (\Exception $e)
-                                                    {
-                                                        \Utils\Front::error($e->getMessage());
-                                                    }
+                                                }
+                                                catch (\Exception $e)
+                                                {
+                                                    \Utils\Front::error($e->getMessage());
                                                 }
 
                                                 ?>
                                             </select>
                                         </td>
                                         <td>
-                                            <input type="number" class="btn-block" title="minute" name="actionminute<?php echo $counter; ?>" pattern="\d*" data-minutesinput="1" value="<?php echo ($is_football ? $action["football_minute"] : ($is_basketball ? $action["basketball_minute"] : $action["general_minute"]))?>" min="0" max="120">
+                                            <input type="number" class="btn-block" title="minute" name="actionminute<?php echo $counter; ?>" pattern="\d*" data-minutesinput="1" value="<?php echo $action["actions_minute"]; ?>" min="0" max="120">
                                         </td>
                                         <td>
-                                            <input type="number" class="btn-block" title="second" name="actionsecond<?php echo $counter; ?>" pattern="\d*" data-secondsinput="1" value="<?php echo ($is_football ? $action["football_second"] : ($is_basketball ? $action["basketball_second"] : $action["general_second"]))?>" min="0" max="59">
+                                            <input type="number" class="btn-block" title="second" name="actionsecond<?php echo $counter; ?>" pattern="\d*" data-secondsinput="1" value="<?php echo $action["actions_second"]; ?>" min="0" max="59">
                                         </td>
                                     </tr>
                                 <?php
@@ -292,26 +286,20 @@ catch (\Exception $e)
                                     <select title="actionname" name="actionname1" class="btn-block">
                                         <?php
 
-                                        $sport_id= $team->getTeamInfo()["team_sport"];
-                                        $sport = new \Team\Sport($sport_id);
-                                        $actions = $sport->getAllSportActions();
-                                        foreach ($actions as $action)
+                                        try
                                         {
-                                            try
+                                            $sport_id = $team->getTeamInfo()["team_sport"];
+                                            $sport = new \Team\Sport($sport_id);
+                                            $actions = $sport->getAllSportActions();
+                                            foreach ($actions as $sportaction)
                                             {
-                                                $transalated = ($sport->isSportCustom() ? $action["sport_dictionary_key"] : \Utils\Dictionary::keyToWord($action));
-                                                if ($transalated == $action && !$sport->isSportCustom())
-                                                {
-                                                    \Utils\Front::error("Problem z tłumaczeniem");
-                                                    break;
-                                                }
-                                                if ($sport->isSportCustom()) $action = $transalated;
-                                                echo "<option value='".$action."'>".$transalated."</option>";
+                                                $ret = "<option value='".$sportaction."' ". ($sportaction == $action["actions_action"] ? "selected='selected'" : "") .">".$sportaction."</option>";
+                                                echo $ret;
                                             }
-                                            catch (\Exception $e)
-                                            {
-                                                \Utils\Front::error($e->getMessage());
-                                            }
+                                        }
+                                        catch (\Exception $e)
+                                        {
+                                            \Utils\Front::error($e->getMessage());
                                         }
 
                                         ?>

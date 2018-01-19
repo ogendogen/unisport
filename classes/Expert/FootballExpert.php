@@ -44,18 +44,17 @@ namespace Expert
                 $row["player_id"] = $player_id; // needed only to identify by index
 
                 $subrow = array();
-                $subrow["goal"] = 0;
-                $subrow["accurate_shot"] = 0;
-                $subrow["assist"] = 0;
-                $subrow["shot"] = 0;
-                $subrow["faul"] = 0;
-                $subrow["overtake"] = 0;
-                $subrow["offside"] = 0;
+                $subrow["Gol"] = 0;
+                $subrow["Celny strzał"] = 0;
+                $subrow["Asysta"] = 0;
+                $subrow["Strzał"] = 0;
+                $subrow["Faul"] = 0;
+                $subrow["Przejęcie"] = 0;
+                $subrow["Spalony"] = 0;
 
                 // Actions that don't take part in analyse
-                $subrow["defence"] = 0;
-                $subrow["overtake"] = 0;
-                $subrow["counter"] = 0;
+                $subrow["Obrona"] = 0;
+                $subrow["Kontra"] = 0;
 
                 array_push($row, $subrow);
                 array_push($toanalyse, $row);
@@ -86,7 +85,7 @@ namespace Expert
                      *  }
                      * }
                      */
-                    if ($player["player_id"] == $row["user_id"] && isset($player[0][$row["football_action"]])) $player[0][$row["football_action"]]++;
+                    if ($player["player_id"] == $row["user_id"] && isset($player[0][$row["actions_action"]])) $player[0][$row["actions_action"]]++;
                 }
             }
             return $raw_players;
@@ -178,9 +177,9 @@ namespace Expert
                 foreach ($toanalyse as $player)
                 {
                     $counter++;
-                    if ($player[0]["goal"] + $player[0]["accurate_shot"] > $max)
+                    if ($player[0]["Gol"] + $player[0]["Celny strzał"] > $max)
                     {
-                        $max = $player[0]["goal"] + $player[0]["accurate_shot"];
+                        $max = $player[0]["Gol"] + $player[0]["Celny strzał"];
                         $maxid = $player["player_id"];
                         $player_to_delete = $counter;
 
@@ -189,7 +188,7 @@ namespace Expert
                             if (is_int($actions)) continue;
                             foreach ($actions as $action => $action_occurences)
                             {
-                                if ($action_occurences > 0) $facts .= "(".\Utils\Dictionary::keyToWord($action).", ".$action_occurences.")";//$facts .= "(".$action_occurences.", ".\Utils\Dictionary::keyToWord($action).", ";
+                                if ($action_occurences > 0) $facts .= "(".$action.", ".$action_occurences.")";//$facts .= "(".$action_occurences.", ".\Utils\Dictionary::keyToWord($action).", ";
                             }
                         }
                     }
@@ -222,9 +221,9 @@ namespace Expert
                 foreach ($toanalyse as $player)
                 {
                     $counter++;
-                    if ($player[0]["assist"] > $max)
+                    if ($player[0]["Asysta"] > $max)
                     {
-                        $max = $player[0]["assist"];
+                        $max = $player[0]["Asysta"];
                         $maxid = $player["player_id"];
                         $player_to_delete = $counter;
 
@@ -233,7 +232,7 @@ namespace Expert
                             if (is_int($actions)) continue;
                             foreach ($actions as $action => $action_occurences)
                             {
-                                if ($action_occurences > 0) $facts .= "(".\Utils\Dictionary::keyToWord($action).", ".$action_occurences.")";
+                                if ($action_occurences > 0) $facts .= "(".$action.", ".$action_occurences.")";
                             }
                         }
                     }
@@ -267,9 +266,9 @@ namespace Expert
                 foreach ($toanalyse as $player)
                 {
                     $counter++;
-                    if ($player[0]["shot"] > $max)
+                    if ($player[0]["Strzał"] > $max)
                     {
-                        $max = $player[0]["shot"];
+                        $max = $player[0]["Strzał"];
                         $maxid = $player["player_id"];
                         $player_to_delete = $counter;
 
@@ -278,7 +277,7 @@ namespace Expert
                             if (is_int($actions)) continue;
                             foreach ($actions as $action => $action_occurences)
                             {
-                                if ($action_occurences > 0) $facts .= "(".\Utils\Dictionary::keyToWord($action).", ".$action_occurences.")";
+                                if ($action_occurences > 0) $facts .= "(".$action.", ".$action_occurences.")";
                             }
                         }
                     }
@@ -314,9 +313,9 @@ namespace Expert
                 foreach ($toanalyse as $player)
                 {
                     $counter++;
-                    if ($player[0]["shot"] > $max)
+                    if ($player[0]["Strzał"] > $max)
                     {
-                        $max = $player[0]["shot"];
+                        $max = $player[0]["Strzał"];
                         $maxid = $player["player_id"];
                         $player_to_delete = $counter;
 
@@ -325,7 +324,7 @@ namespace Expert
                             if (is_int($actions)) continue;
                             foreach ($actions as $action => $action_occurences)
                             {
-                                if ($action_occurences > 0) $facts .= "(".\Utils\Dictionary::keyToWord($action).", ".$action_occurences.")";
+                                if ($action_occurences > 0) $facts .= "(".$action.", ".$action_occurences.")";
                             }
                         }
                     }
@@ -360,9 +359,9 @@ namespace Expert
                 foreach ($toanalyse as $player)
                 {
                     $counter++;
-                    if ($player[0]["faul"] + $player[0]["overtake"] > $max)
+                    if ($player[0]["Faul"] + $player[0]["Przejęcie"] > $max)
                     {
-                        $max = $player[0]["faul"] + $player[0]["overtake"];
+                        $max = $player[0]["Faul"] + $player[0]["Przejęcie"];
                         $maxid = $player["player_id"];
                         $player_to_delete = $counter;
 
@@ -371,7 +370,7 @@ namespace Expert
                             if (is_int($actions)) continue;
                             foreach ($actions as $action => $action_occurences)
                             {
-                                if ($action_occurences > 0) $facts .= "(".\Utils\Dictionary::keyToWord($action).", ".$action_occurences.")";
+                                if ($action_occurences > 0) $facts .= "(".$action.", ".$action_occurences.")";
                             }
                         }
                     }
@@ -407,9 +406,9 @@ namespace Expert
                 foreach ($toanalyse as $player)
                 {
                     $counter++;
-                    if ($player[0]["faul"] + $player[0]["overtake"] > $max)
+                    if ($player[0]["Faul"] + $player[0]["Przejęcie"] > $max)
                     {
-                        $max = $player[0]["faul"] + $player[0]["overtake"];
+                        $max = $player[0]["Faul"] + $player[0]["Przejęcie"];
                         $maxid = $player["player_id"];
                         $player_to_delete = $counter;
 
@@ -418,7 +417,7 @@ namespace Expert
                             if (is_int($actions)) continue;
                             foreach ($actions as $action => $action_occurences)
                             {
-                                if ($action_occurences > 0) $facts .= "(".\Utils\Dictionary::keyToWord($action).", ".$action_occurences.")";
+                                if ($action_occurences > 0) $facts .= "(".$action.", ".$action_occurences.")";
                             }
                         }
                     }
@@ -456,9 +455,9 @@ namespace Expert
                 foreach ($toanalyse as $player)
                 {
                     $counter++;
-                    if ($player[0]["faul"] > $max)
+                    if ($player[0]["Faul"] > $max)
                     {
-                        $max = $player[0]["faul"];
+                        $max = $player[0]["Faul"];
                         $maxid = $player["player_id"];
                         $player_to_delete = $counter;
 
@@ -468,14 +467,14 @@ namespace Expert
                             $facts = "";
                             foreach ($actions as $action => $action_occurences)
                             {
-                                if ($action_occurences > 0) $facts .= "(".\Utils\Dictionary::keyToWord($action).", ".$action_occurences.")";
+                                if ($action_occurences > 0) $facts .= "(".$action.", ".$action_occurences.")";
                             }
                         }
                         $is_faul = true;
                     }
-                    else if ($player[0]["offside"] > $max)
+                    else if ($player[0]["Spalony"] > $max)
                     {
-                        $max = $player[0]["offside"];
+                        $max = $player[0]["Spalony"];
                         $maxid = $player["player_id"];
                         $player_to_delete = $counter;
                         foreach ($player as $actions)
@@ -484,7 +483,7 @@ namespace Expert
                             $facts = "";
                             foreach ($actions as $action => $action_occurences)
                             {
-                                if ($action_occurences > 0) $facts .= "(".\Utils\Dictionary::keyToWord($action).", ".$action_occurences.")";
+                                if ($action_occurences > 0) $facts .= "(".$action.", ".$action_occurences.")";
                             }
                         }
                         $is_faul = false;
@@ -521,9 +520,9 @@ namespace Expert
                 foreach ($toanalyse as $player)
                 {
                     $counter++;
-                    if ($player[0]["faul"] > $max)
+                    if ($player[0]["Faul"] > $max)
                     {
-                        $max = $player[0]["faul"];
+                        $max = $player[0]["Faul"];
                         $maxid = $player["player_id"];
                         $player_to_delete = $counter;
 
@@ -533,13 +532,13 @@ namespace Expert
                             $facts = "";
                             foreach ($actions as $action => $action_occurences)
                             {
-                                if ($action_occurences > 0) $facts .= "(".\Utils\Dictionary::keyToWord($action).", ".$action_occurences.")";
+                                if ($action_occurences > 0) $facts .= "(".$action.", ".$action_occurences.")";
                             }
                         }
                     }
-                    else if ($player[0]["offside"] > $max)
+                    else if ($player[0]["Spalony"] > $max)
                     {
-                        $max = $player[0]["offside"];
+                        $max = $player[0]["Spalony"];
                         $maxid = $player["player_id"];
                         $player_to_delete = $counter;
 
@@ -549,7 +548,7 @@ namespace Expert
                             $facts = "";
                             foreach ($actions as $action => $action_occurences)
                             {
-                                if ($action_occurences > 0) $facts .= "(".\Utils\Dictionary::keyToWord($action).", ".$action_occurences.")";
+                                if ($action_occurences > 0) $facts .= "(".$action.", ".$action_occurences.")";
                             }
                         }
                     }
@@ -589,7 +588,7 @@ namespace Expert
                     if (is_int($actions)) continue;
                     foreach ($actions as $action => $action_occurences)
                     {
-                        if ($action_occurences > 0) $row["facts"] .= "(".\Utils\Dictionary::keyToWord($action).", ".$action_occurences.")";
+                        if ($action_occurences > 0) $row["facts"] .= "(".$action.", ".$action_occurences.")";
                     }
                 }
 
@@ -618,7 +617,7 @@ namespace Expert
                     if (is_int($actions)) continue;
                     foreach ($actions as $action => $action_occurences)
                     {
-                        if ($action_occurences > 0) $row["facts"] .= "(".\Utils\Dictionary::keyToWord($action).", ".$action_occurences.")";
+                        if ($action_occurences > 0) $row["facts"] .= "(".$action.", ".$action_occurences.")";
                     }
                 }
 
@@ -797,7 +796,7 @@ namespace Expert
                 $collection = array();
                 foreach ($this->data as $player)
                 {
-                    if ($player["football_action"] == $action)
+                    if ($player["actions_action"] == $action)
                     {
                         if (isset($collection[strval($player["user_id"])])) $collection[strval($player["user_id"])]++;
                         else $collection[strval($player["user_id"])] = 1;
@@ -824,7 +823,7 @@ namespace Expert
                 $collection = array();
                 foreach ($this->data as $player)
                 {
-                    if ($player["football_action"] == $action)
+                    if ($player["actions_action"] == $action)
                     {
                         if (isset($collection[strval($player["user_id"])])) $collection[strval($player["user_id"])]++;
                         else $collection[strval($player["user_id"])] = 1;
@@ -853,7 +852,7 @@ namespace
 
             foreach ($ret as $player)
             {
-                echo "<span style='font-weight: bold;'>".$player["credentials"]."</span> został wytypowany na pozycję <span style='font-weight: bold;'>".\Utils\Dictionary::keyToWord($player["player_pos"])."</span><br>";
+                echo "<span style='font-weight: bold;'>".$player["credentials"]."</span> został wytypowany na pozycję <span style='font-weight: bold;'>".$player["player_pos"]."</span><br>";
             }
         }
         catch (\Exception $e)

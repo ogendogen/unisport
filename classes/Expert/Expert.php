@@ -38,8 +38,8 @@ namespace Expert
             try
             {
                 $this->checkRequirements();
-                return $this->db->exec("SELECT user_id, user_name, user_surname, football_action FROM `games_players` 
-                                              INNER JOIN `games_players_football_info` ON games_players.player_id = games_players_football_info.football_gameplayerid 
+                return $this->db->exec("SELECT user_id, user_name, user_surname, actions_action FROM `games_players` 
+                                              INNER JOIN `games_players_actions` ON games_players.player_id = games_players_actions.actions_gameplayerid 
                                               INNER JOIN `users` ON games_players.player_playerid = users.user_id
                                               WHERE games_players.player_teamid = ?", [$this->team_id]);
             }
@@ -54,7 +54,7 @@ namespace Expert
             try
             {
                 $ret = $this->db->exec("SELECT COUNT(*) AS 'amount', users.user_name, users.user_surname FROM `games_players` 
-                                            INNER JOIN `games_players_football_info` ON games_players.player_id = games_players_football_info.football_gameplayerid
+                                            INNER JOIN `games_players_actions` ON games_players.player_id = games_players_actions.actions_gameplayerid
                                             INNER JOIN `users` ON games_players.player_playerid = users.user_id 
                                             WHERE games_players.player_teamid = ?
                                             GROUP BY user_id", [$this->team_id]);

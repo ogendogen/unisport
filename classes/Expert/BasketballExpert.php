@@ -41,19 +41,12 @@ namespace Expert
                 $row["player_id"] = $player_id; // needed only to identify by index
 
                 $subrow = array();
-                $subrow["pass"] = 0;
-                $subrow["dribble"] = 0;
-                $subrow["accurate_shot_basket"] = 0;
-                $subrow["catch"] = 0;
-                $subrow["3points"] = 0;
-                $subrow["basketaction"] = 0;
-
-                // Actions that don't take part in analyse
-                $subrow["defence"] = 0;
-                $subrow["overtake"] = 0;
-                $subrow["counter"] = 0;
-                $subrow["faul"] = 0;
-                $subrow["assist"] = 0;
+                $subrow["Podanie"] = 0; // Podanie
+                $subrow["Udany kozioł"] = 0; // Udany kozioł
+                $subrow["Celny rzut"] = 0; // Celny rzut
+                $subrow["Przechwyt"] = 0; // Przechwyt
+                $subrow["Rzut za 3 punkty"] = 0; // Rzut za 3 punkty
+                $subrow["Akcja pod koszem"] = 0; // Akcja pod koszem
 
                 array_push($row, $subrow);
                 array_push($toanalyse, $row);
@@ -84,7 +77,7 @@ namespace Expert
                      *  }
                      * }
                      */
-                    if ($player["player_id"] == $row["user_id"] && isset($player[0][$row["basketball_action"]])) $player[0][$row["basketball_action"]]++;
+                    if ($player["player_id"] == $row["user_id"] && isset($player[0][$row["actions_action"]])) $player[0][$row["actions_action"]]++;
                 }
             }
             return $raw_players;
@@ -143,9 +136,9 @@ namespace Expert
                 foreach ($toanalyse as $player)
                 {
                     $counter++;
-                    if ($player[0]["pass"] + $player[0]["dribble"] > $max)
+                    if ($player[0]["Podanie"] + $player[0]["Udany kozioł"] > $max)
                     {
-                        $max = $player[0]["pass"] + $player[0]["dribble"];
+                        $max = $player[0]["Podanie"] + $player[0]["Udany kozioł"];
                         $maxid = $player["player_id"];
                         $player_to_delete = $counter;
 
@@ -188,9 +181,9 @@ namespace Expert
                 foreach ($toanalyse as $player)
                 {
                     $counter++;
-                    if ($player[0]["accurate_shot_basket"] > $max)
+                    if ($player[0]["Celny rzut"] > $max)
                     {
-                        $max = $player[0]["accurate_shot_basket"];
+                        $max = $player[0]["Celny rzut"];
                         $maxid = $player["player_id"];
                         $player_to_delete = $counter;
 
@@ -234,9 +227,9 @@ namespace Expert
                 foreach ($toanalyse as $player)
                 {
                     $counter++;
-                    if ($player[0]["catch"] + $player[0]["3points"] > $max)
+                    if ($player[0]["Przechwyt"] + $player[0]["Rzut za 3 punkty"] > $max)
                     {
-                        $max = $player[0]["catch"] + $player[0]["3points"];
+                        $max = $player[0]["Przechwyt"] + $player[0]["Rzut za 3 punkty"];
                         $maxid = $player["player_id"];
                         $player_to_delete = $counter;
 
@@ -281,9 +274,9 @@ namespace Expert
                 foreach ($toanalyse as $player)
                 {
                     $counter++;
-                    if ($player[0]["basketaction"]> $max)
+                    if ($player[0]["Akcja pod koszem"] > $max)
                     {
-                        $max = $player[0]["basketaction"];
+                        $max = $player[0]["Akcja pod koszem"];
                         $maxid = $player["player_id"];
                         $player_to_delete = $counter;
 

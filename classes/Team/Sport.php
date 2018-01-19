@@ -138,15 +138,10 @@ namespace Team
         {
             try
             {
-                if ($this->sport_id == 1)
-                {
-                    return $this->db->getEnumPossibleValues("games_players_football_info", "football_action");
-                }
-                else if ($this->sport_id == 2 || $this->isSportCustom())
-                {
-                    return $this->db->exec("SELECT sport_dictionary_key FROM `sport_dictionary` WHERE sport_dictionary_sportid = ?", [$this->sport_id]);
-                }
-                return $this->db->getEnumPossibleValues("games_players_general_info", "general_action");
+                $raw = $this->db->exec("SELECT sport_dictionary_key FROM `sport_dictionary` WHERE sport_dictionary_sportid = ?", [$this->sport_id]);
+                $ret = array();
+                foreach ($raw as $row) array_push($ret, $row["sport_dictionary_key"]);
+                return $ret;
             }
             catch (\Exception $e)
             {

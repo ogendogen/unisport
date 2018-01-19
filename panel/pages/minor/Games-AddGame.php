@@ -86,7 +86,8 @@ catch (\Exception $e)
                         $sport_id = $team->getTeamInfo()["team_sport"];
                         $sport = new \Team\Sport($sport_id);
 
-                        $matched_teams = ($sport->isSportCustom() ? \Team\Team::getAllTeams() : \Team\Team::getAllTeamsBySport($team->getTeamInfo()["team_sport"]));
+                        //$matched_teams = ($sport->isSportCustom() ? \Team\Team::getAllTeams() : \Team\Team::getAllTeamsBySport($team->getTeamInfo()["team_sport"]));
+                        $matched_teams = \Team\Team::getAllTeams();
                         foreach ($matched_teams as $matched_team)
                         {
                             if ($matched_team["team_id"] == $teamid) continue;
@@ -188,27 +189,19 @@ catch (\Exception $e)
                                         <select title="actionname" name="actionname1" class="btn-block">
                                             <?php
 
-                                            $sport_id = $team->getTeamInfo()["team_sport"];
-                                            $sport = new \Team\Sport($sport_id);
-                                            $actions = $sport->getAllSportActions();
-                                            foreach ($actions as $action)
+                                            try
                                             {
-                                                try
+                                                $sport_id = $team->getTeamInfo()["team_sport"];
+                                                $sport = new \Team\Sport($sport_id);
+                                                $actions = $sport->getAllSportActions();
+                                                foreach ($actions as $action)
                                                 {
-                                                    //todo: ???
-                                                    $transalated = (($sport->isSportCustom() || $sport_id == 2) ? $action["sport_dictionary_key"] : \Utils\Dictionary::keyToWord($action));
-                                                    if ($transalated == $action && !$sport->isSportCustom())
-                                                    {
-                                                        \Utils\Front::error("Problem z tłumaczeniem");
-                                                        break;
-                                                    }
-                                                    if ($sport->isSportCustom()) $action = $transalated;
-                                                    echo "<option value='".$action."'>".$transalated."</option>";
+                                                    echo "<option value='".$action."'>".$action."</option>";
                                                 }
-                                                catch (\Exception $e)
-                                                {
-                                                    \Utils\Front::error($e->getMessage());
-                                                }
+                                            }
+                                            catch (\Exception $e)
+                                            {
+                                                \Utils\Front::error($e->getMessage());
                                             }
 
                                             ?>

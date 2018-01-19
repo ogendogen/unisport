@@ -57,39 +57,15 @@ try
     $html = "";
     $actions = $game->getAllGameActions();
     $res = false;
-    if ($team->isFootballTeam())
+    foreach ($actions as $action)
     {
-        foreach ($actions as $action)
+        if (!in_array(null, $action, true))
         {
-            if (!in_array(null, $action))
-            {
-                $res = true;
-                $html .= "<p>Gracz <span style='font-weight: bold'>".$action["user_name"]." ".$action["user_surname"]."</span> wykonał akcję <span style='font-weight: bold;'>".strtolower(\Utils\Dictionary::keyToWord($action["football_action"]))."</span> w minucie <span style='font-weight: bold'>".$action["football_minute"].":".$action["football_second"]."</span></p>";
-            }
+            $res = true;
+            $html .= "<p>Gracz <span style='font-weight: bold'>".$action["user_name"]." ".$action["user_surname"]."</span> wykonał akcję <span style='font-weight: bold;'>".strtolower($action["actions_action"])."</span> w minucie <span style='font-weight: bold'>".$action["actions_minute"].":".$action["actions_second"]."</span></p>";
         }
     }
-    else if ($team->isBasketballTeam())
-    {
-        foreach ($actions as $action)
-        {
-            if (!in_array(null, $action))
-            {
-                $res = true;
-                $html .= "<p>Gracz <span style='font-weight: bold'>".$action["user_name"]." ".$action["user_surname"]."</span> wykonał akcję <span style='font-weight: bold;'>".strtolower(\Utils\Dictionary::keyToWord($action["basketball_action"]))."</span> w minucie <span style='font-weight: bold'>".$action["basketball_minute"].":".$action["basketball_second"]."</span></p>";
-            }
-        }
-    }
-    else
-    {
-        foreach ($actions as $action)
-        {
-            if (!in_array(null, $action))
-            {
-                $res = true;
-                $html .= "<p>Gracz <span style='font-weight: bold'>".$action["user_name"]." ".$action["user_surname"]."</span> wykonał akcję <span style='font-weight: bold'>".strtolower(\Utils\Dictionary::keyToWord($action["general_action"]))."</span> w minucie <span style='font-weight: bold'>".$action["general_minute"].":".$action["general_second"]."</span></p>";
-            }
-        }
-    }
+
     if (!$res) $html = "<p>Brak akcji w tym meczu!</p>";
     $pdf->writeHTMLCell(250, 0, '', '', $html, 0, 1, 0, true, '', true);
 

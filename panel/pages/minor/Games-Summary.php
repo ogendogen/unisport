@@ -131,37 +131,12 @@ catch (\Exception $e)
 
                     $actions = $game->getAllGameActions();
                     $res = false;
-                    if ($team->isFootballTeam())
+                    foreach ($actions as $action)
                     {
-                        foreach ($actions as $action)
+                        if (!in_array(null, $action, true))
                         {
-                            if (!in_array(null, $action))
-                            {
-                                $res = true;
-                                echo "<li>Gracz <span style='font-weight: bold'>".$action["user_name"]." ".$action["user_surname"]."</span> wykonał akcję <span style='font-weight: bold;'>".strtolower(\Utils\Dictionary::keyToWord($action["football_action"]))."</span> w minucie <span style='font-weight: bold'>".$action["football_minute"].":".$action["football_second"]."</span></li>";
-                            }
-                        }
-                    }
-                    else if ($team->isBasketballTeam())
-                    {
-                        foreach ($actions as $action)
-                        {
-                            if (!in_array(null, $action))
-                            {
-                                $res = true;
-                                echo "<li>Gracz <span style='font-weight: bold'>".$action["user_name"]." ".$action["user_surname"]."</span> wykonał akcję <span style='font-weight: bold;'>".strtolower(\Utils\Dictionary::keyToWord($action["basketball_action"]))."</span> w minucie <span style='font-weight: bold'>".$action["basketball_minute"].":".$action["basketball_second"]."</span></li>";
-                            }
-                        }
-                    }
-                    else
-                    {
-                        foreach ($actions as $action)
-                        {
-                            if (!in_array(null, $action))
-                            {
-                                $res = true;
-                                echo "<li>Gracz <span style='font-weight: bold'>".$action["user_name"]." ".$action["user_surname"]."</span> wykonał akcję <span style='font-weight: bold'>".strtolower(\Utils\Dictionary::keyToWord($action["general_action"]))."</span> w minucie <span style='font-weight: bold'>".$action["general_minute"].":".$action["general_second"]."</span></li>";
-                            }
+                            $res = true;
+                            echo "<li>Gracz <span style='font-weight: bold'>".$action["user_name"]." ".$action["user_surname"]."</span> wykonał akcję <span style='font-weight: bold;'>".strtolower($action["actions_action"])."</span> w minucie <span style='font-weight: bold'>".$action["actions_minute"].":".$action["actions_second"]."</span></li>";
                         }
                     }
 

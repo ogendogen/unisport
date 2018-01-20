@@ -5,7 +5,6 @@ header('Content-Type: application/json');
 require_once(__DIR__."/../classes/Utils/TCPDF/tcpdf.php");
 require_once(__DIR__."/../classes/Utils/General.php");
 require_once(__DIR__."/../classes/Team/Game.php");
-require_once(__DIR__."/../classes/Utils/Dictionary.php");
 
 if (!isset($_SESSION["userid"]) || !isset($_SESSION["userid"])) die(\Utils\General::retJson(-1, "Nie jesteś zalogowany!"));
 if (!isset($_GET["gameid"]) || !is_numeric($_GET["gameid"])) die(\Utils\General::retJson(-1, "Taka gra nie istnieje!"));

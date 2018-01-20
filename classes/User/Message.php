@@ -87,21 +87,6 @@ namespace User
             return $this->read;
         }
 
-        public static function getAllUnread(int $user_id) : array
-        {
-            try
-            {
-                $db = \Db\Database::getInstance();
-                return $db->exec("SELECT users.user_name, users.user_surname, messages.message_title, messages.message_text FROM `messages`
-                                    LEFT JOIN `users` ON users.user_id = messages.message_receiver
-                                    WHERE messages.message_receiver = ? AND message_read = 0", [$user_id]);
-            }
-            catch(\Exception $e)
-            {
-                throw $e;
-            }
-        }
-
         public static function sendMessage(int $from, int $to, string $title, string $content) : int
         {
             try

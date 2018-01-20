@@ -10,20 +10,12 @@ namespace Expert
     class BasketballExpert extends Expert
     {
         private $data;
-        private $analyse_buffer; // used to collect already choosen players
-        private $positions = array();
         public function __construct(int $team_id)
         {
             try
             {
                 parent::__construct($team_id);
                 $this->data = parent::getAllTeamPlayersActions();
-
-                $this->positions["Rozgrywający"] = 1;
-                $this->positions["Obrońca"] = 1;
-                $this->positions["Niski skrzydłowy"] = 1;
-                $this->positions["Silny skrzydłowy"] = 1;
-                $this->positions["Center"] = 1;
             }
             catch (\Exception $e)
             {
@@ -83,25 +75,6 @@ namespace Expert
             return $raw_players;
         }
 
-        private function getMaxOfActions(array $parsed_data, string $action) : array
-        {
-            $max = 0;
-            $max_id = 0;
-            foreach ($parsed_data as $player)
-            {
-                if ($player[0][$action] > $max)
-                {
-                    $max = $player[0][$action];
-                    $max_id = $player["player_id"];
-                }
-            }
-
-            $ret = array();
-            $ret["max"] = $max;
-            $ret["max_id"] = $max_id;
-            return $ret;
-        }
-
         public function doAnalyse(array $players_to_omit = null) : array
         {
             try
@@ -147,7 +120,7 @@ namespace Expert
                             if (is_int($actions)) continue;
                             foreach ($actions as $action => $action_occurences)
                             {
-                                if ($action_occurences > 0) $facts .= "(".\Utils\Dictionary::keyToWord($action).", ".$action_occurences.")";//$facts .= "(".$action_occurences.", ".\Utils\Dictionary::keyToWord($action).", ";
+                                if ($action_occurences > 0) $facts .= "(".$action.", ".$action_occurences.")";
                             }
                         }
                     }
@@ -192,7 +165,7 @@ namespace Expert
                             if (is_int($actions)) continue;
                             foreach ($actions as $action => $action_occurences)
                             {
-                                if ($action_occurences > 0) $facts .= "(".\Utils\Dictionary::keyToWord($action).", ".$action_occurences.")";
+                                if ($action_occurences > 0) $facts .= "(".$action.", ".$action_occurences.")";
                             }
                         }
                     }
@@ -238,7 +211,7 @@ namespace Expert
                             if (is_int($actions)) continue;
                             foreach ($actions as $action => $action_occurences)
                             {
-                                if ($action_occurences > 0) $facts .= "(".\Utils\Dictionary::keyToWord($action).", ".$action_occurences.")";
+                                if ($action_occurences > 0) $facts .= "(".$action.", ".$action_occurences.")";
                             }
                         }
                     }
@@ -285,7 +258,7 @@ namespace Expert
                             if (is_int($actions)) continue;
                             foreach ($actions as $action => $action_occurences)
                             {
-                                if ($action_occurences > 0) $facts .= "(".\Utils\Dictionary::keyToWord($action).", ".$action_occurences.")";
+                                if ($action_occurences > 0) $facts .= "(".$action.", ".$action_occurences.")";
                             }
                         }
                     }
@@ -324,7 +297,7 @@ namespace Expert
                     if (is_int($actions)) continue;
                     foreach ($actions as $action => $action_occurences)
                     {
-                        if ($action_occurences > 0) $row["facts"] .= "(".\Utils\Dictionary::keyToWord($action).", ".$action_occurences.")";
+                        if ($action_occurences > 0) $facts .= "(".$action.", ".$action_occurences.")";
                     }
                 }
 

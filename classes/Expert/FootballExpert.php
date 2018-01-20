@@ -10,117 +10,18 @@ namespace Expert
     class FootballExpert extends Expert
     {
         private $data;
-        private $analyse_buffer; // used to collect already choosen players
-        //private $positions = ["Bramkarz", "Środkowy napastnik", "Skrzydłowy napastnik", "Środkowy pomocnik", "Skrzydłowy pomocnik", "Środkowy obrońca", "Skrzydłowy obrońca"];
-        private $positions = array();
         public function __construct(int $team_id)
         {
             try
             {
                 parent::__construct($team_id);
                 $this->data = parent::getAllTeamPlayersActions();
-
-                $this->positions["Bramkarz"] = 1;
-                $this->positions["Środkowy napastnik"] = 1;
-                $this->positions["Skrzydłowy napastnik"] = 2;
-                $this->positions["Środkowy pomocnik"] = 1;
-                $this->positions["Skrzydłowy pomocnik"] = 2;
-                $this->positions["Środkowy obrońca"] = 2;
-                $this->positions["Skrzydłowy obrońca"] = 2;
             }
             catch (\Exception $e)
             {
                 throw $e;
             }
         }
-
-        private function prepareDataToAnalyse() : array
-        {
-            $players_ids = $this->getPlayersToAnalyse();
-            $toanalyse = array();
-            foreach ($players_ids as $player_id)
-            {
-                $row = array();
-                $row["player_id"] = $player_id; // needed only to identify by index
-
-                $subrow = array();
-                $subrow["Gol"] = 0;
-                $subrow["Celny strzał"] = 0;
-                $subrow["Asysta"] = 0;
-                $subrow["Strzał"] = 0;
-                $subrow["Faul"] = 0;
-                $subrow["Przejęcie"] = 0;
-                $subrow["Spalony"] = 0;
-
-                // Actions that don't take part in analyse
-                $subrow["Obrona"] = 0;
-                $subrow["Kontra"] = 0;
-
-                array_push($row, $subrow);
-                array_push($toanalyse, $row);
-            }
-
-            return $toanalyse;
-        }
-
-        private function parseData(array $raw_players) : array
-        {
-            foreach ($this->data as $row)
-            {
-                foreach ($raw_players as &$player)
-                {
-                    /*
-                     * Structure:
-                     * arr
-                     * {
-                     *  arr[0]
-                     *  {
-                     *      arr["player_id"]
-                     *      arr[0]
-                     *      {
-                     *          ["goal"] = 0
-                     *          ["assist"] = 0
-                     *          etc...
-                     *      }
-                     *  }
-                     * }
-                     */
-                    if ($player["player_id"] == $row["user_id"] && isset($player[0][$row["actions_action"]])) $player[0][$row["actions_action"]]++;
-                }
-            }
-            return $raw_players;
-        }
-
-        private function getMaxOfActions(array $parsed_data, string $action) : array
-        {
-            $max = 0;
-            $max_id = 0;
-            foreach ($parsed_data as $player)
-            {
-                if ($player[0][$action] > $max)
-                {
-                    $max = $player[0][$action];
-                    $max_id = $player["player_id"];
-                }
-            }
-
-            $ret = array();
-            $ret["max"] = $max;
-            $ret["max_id"] = $max_id;
-            return $ret;
-        }
-
-        /*private function parseFacts(array $action) : array
-        {
-            try
-            {
-                var_dump($action);
-            }
-            catch (\Exception $e)
-            {
-                throw $e;
-            }
-        }*/
 
         public function doAnalyse(int $goalkeeper_id, array $players_to_omit = null) : array
         {
@@ -188,7 +89,7 @@ namespace Expert
                             if (is_int($actions)) continue;
                             foreach ($actions as $action => $action_occurences)
                             {
-                                if ($action_occurences > 0) $facts .= "(".$action.", ".$action_occurences.")";//$facts .= "(".$action_occurences.", ".\Utils\Dictionary::keyToWord($action).", ";
+                                if ($action_occurences > 0) $facts .= "(".$action.", ".$action_occurences.")";
                             }
                         }
                     }
@@ -646,136 +547,64 @@ namespace Expert
             }
         }
 
-        // to niżej idzie chyba do pieca XD
-
-        public function doAnalyse_Naive(int $goalkeeper_id, array $players_to_omit = null) : array
+        private function prepareDataToAnalyse() : array
         {
-            try
+            $players_ids = $this->getPlayersToAnalyse();
+            $toanalyse = array();
+            foreach ($players_ids as $player_id)
             {
-                if (!$this->team->isUserInTeam($goalkeeper_id)) throw new \Exception("Proponowany bramkarz nie jest w drużynie!");
-                if (!is_null($players_to_omit) && count($this->team->getAllTeamPlayers()) - count($players_to_omit) < 11) throw new \Exception("Drużyna musi składać się z 11 graczy!");
-                $ret = array(); // returning array with results
-                $this->analyse_buffer = array();
+                $row = array();
+                $row["player_id"] = $player_id; // needed only to identify by index
 
-                $this->analyse_rettmp = array();
-                $toanalyse = $this->getPlayersToAnalyse(); // players left to analyse
+                $subrow = array();
+                $subrow["Gol"] = 0;
+                $subrow["Celny strzał"] = 0;
+                $subrow["Asysta"] = 0;
+                $subrow["Strzał"] = 0;
+                $subrow["Faul"] = 0;
+                $subrow["Przejęcie"] = 0;
+                $subrow["Spalony"] = 0;
 
-                $counter = 0;
-                foreach($toanalyse as $playerid)
+                // Actions that don't take part in analyse
+                $subrow["Obrona"] = 0;
+                $subrow["Kontra"] = 0;
+
+                array_push($row, $subrow);
+                array_push($toanalyse, $row);
+            }
+
+            return $toanalyse;
+        }
+
+        private function parseData(array $raw_players) : array
+        {
+            foreach ($this->data as $row)
+            {
+                foreach ($raw_players as &$player)
                 {
-                    $counter++;
-                    var_dump($toanalyse);
-                    echo "<br>";
-
-                    if (!is_null($players_to_omit) && in_array($playerid, $players_to_omit)) continue;
-                    $row = array();
-                    $row["playerid"] = $playerid;
-                    if ($playerid == $goalkeeper_id)
-                    {
-                        $row["playerpos"] = "Bramkarz";
-                        array_push($ret, $row);
-                        unset($toanalyse[\Utils\General::getKeyByValue($playerid, $toanalyse)]);
-                        continue;
-                    }
-
-                    if ($this->isTheMostActions($playerid, "goal"))
-                    {
-                        if ($this->isTheMostActions($playerid, "accurate_shot"))
-                        {
-                            $row["playerpos"] = "Środkowy napastnik";
-                            array_push($ret, $row);
-                            unset($toanalyse[\Utils\General::getKeyByValue($playerid, $toanalyse)]);
-                            continue;
-                        }
-                    }
-
-                    if ($this->isTheMostActions($playerid, "assist"))
-                    {
-                        $row["playerpos"] = "Środkowy pomocnik";
-                        array_push($ret, $row);
-                        unset($toanalyse[\Utils\General::getKeyByValue($playerid, $toanalyse)]);
-                        continue;
-                    }
-                    else
-                    {
-                        if ($this->isTheMostActions($playerid, "shot"))
-                        {
-                            $row["playerpos"] = "Skrzydłowy napastnik";
-                            array_push($ret, $row);
-                            unset($toanalyse[\Utils\General::getKeyByValue($playerid, $toanalyse)]);
-                            continue;
-                        }
-                        else
-                        {
-                            if ($this->isTheMostActions($playerid, "faul"))
-                            {
-                                if ($this->isTheMostActions($playerid, "overtake"))
-                                {
-                                    $row["playerpos"] = "Skrzydłowy obrońca";
-                                    array_push($ret, $row);
-                                    unset($toanalyse[\Utils\General::getKeyByValue($playerid, $toanalyse)]);
-                                    continue;
-                                }
-                            }
-
-                            if ($this->isTheMostActions($playerid, "offset"))
-                            {
-                                $row["playerpos"] = "Skrzydłowy obrońca";
-                                array_push($ret, $row);
-                                unset($toanalyse[\Utils\General::getKeyByValue($playerid, $toanalyse)]);
-                                continue;
-                            }
-                            else
-                            {
-                                $row["playerpos"] = "Skrzydłowy pomocnik";
-                                array_push($ret, $row);
-                                unset($toanalyse[\Utils\General::getKeyByValue($playerid, $toanalyse)]);
-                                continue;
-                            }
-                        }
-                    }
+                    /*
+                     * Structure:
+                     * arr
+                     * {
+                     *  arr[0]
+                     *  {
+                     *      arr["player_id"]
+                     *      arr[0]
+                     *      {
+                     *          ["goal"] = 0
+                     *          ["assist"] = 0
+                     *          etc...
+                     *      }
+                     *  }
+                     * }
+                     */
+                    if ($player["player_id"] == $row["user_id"] && isset($player[0][$row["actions_action"]])) $player[0][$row["actions_action"]]++;
                 }
-                return $ret;
             }
-            catch (\Exception $e)
-            {
-                throw $e;
-            }
+            return $raw_players;
         }
 
-        public function isCorrectionNeeded(array $result) : string
-        {
-            try
-            {
-                foreach ($this->positions as $position)
-                {
-                    $key = key($this->positions);
-                    echo \Utils\General::countInNestedArrayByKey($result, "playerpos", $key);
-                    echo "<br>".$position;
-                    if (\Utils\General::countInNestedArrayByKey($result, "playerpos", $key) > $position) return $key;
-                }
-
-                return "";
-            }
-            catch (\Exception $e)
-            {
-                throw $e;
-            }
-        }
-
-        public function doCorrection()
-        {
-            try
-            {
-
-            }
-            catch (\Exception $e)
-            {
-                throw $e;
-            }
-        }
-
-        public function getPlayersToAnalyse() : array
+        private function getPlayersToAnalyse() : array
         {
             try
             {
@@ -787,77 +616,6 @@ namespace Expert
             {
                 throw $e;
             }
-        }
-
-        public function isTheMostActions(int $userid, string $action) : bool // check if action is valid (equals enum in db)
-        {
-            try
-            {
-                $collection = array();
-                foreach ($this->data as $player)
-                {
-                    if ($player["actions_action"] == $action)
-                    {
-                        if (isset($collection[strval($player["user_id"])])) $collection[strval($player["user_id"])]++;
-                        else $collection[strval($player["user_id"])] = 1;
-                    }
-                }
-
-                if (empty($collection)) return false;
-
-                $max = array_keys($collection, max($collection));
-
-                return in_array($userid, $max);
-                //return $max[0] == $userid;
-            }
-            catch (\Exception $e)
-            {
-                throw $e;
-            }
-        }
-
-        public function getByTheMostActions(array $players, string $action) : int
-        {
-            try
-            {
-                $collection = array();
-                foreach ($this->data as $player)
-                {
-                    if ($player["actions_action"] == $action)
-                    {
-                        if (isset($collection[strval($player["user_id"])])) $collection[strval($player["user_id"])]++;
-                        else $collection[strval($player["user_id"])] = 1;
-                    }
-                }
-
-                $max = array_keys($collection, max($collection));
-                return 1;
-            }
-            catch (\Exception $e)
-            {
-                throw $e;
-            }
-        }
-    }
-}
-
-namespace
-{
-    if (isset($_GET["test"]))
-    {
-        try
-        {
-            $expert = new \Expert\FootballExpert(4);
-            $ret = $expert->doAnalyse(12);
-
-            foreach ($ret as $player)
-            {
-                echo "<span style='font-weight: bold;'>".$player["credentials"]."</span> został wytypowany na pozycję <span style='font-weight: bold;'>".$player["player_pos"]."</span><br>";
-            }
-        }
-        catch (\Exception $e)
-        {
-            echo $e->getMessage();
         }
     }
 }

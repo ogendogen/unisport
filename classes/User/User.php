@@ -14,30 +14,6 @@ namespace User
             $this->db = \Db\Database::getInstance();
         }
 
-        public function getUserById(int $id) : array
-        {
-            $ret = array();
-            $row = $this->db->exec("SELECT * FROM users WHERE id = ?", $id);
-            if (is_null($row) || empty($row)) throw new \Exception("Taki użytkownik nie istnieje");
-            return $row;
-        }
-
-        public function isLoginCorrect(string $email, string $pass) : bool
-        {
-            try
-            {
-                $salt = $this->db->exec("SELECT user_salt FROM users WHERE user_email = ?", $email);
-                if (!$salt) throw new \Exception("No user found");
-                $pass = md5(md5($pass).md5($salt[0]));
-                if ($this->db->isRowExists("user_pass", "users", $pass)) return true;
-                return false;
-            }
-            catch (\PDOException $e)
-            {
-                throw $e;
-            }
-        }
-
         public function isUserExists(string $login) : bool
         {
             try
@@ -176,18 +152,6 @@ namespace User
             }
         }
 
-        public function getSportByName(string $name) : array
-        {
-            try
-            {
-                return $this->db->exec("SELECT * FROM sports WHERE sport_name = ?", [$name])[0];
-            }
-            catch (\PDOException $e)
-            {
-                throw $e;
-            }
-        }
-
         public function getAllSports() : array
         {
             try
@@ -200,7 +164,6 @@ namespace User
             }
         }
 
-        // UserGeneral:
         public function validateNewUser(string $login, string $pass, string $pass2, string $email, string $name, string $surname)
         {
             if ($this->isUserExists($login)) throw new \Exception("Taki użytkownik już istnieje!");
@@ -219,20 +182,6 @@ namespace User
                 $surname[$i] = strtolower($surname[$i]);
             }
             return $surname;
-        }
-
-        public function isActivationCodeEqualsZero(int $id) : bool // zachowane dla kompatybilności wstecznej
-        {
-            try
-            {
-                $ret = $this->db->exec("SELECT user_activate_code FROM users WHERE user_id = ?", [$id])[0]["user_activate_code"];
-                if (trim($ret) === "0") return true;
-                return false;
-            }
-            catch (\PDOException $e)
-            {
-                throw $e;
-            }
         }
 
         public function checkConfiguration(int $id, string $code) : bool
@@ -259,18 +208,6 @@ namespace User
             {
                 throw $e;
             }
-        }
-
-        public function checkName(string $name) : bool
-        {
-            $file = fopen(__DIR__."/../../other/names.txt", "r");
-            if (!$file) throw new \Exception("Problem z bazą imion");
-            while (!feof($file))
-            {
-                $line = trim(fgets($file));
-                if ($line === $name) return true;
-            }
-            return false;
         }
 
         public function isPasswordCorrect(string $login, string $plain_pass, bool $by_email)

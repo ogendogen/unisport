@@ -7,7 +7,8 @@ namespace {
     require_once(__DIR__."/../User/LoggedUser.php");
 }
 
-namespace Team {
+namespace Team
+{
     class Game
     {
         private $db;
@@ -146,14 +147,7 @@ namespace Team {
             $team1_players = $this->db->exec("SELECT player_playerid FROM games_players WHERE player_teamid = ? AND player_gameid = ?", [$gamedata["game_team1id"], $this->game_id]);
             foreach ($team1_players as $player) array_push($gamedata["game_team1players"], $player["player_playerid"]);
 
-            //$team2_players = $this->db->exec("SELECT player_playerid FROM games_players WHERE player_teamid = ? AND player_gameid = ?", [$gamedata["game_team2id"], $this->game_id]);
-            //foreach ($team2_players as $player) array_push($gamedata["game_team2players"], $player["player_playerid"]);
-
-            //$gamedata["game_team1players"] = $this->db->exec("SELECT * FROM games_players WHERE player_teamid = ?", [$gamedata["game_team1id"]]);
-            //$gamedata["game_team2players"] = $this->db->exec("SELECT * FROM games_players WHERE player_teamid = ?", [$gamedata["game_team2id"]]);
-
             return $gamedata;
-            //$gamedata = $this->db->exec("SELECT games.*, games_players.* FROM games LEFT JOIN games_players ON games.id = player.gameid WHERE games.game_id = ?", [$this->match_id])[0];
         }
 
         public function isGameExists(): bool
@@ -319,20 +313,6 @@ namespace Team {
                 $actions = $sport->getAllSportActions();
 
                 if (!in_array($action_name, $actions)) throw new \Exception("Taka akcja nie istnieje!", 0);
-            }
-            catch (\Exception $e)
-            {
-                throw $e;
-            }
-        }
-
-        private function isPlayerInGame(int $player_id) : bool
-        {
-            try
-            {
-                $ret = $this->db->exec("SELECT player_playerid FROM games_players WHERE player_gameid = ? AND player_playerid = ?", [$this->game_id, $player_id]);
-                if (!$ret) return false;
-                return true;
             }
             catch (\Exception $e)
             {

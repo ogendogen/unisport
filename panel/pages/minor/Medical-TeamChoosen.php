@@ -60,9 +60,6 @@ catch (\Exception $e)
 
 <script src="../../../js/medical.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
-<!--<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
-<script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>-->
 <div class="row">
     <div class="col-md-3">
         <div class="box box-default">
@@ -149,7 +146,7 @@ catch (\Exception $e)
                         echo "<td>".$data_row["medical_waist"]."</td>";
                         echo "<td>".$data_row["medical_bmi"]."</td>";
                         echo "<td>".$data_row["medical_fat"]."</td>";
-                        echo "<td>".\Utils\Dictionary::keyToWord($data_row["medical_generalhealthstate"])."</td>";
+                        echo "<td>".\User\Medical::normalizeState($data_row["medical_generalhealthstate"])."</td>";
                         echo "<td>".($data_row["medical_iscapable"] == "1" ? "Tak" : "Nie")."</td>";
                         echo "<td>".date("Y-m-d", $data_row["medical_date"])."</td>";
                         echo "

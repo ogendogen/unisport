@@ -4,7 +4,6 @@ namespace {
     require_once(__DIR__."/../Db/Database.php");
     require_once(__DIR__."/../Team/Team.php");
     require_once(__DIR__."/../Utils/General.php");
-    require_once(__DIR__."/../Utils/Dictionary.php");
     require_once(__DIR__."/../User/LoggedUser.php");
 }
 
@@ -49,7 +48,7 @@ namespace Expert
             }
         }
 
-        private function checkRequirements()
+        private function checkRequirements() : bool
         {
             try
             {

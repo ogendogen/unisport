@@ -71,7 +71,7 @@ namespace Team
             }
         }
 
-        public function moveEvent(int $eventid, string $new_startdate, string $new_enddate)
+        public function moveEvent(int $eventid, string $new_startdate, string $new_enddate) : bool
         {
             try
             {
@@ -79,6 +79,7 @@ namespace Team
                 if (!\Utils\Validations::validateDate($new_enddate, "d.m.Y H:s")) throw new \Exception("Końcowa data jest niepoprawna!");
 
                 $this->db->exec("UPDATE calendar SET calendar_startdate = ?, calendar_enddate = ? WHERE calendar_id = ? AND calendar_teamid = ?", [$new_startdate, $new_enddate, $eventid, $this->teamid]);
+                return true;
             }
             catch (\Exception $e)
             {
@@ -86,7 +87,7 @@ namespace Team
             }
         }
 
-        public function getAllTeamEvents()
+        public function getAllTeamEvents() : array
         {
             try
             {
@@ -98,11 +99,12 @@ namespace Team
             }
         }
 
-        public function deleteEvent(int $eventid)
+        public function deleteEvent(int $eventid) : bool
         {
             try
             {
                 $this->db->exec("DELETE FROM calendar WHERE calendar_id = ?", [$eventid]);
+                return true;
             }
             catch (\Exception $e)
             {

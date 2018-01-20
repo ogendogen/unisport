@@ -102,24 +102,6 @@ namespace Team
             }
         }
 
-        public function getTeamCustomActions() : array
-        {
-            try
-            {
-                if (!$this->isTeamsSportCustom()) throw new \Exception("Drużyna gra w standardową dyscyplinę");
-                $raw = $this->db->exec("SELECT sport_dictionary_key FROM sport_dictionary WHERE sport_dictionary_sportid = ?", [$this->sport]);
-                if (empty($raw)) return array();
-
-                $ret = array();
-                foreach ($raw as $row) array_push($ret, $row["sport_dictionary_key"]);
-                return $ret;
-            }
-            catch (\Exception $e)
-            {
-                throw $e;
-            }
-        }
-
         public function createNewTeam(string $name, string $desc, int $leaderid, string $sport)
         {
             try
@@ -209,24 +191,6 @@ namespace Team
                 $this->deleteFromMembersList($userid, $this->teamid);
             }
             catch (\PDOException $e)
-            {
-                throw $e;
-            }
-        }
-
-        public function setTeamId(int $teamid)
-        {
-            try
-            {
-                if ($this->teamid == $teamid) return;
-                $this->teamid = $teamid;
-                $teaminfo = $this->getTeamInfo(true);
-                $this->name = $teaminfo["team_name"];
-                $this->desc = $teaminfo["team_desc"];
-                $this->leadername = $teaminfo["team_leadername"];
-                $this->sport = $teaminfo["team_sport"];
-            }
-            catch (\Exception $e)
             {
                 throw $e;
             }
@@ -367,32 +331,6 @@ namespace Team
                 $this->db->exec("DELETE FROM teams_members WHERE member_userid = ? AND member_teamid = ?", [$userid, $teamid]);
             }
             catch (\PDOException $e)
-            {
-                throw $e;
-            }
-        }
-
-        public function isTeamHasMember(int $userid, int $teamid) : bool
-        {
-            try
-            {
-                $ret = $this->db->exec("SELECT users.user_id FROM users LEFT JOIN teams_members ON users.user_id = teams_members.member_userid WHERE users.user_id = ?", [$userid])[0]["user_id"];
-                if (!$ret) return false;
-                return true;
-            }
-            catch (\PDOException $e)
-            {
-                throw $e;
-            }
-        }
-
-        public function getAllUserTeamsAsLeader(int $leaderid) : array
-        {
-            try
-            {
-                return $this->db->exec("SELECT teams.*, COUNT(teams_members.member_teamid) AS 'totalmembers' FROM `teams` LEFT JOIN `teams_members` ON teams.team_id = teams_members.member_teamid WHERE teams.team_leader = ?", [$leaderid]);
-            }
-            catch (\Exception $e)
             {
                 throw $e;
             }

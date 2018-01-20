@@ -33,6 +33,27 @@ namespace User
             }
         }
 
+        public static function normalizeState(string $state) : string
+        {
+            switch($state)
+            {
+                case "injured":
+                    return "Skontuzjowany/Chory";
+
+                case "bad":
+                    return "Średni";
+
+                case "ok":
+                    return "W porządku";
+
+                case "very fit":
+                    return "W bardzo dobrej formie";
+
+                default:
+                    return $state;
+            }
+        }
+
         public function addNewMedicalRecord(int $height, float $weight, float $waist, string $generalhealthstate, int $iscapable)
         {
             try

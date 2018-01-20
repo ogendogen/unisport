@@ -81,15 +81,5 @@ namespace Utils
                             <!-- Main content -->
                             <section class="content container-fluid">';
         }
-
-        public static function reFillAllForms(array $post)
-        {
-            echo "<script>";
-            foreach ($post as $formname => $formval)
-            {
-                echo "$(\"[name='".$formname."']\").val(\"".$formval."\");";
-            }
-            echo "</script>";
-        }
     }
 }

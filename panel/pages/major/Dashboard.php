@@ -19,14 +19,7 @@ if (isset($_POST["notepad"]))
             </div>
             <div class="box-body" style="height: 400px;">
                 <form method="post" style="height: 350px;">
-                    <textarea style="width: 100%; height: 100%;" name="notepad" title="notepad">
-                        <?php
-
-                        global $logged_user;
-                        echo $logged_user->getUserNotepad();
-
-                        ?>
-                    </textarea>
+                    <textarea style="width: 100%; height: 100%;" name="notepad" title="notepad"><?php global $logged_user; echo trim($logged_user->getUserNotepad());?></textarea>
                     <input type="submit" class="btn btn-primary btn-block" value="Zapisz">
                 </form>
             </div>

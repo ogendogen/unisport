@@ -59,7 +59,7 @@ namespace User
         {
             try
             {
-                $this->db->exec("UPDATE users SET user_notepad WHERE user_id = ?", [$this->id]);
+                $this->db->exec("UPDATE users SET user_notepad = ? WHERE user_id = ?", [$notepad, $this->id]);
             }
             catch (\Exception $e)
             {

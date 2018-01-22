@@ -47,7 +47,7 @@ catch (\Exception $e)
                 <form method="post">
                     <label>Nazwa:</label>
                     <input name="sport_name" style="width: 75%;" title="sport_name" value="<?php echo $sport->getSportName(); ?>">
-                    <label>Akcje typowe dla dyscypliny:</label>
+                    <label>Akcje typowe dla dyscypliny: (jedna w linii)</label>
                     <div class="btn-block" id="sport_actions">
                         <?php
 
@@ -56,7 +56,7 @@ catch (\Exception $e)
                         foreach ($actions as $action)
                         {
                             $counter++;
-                            echo "<input class='btn-block' type='text' title='custom_action' id='action".$counter."' name='actions[]' maxlength='32' value='".$action["sport_dictionary_key"]."'>";
+                            echo "<input class='btn-block' type='text' title='custom_action' id='action".$counter."' name='actions[]' maxlength='32' value='".$action."'>";
                         }
 
                         ?>

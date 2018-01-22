@@ -37,7 +37,7 @@ namespace Db
             return self::$instance;
         }
 
-        public function exec($query, $params = null) : array
+        public function exec($query, $params = null)
         {
             try
             {

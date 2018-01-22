@@ -6,9 +6,9 @@
 <!-- Main Footer -->
 <footer class="main-footer">
     <!-- To the right -->
-    <div class="pull-right hidden-xs">
+    <!--<div class="pull-right hidden-xs">
         Anything you want
-    </div>
+    </div>-->
     <!-- Default to the left -->
-    <strong>Copyright &copy; 2016 <a href="#">Company</a>.</strong> All rights reserved.
+    <strong>Copyright &copy; 2018 <a href="#">UniSport</a></strong>
 </footer>

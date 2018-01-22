@@ -44,6 +44,27 @@ namespace Team
             }
         }
 
+        public static function getAllTeamsIncomingEvents(int $userid) : array
+        {
+            try
+            {
+                $db = \Db\Database::getInstance();
+                $user = new \User\LoggedUser($userid);
+                $teams = $user->getAllUserTeams();
+                $teams_ids = array();
+                foreach ($teams as $team) array_push($teams_ids, $team["team_id"]);
+                return $db->exec("SELECT calendar_startdate, calendar_event, calendar_priority FROM calendar
+                                            WHERE UNIX_TIMESTAMP(STR_TO_DATE(calendar.calendar_startdate, '%d.%m.%Y %h:%i')) > UNIX_TIMESTAMP() 
+                                            && UNIX_TIMESTAMP(STR_TO_DATE(calendar.calendar_startdate, '%d.%m.%Y %h:%i')) - 259200 < UNIX_TIMESTAMP()
+                                            && calendar_teamid IN (?)
+                                            ORDER BY calendar_teamid",[implode(',', $teams_ids)]);
+            }
+            catch(\Exception $e)
+            {
+                throw $e;
+            }
+        }
+
         public function addEvent(string $startdatetime, string $enddatetime, string $event, string $priority) : int
         {
             try

@@ -43,6 +43,30 @@ namespace User
             }
         }
 
+        public function getUserNotepad() : string
+        {
+            try
+            {
+                return $this->db->exec("SELECT user_notepad FROM users WHERE user_id = ?", [$this->id])[0]["user_notepad"];
+            }
+            catch (\Exception $e)
+            {
+                throw $e;
+            }
+        }
+
+        public function setUserNotepad(string $notepad)
+        {
+            try
+            {
+                $this->db->exec("UPDATE users SET user_notepad WHERE user_id = ?", [$this->id]);
+            }
+            catch (\Exception $e)
+            {
+                throw $e;
+            }
+        }
+
         public function isUserActivated() : bool
         {
             try

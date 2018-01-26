@@ -59,7 +59,7 @@ catch (\Exception $e)
                 <form method="post">
                     <label>Nazwa:</label>
                     <input name="sport_name" style="width: 75%;" title="sport_name">
-                    <label>Akcje typowe dla dyscypliny:</label>
+                    <label>Akcje typowe dla dyscypliny: (jedna w linii)</label>
                     <div class="btn-block" id="sport_actions">
                         <input class="btn-block" type="text" title="custom_action" id="action1" name="actions[]" maxlength="32">
                     </div>

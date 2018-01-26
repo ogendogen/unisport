@@ -94,7 +94,7 @@ namespace User
             {
                 return $this->db->exec("SELECT * FROM `medical`
                                           WHERE medical_userid = ? AND medical_teamid = ?
-                                          ORDER BY medical_date DESC", [$this->user->getUserId(), $this->team->getTeamInfo()["team_id"]]);
+                                          ORDER BY medical_date ASC", [$this->user->getUserId(), $this->team->getTeamInfo()["team_id"]]);
             }
             catch (\Exception $e)
             {

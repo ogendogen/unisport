@@ -33,6 +33,8 @@ namespace User
             try
             {
                 $data = $this->getUserDataById($this->id);
+                if (empty($data)) throw new \Exception("Nie odnaleziono użytkownika o id ".$this->id);
+
                 $this->login = $data["user_login"];
                 $this->name = $data["user_name"];
                 $this->surname = $data["user_surname"];

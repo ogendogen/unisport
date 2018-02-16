@@ -54,8 +54,8 @@ namespace Team
                 $teams_ids = array();
                 foreach ($teams as $team) array_push($teams_ids, $team["team_id"]);
                 return $db->exec("SELECT calendar_startdate, calendar_event, calendar_priority FROM calendar
-                                            WHERE UNIX_TIMESTAMP(STR_TO_DATE(calendar.calendar_startdate, '%d.%m.%Y %h:%i')) > UNIX_TIMESTAMP() 
-                                            && UNIX_TIMESTAMP(STR_TO_DATE(calendar.calendar_startdate, '%d.%m.%Y %h:%i')) - 259200 < UNIX_TIMESTAMP()
+                                            WHERE UNIX_TIMESTAMP(STR_TO_DATE(calendar.calendar_startdate, '%d.%m.%Y %H:%i')) > UNIX_TIMESTAMP() 
+                                            && UNIX_TIMESTAMP(STR_TO_DATE(calendar.calendar_startdate, '%d.%m.%Y %H:%i')) - 259200 < UNIX_TIMESTAMP()
                                             && calendar_teamid IN (?)
                                             ORDER BY calendar_teamid",[implode(',', $teams_ids)]);
             }

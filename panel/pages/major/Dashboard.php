@@ -5,8 +5,16 @@ $events = \Team\Calendar::getAllTeamsIncomingEvents($_SESSION["userid"]);
 
 if (isset($_POST["notepad"]))
 {
-    global $logged_user;
-    $logged_user->setUserNotepad($_POST["notepad"]);
+    try
+    {
+        \Utils\Validations::validateInput($_POST["notepad"]);
+        global $logged_user;
+        $logged_user->setUserNotepad($_POST["notepad"]);
+    }
+    catch(\Exception $e)
+    {
+        \Utils\Front::error($e->getMessage());
+    }
 }
 
 ?>
@@ -39,7 +47,16 @@ if (isset($_POST["notepad"]))
                 {
                     foreach ($events as $event)
                     {
-                        echo "<p><div class='alert alert-info btn-block'>Dnia ".$event["calendar_startdate"]." zaplanowane zostało ". ($event["calendar_priority"] == "high" ? "<strong>ważne</strong>" : "") ."wydarzenie ".$event["calendar_event"]."</div></p>";
+                        try
+                        {
+                            $tmp = new \Team\Team($event["calendar_teamid"]);
+                            echo "<p><div class='alert alert-info btn-block'>Dnia ".$event["calendar_startdate"]." zaplanowane zostało ". ($event["calendar_priority"] == "high" ? "<strong>ważne</strong>" : "") ."wydarzenie <span style='font-weight: bold;'>".$event["calendar_event"]."</span> w drużynie <span style='font-weight: bold'>".$tmp->getTeamInfo()["team_name"]."</span></div></p>";
+                        }
+                        catch (\Exception $e)
+                        {
+                            \Utils\Front::error($e->getMessage());
+                        }
+
                     }
                 }
 

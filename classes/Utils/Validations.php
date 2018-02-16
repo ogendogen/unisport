@@ -26,9 +26,9 @@ namespace Utils
             if (intval($responseKeys["success"]) !== 1) throw new \Exception("Captcha niepoprawna. Spróbuj ponownie");
         }
 
-        public static function validatePostArray(array $array)
+        public static function validatePostArray(array $arr)
         {
-            foreach ($array as $key => $value) {
+            foreach ($arr as $key => $value) {
                 if ($value == "0") continue;
                 if (empty($value)) throw new \Exception("Uzupełnij wszystkie pola!");
             }

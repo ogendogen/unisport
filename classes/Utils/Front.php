@@ -4,7 +4,7 @@ namespace Utils
 {
     class Front
     {
-        public static function modal($header, $message, $type, $dismissable=true)
+        public static function modal(string $header, string $message, string $type, bool $dismissable=true)
         {
             if (!$dismissable)
             {

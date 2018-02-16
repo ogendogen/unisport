@@ -28,23 +28,6 @@ namespace User
             }
         }
 
-        private function getUserData()
-        {
-            try
-            {
-                $data = $this->getUserDataById($this->id);
-                if (empty($data)) throw new \Exception("Nie odnaleziono użytkownika o id ".$this->id);
-
-                $this->login = $data["user_login"];
-                $this->name = $data["user_name"];
-                $this->surname = $data["user_surname"];
-            }
-            catch (\Exception $e)
-            {
-                throw $e;
-            }
-        }
-
         public function getUserNotepad() : string
         {
             try
@@ -106,6 +89,23 @@ namespace User
             try
             {
                 return $this->db->exec("SELECT teams.* FROM `teams` LEFT JOIN `teams_members` ON teams.team_id = teams_members.member_teamid WHERE teams_members.member_userid = ?", [$this->id]);
+            }
+            catch (\Exception $e)
+            {
+                throw $e;
+            }
+        }
+
+        private function getUserData()
+        {
+            try
+            {
+                $data = $this->getUserDataById($this->id);
+                if (empty($data)) throw new \Exception("Nie odnaleziono użytkownika o id ".$this->id);
+
+                $this->login = $data["user_login"];
+                $this->name = $data["user_name"];
+                $this->surname = $data["user_surname"];
             }
             catch (\Exception $e)
             {

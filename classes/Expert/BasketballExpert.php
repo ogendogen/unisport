@@ -135,7 +135,7 @@ namespace Expert
                 $row["rules"] .= "Czy gracz jest rezerwowym ? NIE<br>";
                 $row["rules"] .= "Czy suma podań i udanych kozłów jest najwyższa ? TAK<br>";
 
-                if ($maxid == 0) throw new \Exception("Niepowodzenie wnioskowania. Za mało akcji: Podanie, Udany kozioł");
+                if ($maxid == 0) throw new \Exception("Niepowodzenie wnioskowania. Za mało akcji: Podanie, Udany kozioł.".(!is_null($players_to_omit) ? " Spróbuj również zmienić rezerwowych." : ""));
                 $user = new \User\LoggedUser($maxid);
                 $row["credentials"] = $user->getUserCredentials();
 
@@ -182,7 +182,7 @@ namespace Expert
                 $row["rules"] .= "Czy suma podań i udanych kozłów jest najwyższa ? NIE<br>";
                 $row["rules"] .= "Czy gracz wykonał najwięcej celnych rzutów ? TAK<br>";
 
-                if ($maxid == 0) throw new \Exception("Niepowodzenie wnioskowania. Za mało akcji: Gol, Celny rzut");
+                if ($maxid == 0) throw new \Exception("Niepowodzenie wnioskowania. Za mało akcji: Gol, Celny rzut.".(!is_null($players_to_omit) ? " Spróbuj również zmienić rezerwowych." : ""));
                 $user = new \User\LoggedUser($maxid);
                 $row["credentials"] = $user->getUserCredentials();
 
@@ -230,7 +230,7 @@ namespace Expert
                 $row["rules"] .= "Czy gracz wykonał najwięcej celnych rzutów ? NIE<br>";
                 $row["rules"] .= "Czy suma przechwytów i rzutów za 3 punkty jest najwyższa ? TAK<br>";
 
-                if ($maxid == 0) throw new \Exception("Niepowodzenie wnioskowania. Za mało akcji: Przechwyt, Rzut za 3 punkty");
+                if ($maxid == 0) throw new \Exception("Niepowodzenie wnioskowania. Za mało akcji: Przechwyt, Rzut za 3 punkty.".(!is_null($players_to_omit) ? " Spróbuj również zmienić rezerwowych." : ""));
                 $user = new \User\LoggedUser($maxid);
                 $row["credentials"] = $user->getUserCredentials();
 
@@ -279,7 +279,7 @@ namespace Expert
                 $row["rules"] .= "Czy suma przechwytów i rzutów za 3 punkty jest najwyższa ? NIE<br>";
                 $row["rules"] .= "Czy najwięcej udanych podkoszowych akcji ? TAK<br>";
 
-                if ($maxid == 0) throw new \Exception("Niepowodzenie wnioskowania. Za mało akcji: Akcja pod koszem");
+                if ($maxid == 0) throw new \Exception("Niepowodzenie wnioskowania. Za mało akcji: Akcja pod koszem".(!is_null($players_to_omit) ? " Spróbuj również zmienić rezerwowych." : ""));
                 $user = new \User\LoggedUser($maxid);
                 $row["credentials"] = $user->getUserCredentials();
 

@@ -105,7 +105,7 @@ namespace Expert
                 $row["rules"] .= "Czy gracz jest bramkarzem ? NIE<br>";
                 $row["rules"] .= "Czy suma goli i celnych strzałów jest najwyższa ? TAK<br>";
 
-                if ($maxid == 0) throw new \Exception("Niepowodzenie wnioskowania. Za mało akcji: Gol, Celny Strzał");
+                if ($maxid == 0) throw new \Exception("Niepowodzenie wnioskowania. Za mało akcji: Gol, Celny Strzał.".(!is_null($players_to_omit) ? " Spróbuj również zmienić rezerwowych." : ""));
                 $user = new \User\LoggedUser($maxid);
                 $row["credentials"] = $user->getUserCredentials();
 
@@ -151,7 +151,7 @@ namespace Expert
                 $row["rules"] .= "Czy suma goli i celnych strzałów jest najwyższa ? NIE<br>";
                 $row["rules"] .= "Czy gracz wykonał najwięcej asyst ? TAK<br>";
 
-                if ($maxid == 0) throw new \Exception("Niepowodzenie wnioskowania. Za mało akcji: Asysta");
+                if ($maxid == 0) throw new \Exception("Niepowodzenie wnioskowania. Za mało akcji: Asysta.".(!is_null($players_to_omit) ? "Spróbuj również zmienić rezerwowych." : ""));
                 $user = new \User\LoggedUser($maxid);
                 $row["credentials"] = $user->getUserCredentials();
 
@@ -198,7 +198,7 @@ namespace Expert
                 $row["rules"] .= "Czy gracz wykonał najwięcej asyst ? NIE<br>";
                 $row["rules"] .= "Czy gracz wykonał najwięcej strzałów na bramkę ? TAK<br>";
 
-                if ($maxid == 0) throw new \Exception("Niepowodzenie wnioskowania. Za mało akcji: Strzał");
+                if ($maxid == 0) throw new \Exception("Niepowodzenie wnioskowania. Za mało akcji: Strzał.".(!is_null($players_to_omit) ? "Spróbuj również zmienić rezerwowych." : ""));
                 $user = new \User\LoggedUser($maxid);
                 $row["credentials"] = $user->getUserCredentials();
 
@@ -245,7 +245,7 @@ namespace Expert
                 $row["rules"] .= "Czy gracz wykonał najwięcej asyst ? NIE<br>";
                 $row["rules"] .= "Czy gracz wykonał najwięcej strzałów na bramkę ? TAK<br>";
 
-                if ($maxid == 0) throw new \Exception("Niepowodzenie wnioskowania. Za mało akcji: Strzał");
+                if ($maxid == 0) throw new \Exception("Niepowodzenie wnioskowania. Za mało akcji: Strzał.".(!is_null($players_to_omit) ? " Spróbuj również zmienić rezerwowych." : ""));
                 $user = new \User\LoggedUser($maxid);
                 $row["credentials"] = $user->getUserCredentials();
 
@@ -293,7 +293,7 @@ namespace Expert
                 $row["rules"] .= "Czy gracz wykonał najwięcej strzałów na bramkę ? NIE<br>";
                 $row["rules"] .= "Czy suma fauli i przejęć jest najwyższa ? TAK<br>";
 
-                if ($maxid == 0) throw new \Exception("Niepowodzenie wnioskowania. Za mało akcji: Faul, Przejęcie");
+                if ($maxid == 0) throw new \Exception("Niepowodzenie wnioskowania. Za mało akcji: Faul, Przejęcie.".(!is_null($players_to_omit) ? " Spróbuj również zmienić rezerwowych." : ""));
                 $user = new \User\LoggedUser($maxid);
                 $row["credentials"] = $user->getUserCredentials();
 
@@ -341,7 +341,7 @@ namespace Expert
                 $row["rules"] .= "Czy gracz wykonał najwięcej strzałów na bramkę ? NIE<br>";
                 $row["rules"] .= "Czy suma fauli i przejęć jest najwyższa ? TAK<br>";
 
-                if ($maxid == 0) throw new \Exception("Niepowodzenie wnioskowania. Za mało akcji: Faul, Przejęcie");
+                if ($maxid == 0) throw new \Exception("Niepowodzenie wnioskowania. Za mało akcji: Faul, Przejęcie.".(!is_null($players_to_omit) ? " Spróbuj również zmienić rezerwowych." : ""));
                 $user = new \User\LoggedUser($maxid);
                 $row["credentials"] = $user->getUserCredentials();
 
@@ -410,7 +410,7 @@ namespace Expert
                 $row["rules"] .= "Czy suma fauli i przejęć jest najwyższa ? NIE<br>";
                 $row["rules"] .= ($is_faul ? "Czy wykonał najwięcej fauli ? TAK<br>" : "Czy wykonał najwięcej fauli ? NIE<br>Czy wykonał najwięcej spalonych ? TAK");
 
-                if ($maxid == 0) throw new \Exception("Niepowodzenie wnioskowania. Za mało akcji: Faul, Spalony");
+                if ($maxid == 0) throw new \Exception("Niepowodzenie wnioskowania. Za mało akcji: Faul, Spalony.".(!is_null($players_to_omit) ? " Spróbuj również zmienić rezerwowych." : ""));
                 $user = new \User\LoggedUser($maxid);
                 $row["credentials"] = $user->getUserCredentials();
 
@@ -475,7 +475,7 @@ namespace Expert
                 $row["rules"] .= "Czy suma fauli i przejęć jest najwyższa ? NIE<br>";
                 $row["rules"] .= ($is_faul ? "Czy wykonał najwięcej fauli ? TAK<br>" : "Czy wykonał najwięcej fauli ? NIE<br>Czy wykonał najwięcej spalonych ? TAK");
 
-                if ($maxid == 0) throw new \Exception("Niepowodzenie wnioskowania. Za mało akcji: Faul, Spalony");
+                if ($maxid == 0) throw new \Exception("Niepowodzenie wnioskowania. Za mało akcji: Faul, Spalony.".(!is_null($players_to_omit) ? " Spróbuj również zmienić rezerwowych." : ""));
                 $user = new \User\LoggedUser($maxid);
                 $row["credentials"] = $user->getUserCredentials();
 

@@ -28,7 +28,7 @@ if (isset($_POST["receiver"]))
 ?>
 
 <div class="col-md-3">
-    <a href="?tab=mailbox&minor=send" class="btn btn-primary btn-block margin-bottom">Wróć do skrzynki nadawczej</a>
+    <a href="?tab=mailbox" class="btn btn-primary btn-block margin-bottom">Wróć do skrzynki nadawczej</a>
 
     <div class="box box-solid">
         <div class="box-header with-border">

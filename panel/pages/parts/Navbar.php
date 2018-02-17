@@ -129,9 +129,9 @@ desired effect
                             <!-- hidden-xs hides the username on small devices so only the image appears. -->
                             <span class="hidden-xs"><?php echo $logged_user->getUserCredentials(); ?></span>
                         </a>
-                        <ul class="dropdown-menu">
+                        <ul class="dropdown-menu" style="border: 1px solid #3C8DBC;">
                             <!-- The user image in the menu -->
-                            <li class="user-header">
+                            <li class="user-header" style="border: 1px solid #3C8DBC;">
                                 <img src="dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
 
                                 <p><?php echo $logged_user->getUserCredentials(); ?></p>
@@ -151,12 +151,12 @@ desired effect
                                 </div>
                             </li>-->
                             <!-- Menu Footer-->
-                            <li class="user-footer">
+                            <li class="user-footer" style="border: 1px solid #3C8DBC;">
                                 <!--<div class="pull-left">
                                     <a href="#" class="btn btn-default btn-flat">Profile</a>
                                 </div>-->
                                 <div>
-                                    <a href="#" class="btn btn-default btn-flat btn-block" onclick="user_logout();">Wyloguj się</a>
+                                    <a href="#" class="btn btn-primary btn-flat btn-block" onclick="user_logout();">Wyloguj się</a>
                                 </div>
                             </li>
                         </ul>

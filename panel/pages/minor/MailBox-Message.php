@@ -6,6 +6,14 @@ $msgdata = null;
 try
 {
     if (!isset($_GET["msgid"]) || !is_numeric($_GET["msgid"])) throw new \Exception("Nieznana wiadomość!");
+
+    if (isset($_POST["action"]) && $_POST["action"] === "deleteMessage")
+    {
+        \User\Message::deleteMessages($_SESSION["userid"], [$_GET["msgid"]]);
+        \Utils\General::redirectWithMessageAndDelay("?tab=mailbox", "Powodzenie", "Wiadomość została usunięta", "success", 2);
+        exit;
+    }
+
     $message = new \User\Message($_GET["msgid"], $_SESSION["userid"]);
     $message->readMessage();
     $msgdata = $message->getAllMessageData();
@@ -34,7 +42,7 @@ catch (\Exception $e)
             <div class="box-body no-padding">
                 <ul class="nav nav-pills nav-stacked">
                     <li><a href="?tab=mailbox&minor=main"><i class="fa fa-inbox"></i> Odebrane
-                            <span class="label label-primary pull-right"><?php echo \User\Message::countUnreadMessages($_SESSION["userid"]); ?></span></a></li>
+                            <span class="label label-primary pull-right"><?php $counted = \User\Message::countUnreadMessages($_SESSION["userid"]); if ($counted > 0) echo $counted; ?></span></a></li>
                     <li><a href="?tab=mailbox&minor=sent"><i class="fa fa-envelope-o"></i> Wysłane</a></li>
                 </ul>
             </div>
@@ -45,10 +53,10 @@ catch (\Exception $e)
             <div class="box-header with-border">
                 <h3 class="box-title">Wiadomość</h3>
 
-                <div class="box-tools pull-right">
+                <!--<div class="box-tools pull-right">
                     <a href="#" class="btn btn-box-tool" data-toggle="tooltip" title="" data-original-title="Previous"><i class="fa fa-chevron-left"></i></a>
                     <a href="#" class="btn btn-box-tool" data-toggle="tooltip" title="" data-original-title="Next"><i class="fa fa-chevron-right"></i></a>
-                </div>
+                </div>-->
             </div>
             <!-- /.box-header -->
             <div class="box-body no-padding">
@@ -60,16 +68,16 @@ catch (\Exception $e)
                 <!-- /.mailbox-read-info -->
                 <div class="mailbox-controls with-border text-center">
                     <div class="btn-group">
-                        <button type="button" class="btn btn-default btn-sm" data-toggle="tooltip" data-container="body" title="" data-original-title="Delete">
+                        <!--<button type="button" class="btn btn-default btn-sm" data-toggle="tooltip" data-container="body" title="" data-original-title="Delete">
                             <i class="fa fa-trash-o"></i></button>
                         <button type="button" class="btn btn-default btn-sm" data-toggle="tooltip" data-container="body" title="" data-original-title="Reply">
                             <i class="fa fa-reply"></i></button>
                         <button type="button" class="btn btn-default btn-sm" data-toggle="tooltip" data-container="body" title="" data-original-title="Forward">
-                            <i class="fa fa-share"></i></button>
+                            <i class="fa fa-share"></i></button>-->
                     </div>
                     <!-- /.btn-group -->
-                    <button type="button" class="btn btn-default btn-sm" data-toggle="tooltip" title="" data-original-title="Print">
-                        <i class="fa fa-print"></i></button>
+                    <!--<button type="button" class="btn btn-default btn-sm" data-toggle="tooltip" title="" data-original-title="Print">
+                        <i class="fa fa-print"></i></button>-->
                 </div>
                 <!-- /.mailbox-controls -->
                 <div class="mailbox-read-message">
@@ -133,11 +141,14 @@ catch (\Exception $e)
             <!-- /.box-footer -->
             <div class="box-footer">
                 <div class="pull-right">
-                    <button type="button" class="btn btn-default"><i class="fa fa-reply"></i> Reply</button>
-                    <button type="button" class="btn btn-default"><i class="fa fa-share"></i> Forward</button>
+                    <!--<button type="button" class="btn btn-default"><i class="fa fa-reply"></i> Reply</button>
+                    <button type="button" class="btn btn-default"><i class="fa fa-share"></i> Forward</button>-->
                 </div>
-                <button type="button" class="btn btn-default"><i class="fa fa-trash-o"></i> Delete</button>
-                <button type="button" class="btn btn-default"><i class="fa fa-print"></i> Print</button>
+                <form method="post">
+                    <input type="hidden" name="action" value="deleteMessage">
+                    <input type="submit" class="btn btn-default btn-danger" value="Usuń wiadomość">
+                </form>
+                <!--<button type="button" class="btn btn-default"><i class="fa fa-print"></i> Print</button>-->
             </div>
             <!-- /.box-footer -->
         </div>

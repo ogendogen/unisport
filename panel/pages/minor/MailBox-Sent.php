@@ -39,13 +39,13 @@
             <div class="box-body no-padding">
                 <div class="mailbox-controls">
                     <!-- Check all button -->
-                    <button type="button" class="btn btn-default btn-sm checkbox-toggle"><i class="fa fa-square-o"></i>
+                    <!--<button type="button" class="btn btn-default btn-sm checkbox-toggle"><i class="fa fa-square-o"></i>
                     </button>
                     <div class="btn-group">
                         <button type="button" class="btn btn-default btn-sm"><i class="fa fa-trash-o"></i></button>
-                    </div>
+                    </div>-->
                     <!-- /.btn-group -->
-                    <button type="button" class="btn btn-default btn-sm"><i class="fa fa-refresh"></i></button>
+                    <!--<button type="button" class="btn btn-default btn-sm" onclick="window.location.reload()"><i class="fa fa-refresh"></i></button>-->
                 </div>
                 <div class="table-responsive mailbox-messages">
                     <table class="table table-hover table-striped">
@@ -82,13 +82,13 @@
             <!-- /.box-body -->
             <div class="box-footer no-padding">
                 <div class="mailbox-controls">
-                    <!-- Check all button -->
+                    <button type="button" class="btn btn-default btn-sm" onclick="window.location.reload()"><i class="fa fa-refresh"></i></button>
+                    <!-- Check all button
                     <button type="button" class="btn btn-default btn-sm checkbox-toggle"><i class="fa fa-square-o"></i>
                     </button>
                     <div class="btn-group">
                         <button type="button" class="btn btn-default btn-sm"><i class="fa fa-trash-o"></i></button>
                     </div>
-                    <!-- /.btn-group -->
                     <button type="button" class="btn btn-default btn-sm"><i class="fa fa-refresh"></i></button>
                     <div class="pull-right">
                         1-50/200
@@ -96,7 +96,7 @@
                             <button type="button" class="btn btn-default btn-sm"><i class="fa fa-chevron-left"></i></button>
                             <button type="button" class="btn btn-default btn-sm"><i class="fa fa-chevron-right"></i></button>
                         </div>
-                        <!-- /.btn-group -->
+                        <!-- /.btn-group
                     </div>
                     <!-- /.pull-right -->
                 </div>

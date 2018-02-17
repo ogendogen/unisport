@@ -167,7 +167,7 @@ namespace User
             {
                 $db = \Db\Database::getInstance();
                 $idsToDelete = implode($msg_ids, ', ');
-                $db->exec("DELETE FROM messages WHERE message_receiver = ? AND message_id IN (".$idsToDelete.")");
+                $db->exec("DELETE FROM messages WHERE message_receiver = ? AND message_id IN (?)", [$user_id, $idsToDelete]);
             }
             catch(\Exception $e)
             {

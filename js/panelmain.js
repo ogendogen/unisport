@@ -26,7 +26,7 @@ function setActiveClass()
     {
         $("#"+tab).addClass("active");
         var children = $("ul[data-widget='tree']").children();
-        var len = children.length;
+        /*var len = children.length;
         for (var i=0; i<len; i++)
         {
             var alt = children.eq(i).prop("data-alt"); // todo: menuuu....
@@ -36,7 +36,7 @@ function setActiveClass()
                 alt.addClass("active");
                 break;
             }
-        }
+        }*/
         if ($("#"+tab).parent().parent().hasClass("treeview")) $("#"+tab).parent().parent().addClass("active");
     }
 }
@@ -138,6 +138,7 @@ function choosePlayer(playerid)
     {
         obj.removeClass("alert-info");
         obj.addClass("alert-success");
+
         choosen_players++;
         players_container.append("<input type='hidden' name='player" + choosen_players.toString() + "' value='" + playerid.toString() + "'>");
 
@@ -154,12 +155,12 @@ function choosePlayer(playerid)
 
         // reordering
         choosen_players = players_container.children().length;
-        if (choosen_players == 0) players_container.children().empty();
-        else if (choosen_players == 1) players_container.children().first().attr("name", "player1");
+        if (choosen_players === 0) players_container.children().empty();
+        else if (choosen_players === 1) players_container.children().first().attr("name", "player1");
         else
         {
             var counter = 1;
-            players_container.children().forEach(function(item, index){
+            players_container.children().each(function(item, index){
                 $(this).attr("name", "player" + counter.toString());
                 counter++;
             });

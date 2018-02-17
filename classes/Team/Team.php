@@ -130,6 +130,17 @@ namespace Team
 
         public function updateTeamInfo(string $name=null, string $desc=null, string $sport=null)
         {
+            $get_actions = null;
+
+            if (!is_null($sport) && $sport != $this->teamid)
+            {
+                $ret = boolval($this->db->exec("SELECT COUNT(actions_id) > 1 AS 'isgames' FROM `games_players_actions`
+                                    LEFT JOIN `games_players` ON games_players.player_id = games_players_actions.actions_gameplayerid
+                                    WHERE games_players.player_teamid = ?", [$this->teamid])[0]["isgames"]);
+
+                if ($ret) throw new \Exception("Drużyna ma zapisane akcje dla tej dyscypliny! Najpierw je usuń przed zmianą!");
+            }
+
             if ($this->blocked) throw new \Exception("Drużyna nie zdefiniowana (updateTeamInfo)");
             $query = "UPDATE teams SET ";
             $params = array();

@@ -178,3 +178,6 @@ else
         </div>
     </div>
 </div>
+<script>
+    $("#teams").addClass("active");
+</script>

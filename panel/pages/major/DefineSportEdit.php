@@ -67,4 +67,7 @@ catch (\Exception $e)
         </div>
     </div>
     <div class="col-md-3"></div>
+    <script>
+        $("#teams").addClass("active");
+    </script>
 </div>

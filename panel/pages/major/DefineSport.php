@@ -107,4 +107,7 @@ catch (\Exception $e)
         </div>
     </div>
     <div class="col-md-1"></div>
+    <script>
+        $("#teams").addClass("active");
+    </script>
 </div>

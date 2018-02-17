@@ -56,6 +56,7 @@
                         $teamdesc = htmlspecialchars(trim(stripslashes($_POST["teamDescription"])));
                         $teamsport = htmlspecialchars(trim(stripslashes($_POST["teamSport"])));
                         $newteam->createNewTeam($teamname, $teamdesc, $_SESSION["userid"], $teamsport);
+                        \Utils\Front::success("Pomyślnie utworzono drużynę");
                     }
                     catch (\Exception $e)
                     {

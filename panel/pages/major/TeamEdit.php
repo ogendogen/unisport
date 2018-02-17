@@ -74,7 +74,7 @@ else
                                 foreach ($sports_arr as $sport)
                                 {
                                     $selected = false;
-                                    if ($sport["sport_name"] == $team->getTeamInfo()["team_sport"]) $selected = true;
+                                    if ($sport["sport_id"] == $team->getTeamInfo()["team_sport"]) $selected = true;
                                     echo "<option ".($selected ? "selected='selected'" : "")." value='".$sport["sport_id"]."'>".$sport["sport_name"]."</option>";
                                 }
                             }
@@ -92,4 +92,7 @@ else
         </div>
     </div>
     <div class="col-md-3"></div>
+    <script>
+        $("#teams").addClass("active");
+    </script>
 </div>

@@ -79,7 +79,7 @@ namespace Expert
         {
             try
             {
-                if (!is_null($players_to_omit) && count($this->team->getAllTeamPlayers()) - count($players_to_omit) < 5) throw new \Exception("Drużyna musi składać się z przynajmniej 11 graczy!");
+                if (!is_null($players_to_omit) && count($this->team->getAllTeamPlayers()) - count($players_to_omit) < 5) throw new \Exception("Drużyna musi składać się z przynajmniej 5 graczy!");
                 $players = $this->prepareDataToAnalyse();
                 $toanalyse = $this->parseData($players);
 
@@ -135,6 +135,7 @@ namespace Expert
                 $row["rules"] .= "Czy gracz jest rezerwowym ? NIE<br>";
                 $row["rules"] .= "Czy suma podań i udanych kozłów jest najwyższa ? TAK<br>";
 
+                if ($maxid == 0) throw new \Exception("Niepowodzenie wnioskowania. Za mało akcji: Podanie, Udany kozioł");
                 $user = new \User\LoggedUser($maxid);
                 $row["credentials"] = $user->getUserCredentials();
 
@@ -181,6 +182,7 @@ namespace Expert
                 $row["rules"] .= "Czy suma podań i udanych kozłów jest najwyższa ? NIE<br>";
                 $row["rules"] .= "Czy gracz wykonał najwięcej celnych rzutów ? TAK<br>";
 
+                if ($maxid == 0) throw new \Exception("Niepowodzenie wnioskowania. Za mało akcji: Gol, Celny rzut");
                 $user = new \User\LoggedUser($maxid);
                 $row["credentials"] = $user->getUserCredentials();
 
@@ -228,6 +230,7 @@ namespace Expert
                 $row["rules"] .= "Czy gracz wykonał najwięcej celnych rzutów ? NIE<br>";
                 $row["rules"] .= "Czy suma przechwytów i rzutów za 3 punkty jest najwyższa ? TAK<br>";
 
+                if ($maxid == 0) throw new \Exception("Niepowodzenie wnioskowania. Za mało akcji: Przechwyt, Rzut za 3 punkty");
                 $user = new \User\LoggedUser($maxid);
                 $row["credentials"] = $user->getUserCredentials();
 
@@ -276,6 +279,7 @@ namespace Expert
                 $row["rules"] .= "Czy suma przechwytów i rzutów za 3 punkty jest najwyższa ? NIE<br>";
                 $row["rules"] .= "Czy najwięcej udanych podkoszowych akcji ? TAK<br>";
 
+                if ($maxid == 0) throw new \Exception("Niepowodzenie wnioskowania. Za mało akcji: Akcja pod koszem");
                 $user = new \User\LoggedUser($maxid);
                 $row["credentials"] = $user->getUserCredentials();
 
@@ -287,11 +291,7 @@ namespace Expert
 
                 //region Silny Skrzydłowy
 
-                $row = array();
-                $row["player_id"] = $toanalyse[0]["player_id"];
-                $row["player_pos"] = "Silny skrzydłowy";
-                $row["how"] = "Pozostali zawodnicy";
-                $row["facts"] = "";
+                $facts = "";
                 foreach ($toanalyse[0] as $actions)
                 {
                     if (is_int($actions)) continue;
@@ -300,6 +300,11 @@ namespace Expert
                         if ($action_occurences > 0) $facts .= "(".$action.", ".$action_occurences.")";
                     }
                 }
+                $row = array();
+                $row["player_id"] = $toanalyse[0]["player_id"];
+                $row["player_pos"] = "Silny skrzydłowy";
+                $row["how"] = "Pozostali zawodnicy";
+                $row["facts"] = $facts;
 
                 $user = new \User\LoggedUser($toanalyse[0]["player_id"]);
                 $row["credentials"] = $user->getUserCredentials();

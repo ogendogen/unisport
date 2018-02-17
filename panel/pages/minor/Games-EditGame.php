@@ -226,7 +226,10 @@ catch (\Exception $e)
                                                 $teamplayers = $team->getAllTeamPlayers();
                                                 foreach ($teamplayers as $teamplayer)
                                                 {
-                                                    echo "<option value=". $teamplayer["user_id"] ." ". ($teamplayer["user_id"] == $participant->getUserId() ? "selected='selected'" : "").">". $teamplayer["user_name"]." ".$teamplayer["user_surname"] ."</option>";
+                                                    if (in_array($teamplayer["user_id"], $game_players))
+                                                    {
+                                                        echo "<option value=". $teamplayer["user_id"] ." ". ($teamplayer["user_id"] == $participant->getUserId() ? "selected='selected'" : "").">". $teamplayer["user_name"]." ".$teamplayer["user_surname"] ."</option>";
+                                                    }
                                                 }
 
                                                 ?>

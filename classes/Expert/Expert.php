@@ -63,6 +63,29 @@ namespace Expert
                 {
                     if (intval($row["amount"]) < 4) throw new \Exception("Za mało danych! Brakuje danych dla: ". $row["user_name"]." ".$row["user_surname"]);
                 }
+
+                $actions = $this->db->exec("SELECT COUNT(games_players_actions.actions_action) AS 'occurances', games_players_actions.actions_action FROM `games_players`
+                                                    LEFT JOIN `games_players_actions` ON games_players.player_id = games_players_actions.actions_gameplayerid
+                                                    WHERE games_players.player_teamid = ? AND games_players_actions.actions_action IS NOT NULL
+                                                    GROUP BY games_players_actions.actions_action", [$this->team_id]);
+
+                $doneactions = array();
+                foreach($actions as $action)
+                {
+                    if ($action["occurances"] < 4) throw new \Exception("Drużyna wykonała za mało akcji: ". $action["actions_action"] ." (minimum 4)");
+                    if (!in_array($action["actions_action"], $doneactions)) array_push($doneactions, $action["actions_action"]);
+                }
+
+                $rawdictionary = $this->db->exec("SELECT sport_dictionary_key FROM sport_dictionary WHERE sport_dictionary_sportid = ?", [$this->team->getTeamSportId()]);
+                $dictionary = array();
+                foreach ($rawdictionary as $dictrow)
+                {
+                    array_push($dictionary, $dictrow["sport_dictionary_key"]);
+                }
+
+                $intersected = array_diff($dictionary, $doneactions);
+                if (!empty($intersected)) throw new \Exception("Drużyna nie wykonała żadnej akcji: ". implode(",", $intersected));
+
                 return true;
             }
             catch (\Exception $e)

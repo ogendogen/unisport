@@ -31,7 +31,7 @@ catch (\Exception $e)
                         $players = $team->getAllTeamPlayers();
                         foreach ($players as $player)
                         {
-                            echo "<option value='".$player["user_id"]."'> ".$player["user_name"]." ".$player["user_surname"]."</option>";
+                            echo "<option value='".$player["user_id"]."' ".($player["user_id"] == $_SESSION["userid"] ? "selected='selected'" : "")."> ".$player["user_name"]." ".$player["user_surname"]."</option>";
                         }
 
                         ?>
@@ -79,6 +79,8 @@ catch (\Exception $e)
 
                             if ($team->isFootballTeam())
                             {
+                                if (isset($_POST["reserved"]) && !is_array($_POST["reserved"])) throw new \Exception("Niepoprawny format rezerwowych");
+                                if (!is_int(intval($_POST["goalkeeper"])) || intval($_POST["goalkeeper"]) === 0 || (isset($_POST["reserved"]) && in_array($_POST["goalkeeper"], $_POST["reserved"]))) throw new \Exception("Bramkarz nie może być rezerwowy!");
                                 $expert = new \Expert\FootballExpert($team->getTeamId());
                                 $ret = $expert->doAnalyse($_POST["goalkeeper"], $_POST["reserved"] ?? null); // equivalent to (isset($_POST["reserved"]) ? $_POST["reserved"] : null)
                             }

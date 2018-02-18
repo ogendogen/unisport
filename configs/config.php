@@ -1,15 +1,15 @@
 <?php
 
 $CONF = array();
-$CONF["site"] = "http://unisport.cskatowice.com";
-$CONF["debug"] = true;
+$CONF["site"] = "http://unisport.az.pl";
+$CONF["debug"] = false;
 $CONF["db"] = array();
 $CONF["db"]["host"] = "localhost";
 $CONF["db"]["user"] = "cskatowi_sport";
 $CONF["db"]["pass"] = "0OOn1NkP";
 $CONF["db"]["db"] = "cskatowi_sport";
-$CONF["sitekey"] = "6LeXwTIUAAAAAJ2ONKwfEMu8OdRBjnq69_Of5LXZ";
-$CONF["privatekey"] = "6LeXwTIUAAAAAN0rhsEphrAC6b8TDpEysCyXQysQ";
+$CONF["sitekey"] = "6Lcg_UYUAAAAAEwEJnx7VBl6atcTLillwJLWt-e-";
+$CONF["privatekey"] = "6Lcg_UYUAAAAADZIK6EBU52nyGSyeO0I7QPLFXRf";
 
 if ($CONF["debug"])
 {

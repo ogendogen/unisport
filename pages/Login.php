@@ -62,7 +62,7 @@ else if (isset($_SESSION["userid"])) // user zalogowany, ale trafił tutaj w inn
                     </div>
 
                     <div class="form-group col-xs-12 col-md-6 col-md-offset-3">
-                        <div class="g-recaptcha" data-sitekey="6LeXwTIUAAAAAJ2ONKwfEMu8OdRBjnq69_Of5LXZ"></div>
+                        <div class="g-recaptcha" data-sitekey="<?php echo $CONF["sitekey"]; ?>"></div>
                     </div>
 
                 </fieldset>
